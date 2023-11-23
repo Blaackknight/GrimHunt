@@ -1,0 +1,30 @@
+command /debug:
+    trigger:
+        set {_count} to 0
+        set {_list::*} to all items
+        loop {_list::*}:
+            set {_value.1} to loop-value
+            set slot 0 of player's inventory to 2 of {_value.1}
+            set {_nb} to nbt compound of slot 0 of player's inventory
+            set {_a} to nbt compound of slot 0 of player's inventory
+            #send actionbar "%nbt of slot 0 of player's inventory%" to player
+            if "%{_a}%" is not "{}":
+                broadcast "[DEBOUG] §c%{_value.1}% §d-> §e%{_a}%"
+            #broadcast "§c%{_value.1}% §d-> §e%{_nb}%"
+            
+            # set {_nbt} to "%{_nb}%"
+            # set {_data::*} to "%{_nb}%" split by """"
+            # broadcast {_nb}
+            # loop {_data::*}:
+            #     set {_d} to loop-value-2
+            #     broadcast "[DEBOUG] §c%{_value.1}% §d-> §e%{_d}%"
+            #set {_nbt.2} to "%{_nbt.1}%"
+            # replace "{Count:1b,id:""minecraft:" with "" in {_nbt.2}
+            # replace """}" with "" in {_nbt.2}
+            # replace """,tag:{Damage:0}}" with "" in {_nbt.2}
+            #set yaml value "all.%{_nbt.2}%" from "bck.core.bdd" to "%{_value.1}%"
+            add 1 to {_count}
+            #clear {_a}
+            wait 1 tick
+        save yaml "bck.core.bdd"
+        stop

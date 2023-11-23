@@ -1,0 +1,100 @@
+language:
+    unknownOption: "§cUnknown option"
+    languageNotFound: "§cLanguage not found.."
+    noPermission: "§c§lHey! §7You don't have permission :|"
+    languageClientSetTo: "§eYour §llanguage§r§l has just been §achanged to§r"
+    languageServerSetTo: "§eThe §4§lBCK§e language on the server side has just been §achanged to§r"
+manager:
+other:
+manhunt:
+    command:
+        no_runners: "§aNo Runners.."
+        runners_list: "§b§lRunners List:"
+        no_hunters: "§4No Hunters.."
+        hunters_list: "§b§lHunters List:"
+        start:
+            begins:
+                1: "§eThe game begins."
+                2: "§eThe game begins.."
+                3: "§eThe game begins..."
+            chatActivated: "§6[§5Manhunt§6] §eChat §Aactivated §e!"
+            runners_running: "§6[§5Manhunt§6] §eThe §arunners §ecan now start leaving !"
+            alreadyStarted: "§6[§5Manhunt§6] §eGame is already started.."
+        stop:
+            notStarted: "§6[§5Manhunt§6] §eGame not started.."
+        revive:
+            notDead:
+                1: "§6[§5Manhunt§6]§r"
+                2: "is not dead"
+            gameNoStarted: "§6[§5Manhunt§6]§r §cThe game is not in progress.."
+            revived:
+                1: "§6[§5Manhunt§6]§r"
+                2: "§ehas been §arevived"
+            gotRevived: "§6[§5Manhunt§6]§r §eYou have just been §arevived §e!"
+        config:
+            gui:
+                title: "§5Manhunt §aConfiguration"
+    gui:
+        updater:
+            enabled: "§2Enabled"
+            disabled: "§4Disabled"
+            status: "§eStatus:"
+            lore:
+                start_heal: "§7At the §2start §7of the game grants a §aheal §7to §eall players§r"
+                start_feed: "§7At the §2start §7of the game grants §6satiation §7to §eall players§r"
+                start_day: "§7At the §2start §7of the game change the §bworld time §7for the §eday§r"
+                start_clear: "§7At the §2start §7of the game §dclear all players inventories§r"
+                particles: "§2Tracker §7with §5particles§r §o§n§9(Alpha)§r"
+                forge:
+                    1: "§eAutomatically cooks §dall ores §7upon breaking§r"
+                    2: "§aDrop <randomColor>random §aexperience §ewhen breaking ores§r"
+                kits: "§7At the §2start §7of the game, §egive §7a §1starting kit §7to the §arunners§r"
+            noKitFound: §7§mNo kits found..
+            currentKit: "§eCurrent kit:§r"
+    death:
+        runner_killed:
+            1: "<arg0> was killed by <arg1>"
+            2: "<arg0> was decapitated by <arg1>"
+            3: "<arg0> was torn to pieces by <arg1>"
+            4: "<arg0> was dismembered by <arg1>"
+            5: "<arg0> was sent to hell by <arg1>"
+        runner_suicide:
+            1: "<arg0> committed suicide :|"
+        runner_death:
+            fall: 
+                1: "<arg0> hit the ground too hard"
+            attack: 
+                1: "<arg0> was slain by <arg1>"
+            burning:
+                1: "<arg0> burned to death"
+            lava:
+                1: "<arg0> tried to swim in lava"
+            void:
+                1: "<arg0> fell out of the world"
+            projectile:
+                1: "<arg0> was shot by <arg1>"
+            entity explosion:
+                1: "<arg0> was blown up by <arg1>"
+            drowning:
+                1: "<arg0> drowned"
+core:
+    functions:
+        commandError:
+            1: "§cUnknown or incomplete command, see below for error"
+            2: "§c<--[HERE]"
+    command:
+        bck:
+            rules:
+                gui:
+                    title: "Server Rules"
+                updater:
+                    enabled: "§2Enabled"
+                    disabled: "§4Disabled"
+                    status: "§eStatus:"
+                    lore:
+                        tnt: "§eManage §cexplosions"
+                        commandBlock: "§eManage §dcommand blocks"
+debug:
+    afterDebug: "§6[§4BCK§6/§3Debug§6]§r §eTimer finished"
+    beforeDebug: "§6[§4BCK§6/§3Debug§6]§r §eTimer starting"
+    actionbar: "§6[§4BCK§6/§3Debug§6]§r §7Time left:§r"

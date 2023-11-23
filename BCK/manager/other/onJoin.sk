@@ -1,0 +1,9 @@
+on first join:
+    defaultPermission(player)
+    firstJoin(player)
+    #userData({_player}, "data.inv", "set", "manager.%{_type}%.main")
+function firstJoin(player: player):
+    set {_n} to {_player}'s name
+    set {_uuid} to {_player}'s uuid
+    userData({_player}, "player.name", "set", {_n})
+    userData({_player}, "player.uuid", "set", {_uuid})

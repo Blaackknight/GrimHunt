@@ -1,0 +1,56 @@
+on load:
+    if {skripts::*} contains "core.sk" and "bck_manager.sk":
+        send "§6[§4BCK§6]§r Loading debug..." to console
+        send "§6[§4BCK§6/§3Debug§6]§r Loaded successfully !" to console
+        load yaml "plugins/Skript/scripts/BCK/manager/debug/test.yml" as "bck.manager.debug.test"
+        #load yaml "plugins/Skript/scripts/BCK/manager/other/data.yml" as "bck.manager.clan.data"
+    else:
+        broadcast "§6[§4BCK§6/§3Debug§6]§r Script loading cancel It requires (§lcore.sk§r and §lbck_manager.sk§r)"
+command /bck_debug [<text="en">]:
+    trigger:
+        make console execute command "/sk reload scripts"
+        #debug(player, arg-1)
+        # set {_af} to lang("debug.afterDebug", player)
+        # bckTimer("%{_af}% §a(%arg-1%)", player, arg-1)
+
+function debug(player: player, lang: text="en"):
+    set {_inv} to {_player}'s inventory
+    set {_items::*} to all items
+    loop {_items::*}:
+        set {_i} to loop-value
+        set {_player}'s tool to {_i}
+        set {_n} to display name of {_player}'s tool
+        if "%{_n}%" is "<none>":
+            set {_n} to {_i}
+        set yaml value "%{_lang}%.%{_i}%" from "bck.manager.debug.test" to "%{_n}%"
+    save "bck.manager.debug.test"
+function bckTimer(send: text, player: player, time: text="1s"):
+    if {_time} contain "s":
+        set {_t} to {_time}
+        replace "s" with "" in {_t}
+        set {_t} to {_t} parsed as integer
+        send lang("debug.beforeDebug", {_player}) to {_player}
+        set {_c} to {_t} - 1
+        set {_bar} to lang("debug.actionbar", {_player})
+        send actionbar "%{_bar}% §b%{_t}%s" to {_player}
+        loop {_t} times: 
+            wait 1 seconds
+            set {_bar} to lang("debug.actionbar", {_player})
+            send actionbar "%{_bar}% §b%{_c}%s" to {_player}
+            remove 1 from {_c}
+        send {_send} to {_player}
+    else if {_time} contain "m":
+        set {_t} to {_time}
+        replace "m" with "" in {_t}
+        set {_t} to {_t} parsed as integer
+        send lang("debug.beforeDebug", {_player}) to {_player}
+        set {_c} to {_t} - 1
+        set {_bar} to lang("debug.actionbar", {_player})
+        send actionbar "%{_bar}% §b%{_t}%m" to {_player}
+        loop {_t} times:
+            wait 1 minutes
+            set {_bar} to lang("debug.actionbar", {_player})
+            send actionbar "%{_bar}% §b%{_c}%m" to {_player}
+            remove 1 from {_c}
+        send {_send} to {_player}
+    

@@ -1,0 +1,48 @@
+on load:
+    if {skripts::*} contains "core.sk" and "bck_manager.sk":
+        send "§6[§4BCK§6]§r Loading other..." to console
+        send "§6[§4BCK§6/§fOther§6]§r Loaded successfully !" to console
+        #load yaml "plugins/Skript/scripts/BCK/manager/other/config.yml" as "bck.manager.clan.config"
+        #load yaml "plugins/Skript/scripts/BCK/manager/other/data.yml" as "bck.manager.clan.data"
+    else:
+        broadcast "§6[§4BCK§6/§fOther§6]§r Script loading cancel It requires (§lcore.sk§r and §lbck_manager.sk§r)"
+        loop directory "plugins/Skript/scripts/BCK/manager/other/"'s files:
+            if loop-value ends with ".sk":
+                set {_f} to loop-value
+                set {_f} to substring of {_f} from 2 to length of {_f}
+                set {_data::*} to {_f} split by "/"
+                if {_data::6} contain {_extention}:
+                    #broadcast "%{_data::6}%"
+                    set {_r} to {_data::6}
+                else if {_data::7} contain {_extention}:
+                    #broadcast "%{_data::7}%"
+                    set {_r} to {_data::7}
+                else if {_data::8} contain {_extention}:
+                    #broadcast "%{_data::8}%"
+                    set {_r} to {_data::8}
+                else if {_data::9} contain {_extention}:
+                    #broadcast "%{_data::8}%"
+                    set {_r} to {_data::9}
+                else if {_data::10} contain {_extention}:
+                    #broadcast "%{_data::10}%"
+                    set {_r} to {_data::10}
+                else if {_data::11} contain {_extention}:
+                    #broadcast "%{_data::11}%"
+                    set {_r} to {_data::11}
+                else if {_data::12} contain {_extention}:
+                    #broadcast "%{_data::12}%"
+                    set {_r} to {_data::12}
+                else if {_data::13} contain {_extention}:
+                    #broadcast "%{_data::13}%"
+                    set {_r} to {_data::13}
+                else if {_data::14} contain {_extention}:
+                    #broadcast "%{_data::14}%"
+                    set {_r} to {_data::14}
+                else if {_data::15} contain {_extention}:
+                    #broadcast "%{_data::15}%"
+                    set {_r} to {_data::15}
+                add {_r} to {_files::*}
+        loop {_list::*}:
+            unload script file "%loop-value%"
+        
+        
