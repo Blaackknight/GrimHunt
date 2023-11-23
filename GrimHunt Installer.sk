@@ -17,7 +17,7 @@ on load:
     broadcast "§6[§4BCK§6]§r Installing core..."
     broadcast "§6[§4BCK§6]§r Installing manager..."
     broadcast "§6[§4BCK§6]§r Setup..."
-    set {_link} to "https://raw.githubusercontent.com/Blaackknight/GrimHunt/main/GrimHunt"
+    set {_link} to "https://raw.githubusercontent.com/Blaackknight/GrimHunt/main/BCK"
 
     download file from "%{_link}%/core/core.sk" to file "plugins/Skript/scripts/BCK/core/core.sk"
     download file from "%{_link}%/core/core_functions.sk" to file "plugins/Skript/scripts/BCK/core/core_functions.sk"
