@@ -6,7 +6,7 @@ language:
     languageServerSetTo: "§eThe §4§lBCK§e language on the server side has just been §achanged to§r"
 manager:
 other:
-manhunt:
+grimhunt:
     command:
         no_runners: "§aKeine Läufer.."
         runners_list: "§b§lLäuferliste:"
@@ -17,16 +17,16 @@ manhunt:
                 1: "§eDas Spiel beginnt."
                 2: "§eDas Spiel beginnt.."
                 3: "§eDas Spiel beginnt..."
-            runners_running: "§6[§5Manhunt§6] §eDie §aLäufer §eJetzt kann es losgehen !"
+            runners_running: "§6[§5Grimhuntt§6] §eDie §aLäufer §eJetzt kann es losgehen !"
         revive:
             notDead:
-                1: "§6[§5Manhunt§6]§r"
+                1: "§6[§5Grimhunt§6]§r"
                 2: "ist nicht tot"
-            gameNoStarted: "§6[§5Manhunt§6]§r §cDas Spiel läuft nicht.."
+            gameNoStarted: "§6[§5Grimhunt§6]§r §cDas Spiel läuft nicht.."
             revived:
-                1: "§6[§5Manhunt§6]§r"
+                1: "§6[§5Grimhunt§6]§r"
                 2: "§ewurde §awiederbelebt"
-            gotRevived: "§6[§5Manhunt§6]§r §eDu warst gerade dort §awiederbelebt §e!"
+            gotRevived: "§6[§5Grimhunt§6]§r §eDu warst gerade dort §awiederbelebt §e!"
     death:
         runner_killed:
             1: "wurde getötet von"

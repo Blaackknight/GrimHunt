@@ -40,9 +40,9 @@ on load:
     download file from "%{_link}%/manager/language/language/en.yml" to file "plugins/Skript/scripts/BCK/manager/language/language/en.yml"
     download file from "%{_link}%/manager/language/language/fr.yml" to file "plugins/Skript/scripts/BCK/manager/language/language/fr.yml"
 
-    download file from "%{_link}%/manager/manhunt/bck_manhunt.sk" to file "plugins/Skript/scripts/BCK/manager/manhunt/bck_manhunt.sk"
-    download file from "%{_link}%/manager/manhunt/config.yml" to file "plugins/Skript/scripts/BCK/manager/manhunt/config.yml"
-    download file from "%{_link}%/manager/manhunt/data.yml" to file "plugins/Skript/scripts/BCK/manager/manhunt/data.yml"
+    download file from "%{_link}%/manager/grimhunt/bck_grimhunt.sk" to file "plugins/Skript/scripts/BCK/manager/grimhunt/bck_grimhunt.sk"
+    download file from "%{_link}%/manager/grimhunt/config.yml" to file "plugins/Skript/scripts/BCK/manager/grimhunt/config.yml"
+    download file from "%{_link}%/manager/grimhunt/data.yml" to file "plugins/Skript/scripts/BCK/manager/grimhunt/data.yml"
 
     download file from "%{_link}%/manager/other/bck_other.sk" to file "plugins/Skript/scripts/BCK/manager/other/bck_other.sk"
     download file from "%{_link}%/manager/other/logLevel.sk" to file "plugins/Skript/scripts/BCK/manager/other/logLevel.sk"

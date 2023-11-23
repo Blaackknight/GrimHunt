@@ -6,7 +6,7 @@ language:
     languageServerSetTo: "§eThe §4§lBCK§e language on the server side has just been §achanged to§r"
 manager:
 other:
-manhunt:
+grimhunt:
     command:
         no_runners: "§aNo Runners.."
         runners_list: "§b§lRunners List:"
@@ -17,23 +17,23 @@ manhunt:
                 1: "§eThe game begins."
                 2: "§eThe game begins.."
                 3: "§eThe game begins..."
-            chatActivated: "§6[§5Manhunt§6] §eChat §Aactivated §e!"
-            runners_running: "§6[§5Manhunt§6] §eThe §arunners §ecan now start leaving !"
-            alreadyStarted: "§6[§5Manhunt§6] §eGame is already started.."
+            chatActivated: "§6[§5Grimhunt§6] §eChat §Aactivated §e!"
+            runners_running: "§6[§5Grimhunt§6] §eThe §arunners §ecan now start leaving !"
+            alreadyStarted: "§6[§5Grimhunt§6] §eGame is already started.."
         stop:
-            notStarted: "§6[§5Manhunt§6] §eGame not started.."
+            notStarted: "§6[§5Grimhunt§6] §eGame not started.."
         revive:
             notDead:
-                1: "§6[§5Manhunt§6]§r"
+                1: "§6[§5Grimhunt§6]§r"
                 2: "is not dead"
-            gameNoStarted: "§6[§5Manhunt§6]§r §cThe game is not in progress.."
+            gameNoStarted: "§6[§5Grimhunt§6]§r §cThe game is not in progress.."
             revived:
-                1: "§6[§5Manhunt§6]§r"
+                1: "§6[§5Grimhunt§6]§r"
                 2: "§ehas been §arevived"
-            gotRevived: "§6[§5Manhunt§6]§r §eYou have just been §arevived §e!"
+            gotRevived: "§6[§5Grimhunt§6]§r §eYou have just been §arevived §e!"
         config:
             gui:
-                title: "§5Manhunt §aConfiguration"
+                title: "§5Grimhunt §aConfiguration"
     gui:
         updater:
             enabled: "§2Enabled"

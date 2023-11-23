@@ -1,5 +1,5 @@
 data:
-    manhunt:
+    grimhunt:
         load:
             options:
             - "#start/time: Time before the hunter begins their hunt. Set to s/m"
