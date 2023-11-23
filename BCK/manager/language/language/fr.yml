@@ -82,6 +82,18 @@ core:
         commandError:
             1: "§cCommande inconnue ou incomplète, voir ci-dessous pour l'erreur"
             2: "§c<--[ICI]"
+    command:
+        bck:
+            rules:
+                gui:
+                    title: "Règles du serveur"
+                updater:
+                    enabled: "§2Activé"
+                    disabled: "§4Disabled"
+                    status: "§eStatut:"
+                    lore:
+                        tnt: "§eGérer les §cexplosions"
+                        commandBlock: "§eGérer les §dblocs de commande"
 debug:
     afterDebug: "§6[§4BCK§6/§3Debug§6]§r §eMinuterie terminée"
     beforeDebug: "§6[§4BCK§6/§3Debug§6]§r §eDémarrage de la minuterie"
