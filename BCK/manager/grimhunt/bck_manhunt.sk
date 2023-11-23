@@ -1,14 +1,14 @@
 on load:
     if {skripts::*} contains "bck_manager.sk":
-        send "§6[§4BCK§6]§r Loading manhunt..." to console
+        send "§6[§4BCK§6]§r Loading grimhunt..." to console
         wait 2 seconds
-        send "§6[§4BCK§6/§5Manhunt§6]§r Loaded successfully !" to console
-        load yaml "plugins/Skript/scripts/BCK/manager/manhunt/config.yml" as "bck.manager.manhunt.config"
-        load yaml "plugins/Skript/scripts/BCK/manager/manhunt/data.yml" as "bck.manager.manhunt.data"
-        manhuntLoad()
+        send "§6[§4BCK§6/§5Grimhunt§6]§r Loaded successfully !" to console
+        load yaml "plugins/Skript/scripts/BCK/manager/grimhunt/config.yml" as "bck.manager.grimhunt.config"
+        load yaml "plugins/Skript/scripts/BCK/manager/grimhunt/data.yml" as "bck.manager.grimhunt.data"
+        grimhuntLoad()
     else:
-        broadcast "§6[§4BCK§6/§5Manhunt§6]§r Script loading cancel It require (bck_manager.sk)"
-        unload script file "bck_manhunt.sk"
+        broadcast "§6[§4BCK§6/§5Grimhunt§6]§r Script loading cancel It require (bck_manager.sk)"
+        unload script file "bck_grimhunt.sk"
     stop
 #                                      txtGiver command                                                                          #
 command /txtGiver [<text>]:
@@ -49,61 +49,61 @@ on tab complete of "/skm":
     if hasPermission(player, "server.command.skm") is false:
         stop
     set tab completions for position 1 to all items
-#                                      manhunt command                                                                          #
-command /manhunt [<text>] [<player>]:
+#                                      grimhunt command                                                                          #
+command /grimhunt [<text>] [<player>]:
     trigger:
         if arg-1 is not set:
-            send formatted commandError("manhunt", "false", player)
+            send formatted commandError("grimhunt", "false", player)
             stop
         else if arg-1 is "runners":
             if listCounter({bck.runners::*}) is 0:
-                set {_no} to lang("manhunt.command.no_runners", player)
-                send "§6[§5Manhunt§6] %{_no}%"
+                set {_no} to lang("grimhunt.command.no_runners", player)
+                send "§6[§5Grimhunt§6] %{_no}%"
                 stop
             loop {bck.runners::*}:
                 if listCounter({bck.runners::*}) is 1:
                     set {_t} to "§e-> §a%loop-value%"
                 else:
                     set {_t} to "%{_t}%%nl%§e->§a%loop-value%"
-            set {_rl} to lang("manhunt.command.runners_list", player)
-            send "§6[§5Manhunt§6] %{_rl}%%nl%%{_t}%"
+            set {_rl} to lang("grimhunt.command.runners_list", player)
+            send "§6[§5Grimhunt§6] %{_rl}%%nl%%{_t}%"
         else if arg-1 is "hunters":
             if listCounter({bck.hunters::*}) is 0:
-                set {_no} to lang("manhunt.command.no_hunters", player)
-                send "§6[§5Manhunt§6] %{_no}%"
+                set {_no} to lang("grimhunt.command.no_hunters", player)
+                send "§6[§5Grimhunt§6] %{_no}%"
                 stop
             loop {bck.hunters::*}:
                 if listCounter({bck.hunters::*}) is 1:
                     set {_t} to "§e-> §4%loop-value%"
                 else:
                     set {_t} to "%{_t}%%nl%§e->§4%loop-value%"
-            set {_hl} to lang("manhunt.command.hunters_list", player)
-            send "§6[§5Manhunt§6] %{_hl}%%nl%%{_t}%"
+            set {_hl} to lang("grimhunt.command.hunters_list", player)
+            send "§6[§5Grimhunt§6] %{_hl}%%nl%%{_t}%"
         else if arg-1 is "start":
-            if {manhunt.game.started} is not set:
+            if {grimhunt.game.started} is not set:
                 # if listCounter({bck.hunters::*}) < 1:
                 #     if  listCounter({bck.runners::*}) < 1:
-                #         send "§6[§5Manhunt§6] §cMissing §a1 Runner §cand §41 Hunter §cfor starting.."
+                #         send "§6[§5grimhunt§6] §cMissing §a1 Runner §cand §41 Hunter §cfor starting.."
                 #         stop
                 #     else:
-                #         send "§6[§5Manhunt§6] §cMissing §41 Hunter §cfor starting.."
+                #         send "§6[§5grimhunt§6] §cMissing §41 Hunter §cfor starting.."
                 #         stop
                 # else:
                 #     if  listCounter({bck.runners::*}) < 1:
-                #         send "§6[§5Manhunt§6] §cMissing §a1 Runner §cfor starting.."
+                #         send "§6[§5grimhunt§6] §cMissing §a1 Runner §cfor starting.."
                 #         stop
-                set {manhunt.game.started} to true
-                manhuntTeamCreate(true)
-                manhuntTeamJoin(true)
+                set {grimhunt.game.started} to true
+                grimhuntTeamCreate(true)
+                grimhuntTeamJoin(true)
                 
                 loop {bck.hunters::*}:
                     removePermission(loop-value, "player.move", true)
-                    set {manhunt.compass.%loop-value%.num} to 1
+                    set {grimhunt.compass.%loop-value%.num} to 1
                 loop {bck.runners::*}:
-                    userData(loop-value, "data.manhunt.temp.dead", "set", "false")
+                    userData(loop-value, "data.grimhunt.temp.dead", "set", "false")
                 make console execute command "/tp @a[team=bck_runners] %player%"
                 make console execute command "/tp @a[team=bck_hunters] %player%"
-                set {_time} to manhuntData("start.time")
+                set {_time} to grimhuntData("start.time")
                 set {_u} to "s"
                 if {_time} contain "s" or "second" or "seconds":
                     set {_u} to "s"
@@ -117,21 +117,21 @@ command /manhunt [<text>] [<player>]:
                 set {_timer.75} to {_timer} / 1.32
                 set {_timer.100} to {_timer} / 1
                 set {_timer.75} to ceil({_timer.75})
-                manhuntPlayersLangSend("manhunt.command.start.begins.1", "title")
+                grimhuntPlayersLangSend("grimhunt.command.start.begins.1", "title")
                 wait 1 seconds
-                manhuntPlayersLangSend("manhunt.command.start.begins.2", "title")
+                grimhuntPlayersLangSend("grimhunt.command.start.begins.2", "title")
                 wait 1 seconds
-                manhuntPlayersLangSend("manhunt.command.start.begins.3", "title")
+                grimhuntPlayersLangSend("grimhunt.command.start.begins.3", "title")
                 wait 1 seconds
-                manhuntPlayersLangSend("manhunt.command.start.begins.1", "title")
+                grimhuntPlayersLangSend("grimhunt.command.start.begins.1", "title")
                 wait 1 seconds
-                manhuntPlayersLangSend("manhunt.command.start.runners_running")
+                grimhuntPlayersLangSend("grimhunt.command.start.runners_running")
                 loop {bck.runners::*}:
-                    manhuntHeal(loop-value)
-                    manhuntFeed(loop-value)
-                    manhuntClear(loop-value)
+                    grimhuntHeal(loop-value)
+                    grimhuntFeed(loop-value)
+                    grimhuntClear(loop-value)
                 loop {bck.runners::*}:
-                    manhuntKits(loop-value)
+                    grimhuntKits(loop-value)
                 wait 1 seconds
                 if {_u} is "s":
                     loop {_timer.75} times:
@@ -169,54 +169,54 @@ command /manhunt [<text>] [<player>]:
                     send title "§eStarting Game %randomColor()%%{_n}%" to {bck.hunters::*}
                     wait 1 seconds
                     remove 1 from {_timer}
-                set {bck.manhunt.chat} to true
-                manhuntPlayersLangSend("manhunt.command.start.chatActivated")
+                set {bck.grimhunt.chat} to true
+                grimhuntPlayersLangSend("grimhunt.command.start.chatActivated")
                 wait 1 second
                 remove 1 from {_timer}
-                set {_sound} to manhuntData("start.sound")
+                set {_sound} to grimhuntData("start.sound")
                 replace all "_" with "." in {_sound}
                 replace all " " with "." in {_sound}
                 loop {bck.hunters::*}:
                     play sound {_sound} with volume 0.7 at loop-value
                 loop {bck.runners::*}:
                     play sound {_sound} with volume 0.7 at loop-value
-                manhuntPlayersSend("§bStarting !!", "title")
-                manhuntDay()
+                grimhuntPlayersSend("§bStarting !!", "title")
+                grimhuntDay()
                 loop {bck.hunters::*}:
-                    manhuntHeal(loop-value)
-                    manhuntFeed(loop-value)
-                    manhuntClear(loop-value)
+                    grimhuntHeal(loop-value)
+                    grimhuntFeed(loop-value)
+                    grimhuntClear(loop-value)
                     addPermission(loop-value, "player.move", true)
-                    manhuntCompassGive(loop-value)
+                    grimhuntCompassGive(loop-value)
             else:
-                send lang("manhunt.command.start.alreadyStarted", player)
+                send lang("grimhunt.command.start.alreadyStarted", player)
         else if arg-1 is "stop":
-            if {manhunt.game.started} is true:
-                clear {manhunt.game.started}
-                clear {bck.manhunt.chat}
-                manhuntTeamDelete(true)
+            if {grimhunt.game.started} is true:
+                clear {grimhunt.game.started}
+                clear {bck.grimhunt.chat}
+                grimhuntTeamDelete(true)
                 loop {bck.hunters::*}:
                     addPermission(loop-value, "player.move", true)
-                    clear {manhunt.compass.%loop-value%.num}
-                if manhuntDataBoolean("keepTeam.status") is false:
+                    clear {grimhunt.compass.%loop-value%.num}
+                if grimhuntDataBoolean("keepTeam.status") is false:
                     clear {bck.hunters::*}
                     clear {bck.runners::*}
             else:
-                send lang("manhunt.command.stop.notStarted", player)
+                send lang("grimhunt.command.stop.notStarted", player)
         else if arg-1 is "info":
         
         else if arg-1 is "config":
-            set {_gui} to genericGui(lang("manhunt.command.config.gui.title", player), 5, true)
+            set {_gui} to genericGui(lang("grimhunt.command.config.gui.title", player), 5, true)
             set slot 22 of {_gui} to redstone block named "§4Wait.."
-            userData(player, "data.inv", "set", "manager.manhunt.config.main")
+            userData(player, "data.inv", "set", "manager.grimhunt.config.main")
             open {_gui} to player
-            manhuntConfigGuiUpdater(player)
+            grimhuntConfigGuiUpdater(player)
         else if arg-1 is "wiki":
 
         else if arg-1 is "admin.allList":
             if hasPermission(player, "server.owner") is false:
                 if "%player%" is not "<none>":
-                    send formatted commandError("manhunt", arg-1, player)
+                    send formatted commandError("grimhunt", arg-1, player)
                     stop
             set {_i::*} to all items
             loop {_i::*}:
@@ -268,38 +268,38 @@ command /manhunt [<text>] [<player>]:
         else if arg-1 is "admin.start":
             if hasPermission(player, "server.owner") is false:
                 if "%player%" is not "<none>":
-                    send formatted commandError("manhunt", arg-1, player)
+                    send formatted commandError("grimhunt", arg-1, player)
                     stop
             play sound "entity.experience_orb.pickup" with volume 0.3 at player
-            set {manhunt.game.started} to true
+            set {grimhunt.game.started} to true
         else if arg-1 is "admin.stop":
             if hasPermission(player, "server.owner") is false:
                 if "%player%" is not "<none>":
-                    send formatted commandError("manhunt", arg-1, player)
+                    send formatted commandError("grimhunt", arg-1, player)
                     stop
             play sound "entity.villager.no" with volume 0.5 at player
-            clear {manhunt.game.started}
+            clear {grimhunt.game.started}
         else if arg-1 is "revive":
             if arg-2 is not set:
-                send formatted commandError("manhunt", arg-1, player)
+                send formatted commandError("grimhunt", arg-1, player)
                 stop
-            if {manhunt.game.started} is not set:
-                send formatted lang("manhunt.command.revive.gameNoStarted", player)
+            if {grimhunt.game.started} is not set:
+                send formatted lang("grimhunt.command.revive.gameNoStarted", player)
                 stop
             set {_x} to arg-2
-            if userData({_x}, "data.manhunt.temp.dead") is "true":
+            if userData({_x}, "data.grimhunt.temp.dead") is "true":
                 set {_s} to 0
                 loop 36 times:
-                    set {_i} to yaml value "inventory.%{_x}%.%{_s}%" from "bck.manager.manhunt.data"
+                    set {_i} to yaml value "inventory.%{_x}%.%{_s}%" from "bck.manager.grimhunt.data"
                     set {_i} to {_i} parsed as item
                     set slot {_s} of {_x}'s inventory to {_i}
                     add 1 to {_s}
-                set {_w.00} to yaml value "inventory.%{_x}%.helmet" from "bck.manager.manhunt.data"
-                set {_w.01} to yaml value "inventory.%{_x}%.chestplate" from "bck.manager.manhunt.data"
-                set {_w.02} to yaml value "inventory.%{_x}%.leggings" from "bck.manager.manhunt.data"
-                set {_w.03} to yaml value "inventory.%{_x}%.boots" from "bck.manager.manhunt.data"
-                set {_w.04} to yaml value "inventory.%{_x}%.off_hand" from "bck.manager.manhunt.data"
-                set {_xb} to yaml value "inventory.%{_x}%.location" from "bck.manager.manhunt.data"
+                set {_w.00} to yaml value "inventory.%{_x}%.helmet" from "bck.manager.grimhunt.data"
+                set {_w.01} to yaml value "inventory.%{_x}%.chestplate" from "bck.manager.grimhunt.data"
+                set {_w.02} to yaml value "inventory.%{_x}%.leggings" from "bck.manager.grimhunt.data"
+                set {_w.03} to yaml value "inventory.%{_x}%.boots" from "bck.manager.grimhunt.data"
+                set {_w.04} to yaml value "inventory.%{_x}%.off_hand" from "bck.manager.grimhunt.data"
+                set {_xb} to yaml value "inventory.%{_x}%.location" from "bck.manager.grimhunt.data"
                 set {_loc} to {_xb}
                 set {_x}'s helmet to {_w.00}
                 set {_x}'s chestplate to {_w.01}
@@ -308,29 +308,29 @@ command /manhunt [<text>] [<player>]:
                 set {_x}'s offhand tool to {_w.04}
                 set gamemode of {_x} to survival
                 teleport {_x} to {_loc}
-                set {_z.1} to lang("manhunt.command.revive.revived.1", player)
-                set {_z.2} to lang("manhunt.command.revive.revived.2", player)
+                set {_z.1} to lang("grimhunt.command.revive.revived.1", player)
+                set {_z.2} to lang("grimhunt.command.revive.revived.2", player)
                 set {_z.0} to "%{_z.1}% §a%selector({_x})%§r %{_z.2}%"
                 send formatted {_z.0} to player
-                send formatted lang("manhunt.command.revive.gotRevived", {_x}) to {_x}
-                userData({_x}, "data.manhunt.temp.dead", "set", "false")
+                send formatted lang("grimhunt.command.revive.gotRevived", {_x}) to {_x}
+                userData({_x}, "data.grimhunt.temp.dead", "set", "false")
             else:
-                set {_t} to lang("manhunt.command.revive.notDead.1", player)
-                set {_tt} to lang("manhunt.command.revive.notDead.2", player)
+                set {_t} to lang("grimhunt.command.revive.notDead.1", player)
+                set {_tt} to lang("grimhunt.command.revive.notDead.2", player)
                 send formatted "%{_t}% %{_x}% %{_tt}%"
         else:
-            send formatted commandError("manhunt", arg-1, player)
+            send formatted commandError("grimhunt", arg-1, player)
             stop
-#                                      manhuntPlayersSend functions                                                                          #
-function manhuntPlayersSend(text: text, type: text="normal"):
+#                                      grimhuntPlayersSend functions                                                                          #
+function grimhuntPlayersSend(text: text, type: text="normal"):
     if {_type} is "normal":
         send formatted {_text} to {bck.hunters::*}
         send formatted {_text} to {bck.runners::*}
     else:
         send title {_text} to {bck.hunters::*}
         send title {_text} to {bck.runners::*}
-#                                      manhuntPlayersLangSend functions                                                                          #
-function manhuntPlayersLangSend(key: text, type: text="normal"):
+#                                      grimhuntPlayersLangSend functions                                                                          #
+function grimhuntPlayersLangSend(key: text, type: text="normal"):
     if {_type} is "normal":
         loop {bck.hunters::*}:
             set {_x} to loop-value
@@ -345,97 +345,97 @@ function manhuntPlayersLangSend(key: text, type: text="normal"):
         loop {bck.runners::*}:
             set {_x} to loop-value
             send title lang({_key}, {_x}) to {_x}
-#                                      manhuntLoad functions                                                                          #
-function manhuntLoad():
-    set {_data::*} to yaml list "data.manhunt.load.options" from "bck.manager.manhunt.config"
-    if file "plugins/Manhunt/config.yml" doesn't exist:
-        send "§6[§4BCK§6/§5Manhunt§6]§r §eInitialization.." to console
-        create script "plugins/Manhunt/config.yml"
-        write "##                                                                                                                              " at line 1 to file "plugins/Manhunt/config.yml"
-        write "##       _____         _____    ____      ______  _______          ____   ____  ____   ____  _____   ______   _________________ " at line 2 to file "plugins/Manhunt/config.yml"
-        write "##   ___|\    \    ___|\    \  |    |    |      \/       \        |    | |    ||    | |    ||\    \ |\     \ /                 \" at line 3 to file "plugins/Manhunt/config.yml"
-        write "##  /    /\    \  |    |\    \ |    |   /          /\     \       |    | |    ||    | |    | \\    \| \     \\______     ______/" at line 4 to file "plugins/Manhunt/config.yml"
-        write "## |    |  |____| |    | |    ||    |  /     /\   / /\     |      |    |_|    ||    | |    |  \|    \  \     |  \( /    /  )/   " at line 5 to file "plugins/Manhunt/config.yml"
-        write "## |    |    ____ |    |/____/ |    | /     /\ \_/ / /    /|      |    .-.    ||    | |    |   |     \  |    |   ' |   |   '     " at line 6 to file "plugins/Manhunt/config.yml"
-        write "## |    |   |    ||    |\    \ |    ||     |  \|_|/ /    / |      |    | |    ||    | |    |   |      \ |    |     |   |        " at line 7 to file "plugins/Manhunt/config.yml"
-        write "## |    |   |_,  ||    | |    ||    ||     |       |    |  |      |    | |    ||    | |    |   |    |\ \|    |    /   //        " at line 8 to file "plugins/Manhunt/config.yml"
-        write "## |\ ___\___/  /||____| |____||____||\____\       |____|  /      |____| |____||\___\_|____|   |____||\_____/|   /___//         " at line 9 to file "plugins/Manhunt/config.yml"
-        write "## | |   /____ / ||    | |    ||    || |    |      |    | /       |    | |    || |    |    |   |    |/ \|   ||  |`   |          " at line 10 to file "plugins/Manhunt/config.yml"
-        write "##  \|___|    | / |____| |____||____| \|____|      |____|/        |____| |____| \|____|____|   |____|   |___|/  |____|          " at line 11 to file "plugins/Manhunt/config.yml"
-        write "##    \( |____|/    \(     )/    \(      \(          )/             \(     )/      \(   )/       \(       )/      \(           " at line 12 to file "plugins/Manhunt/config.yml"
-        write "##     '   )/        '     '      '       '          '               '     '        '   '         '       '        '            " at line 13 to file "plugins/Manhunt/config.yml"
-        write "##         '                                                                                                                    " at line 14 to file "plugins/Manhunt/config.yml"
-        write "" at line 15 to file "plugins/Manhunt/config.yml"
-        write "##   ___           ___ _            _    _          _       _     _   " at line 16 to file "plugins/Manhunt/config.yml"
-        write "##  / __\_   _    / __\ | __ _  ___| | _| | ___ __ (_) __ _| |__ | |_ " at line 17 to file "plugins/Manhunt/config.yml"
-        write "## /__\// | | |  /__\// |/ _` |/ __| |/ / |/ / '_ \| |/ _` | '_ \| __|" at line 18 to file "plugins/Manhunt/config.yml"
-        write "##/ \/  \ |_| | / \/  \ | (_| | (__|   <|   <| | | | | (_| | | | | |_ " at line 19 to file "plugins/Manhunt/config.yml"
-        write "##\_____/\__, | \_____/_|\__,_|\___|_|\_\_|\_\_| |_|_|\__, |_| |_|\__|" at line 20 to file "plugins/Manhunt/config.yml"
-        write "##       |___/                                        |___/           " at line 21 to file "plugins/Manhunt/config.yml"
-        write "" at line 22 to file "plugins/Manhunt/config.yml"
+#                                      grimhuntLoad functions                                                                          #
+function grimhuntLoad():
+    set {_data::*} to yaml list "data.grimhunt.load.options" from "bck.manager.grimhunt.config"
+    if file "plugins/GrimHunt/config.yml" doesn't exist:
+        send "§6[§4BCK§6/§5Grimhunt§6]§r §eInitialization.." to console
+        create script "plugins/GrimHunt/config.yml"
+        write "##                                                                                                                              " at line 1 to file "plugins/GrimHunt/config.yml"
+        write "##       _____         _____    ____      ______  _______          ____   ____  ____   ____  _____   ______   _________________ " at line 2 to file "plugins/GrimHunt/config.yml"
+        write "##   ___|\    \    ___|\    \  |    |    |      \/       \        |    | |    ||    | |    ||\    \ |\     \ /                 \" at line 3 to file "plugins/GrimHunt/config.yml"
+        write "##  /    /\    \  |    |\    \ |    |   /          /\     \       |    | |    ||    | |    | \\    \| \     \\______     ______/" at line 4 to file "plugins/GrimHunt/config.yml"
+        write "## |    |  |____| |    | |    ||    |  /     /\   / /\     |      |    |_|    ||    | |    |  \|    \  \     |  \( /    /  )/   " at line 5 to file "plugins/GrimHunt/config.yml"
+        write "## |    |    ____ |    |/____/ |    | /     /\ \_/ / /    /|      |    .-.    ||    | |    |   |     \  |    |   ' |   |   '     " at line 6 to file "plugins/GrimHunt/config.yml"
+        write "## |    |   |    ||    |\    \ |    ||     |  \|_|/ /    / |      |    | |    ||    | |    |   |      \ |    |     |   |        " at line 7 to file "plugins/GrimHunt/config.yml"
+        write "## |    |   |_,  ||    | |    ||    ||     |       |    |  |      |    | |    ||    | |    |   |    |\ \|    |    /   //        " at line 8 to file "plugins/GrimHunt/config.yml"
+        write "## |\ ___\___/  /||____| |____||____||\____\       |____|  /      |____| |____||\___\_|____|   |____||\_____/|   /___//         " at line 9 to file "plugins/GrimHunt/config.yml"
+        write "## | |   /____ / ||    | |    ||    || |    |      |    | /       |    | |    || |    |    |   |    |/ \|   ||  |`   |          " at line 10 to file "plugins/GrimHunt/config.yml"
+        write "##  \|___|    | / |____| |____||____| \|____|      |____|/        |____| |____| \|____|____|   |____|   |___|/  |____|          " at line 11 to file "plugins/GrimHunt/config.yml"
+        write "##    \( |____|/    \(     )/    \(      \(          )/             \(     )/      \(   )/       \(       )/      \(           " at line 12 to file "plugins/GrimHunt/config.yml"
+        write "##     '   )/        '     '      '       '          '               '     '        '   '         '       '        '            " at line 13 to file "plugins/GrimHunt/config.yml"
+        write "##         '                                                                                                                    " at line 14 to file "plugins/GrimHunt/config.yml"
+        write "" at line 15 to file "plugins/GrimHunt/config.yml"
+        write "##   ___           ___ _            _    _          _       _     _   " at line 16 to file "plugins/GrimHunt/config.yml"
+        write "##  / __\_   _    / __\ | __ _  ___| | _| | ___ __ (_) __ _| |__ | |_ " at line 17 to file "plugins/GrimHunt/config.yml"
+        write "## /__\// | | |  /__\// |/ _` |/ __| |/ / |/ / '_ \| |/ _` | '_ \| __|" at line 18 to file "plugins/GrimHunt/config.yml"
+        write "##/ \/  \ |_| | / \/  \ | (_| | (__|   <|   <| | | | | (_| | | | | |_ " at line 19 to file "plugins/GrimHunt/config.yml"
+        write "##\_____/\__, | \_____/_|\__,_|\___|_|\_\_|\_\_| |_|_|\__, |_| |_|\__|" at line 20 to file "plugins/GrimHunt/config.yml"
+        write "##       |___/                                        |___/           " at line 21 to file "plugins/GrimHunt/config.yml"
+        write "" at line 22 to file "plugins/GrimHunt/config.yml"
         set {_x} to 23
         set {_c} to listCounter({_data::*})
         #broadcast {_c}
         loop {_data::*}:
-            write loop-value at line {_x} to file "plugins/Manhunt/config.yml"
+            write loop-value at line {_x} to file "plugins/GrimHunt/config.yml"
             add 1 to {_x}
         wait 3 ticks
-        send "§6[§4BCK§6/§5Manhunt§6]§r §eInitialization §nComplete§r§e !" to console
+        send "§6[§4BCK§6/§5Grimhunt§6]§r §eInitialization §nComplete§r§e !" to console
     wait 10 ticks
-    load yaml "plugins/Manhunt/config.yml" as "bck.server.manhunt.config"
-    send "§6[§4BCK§6/§5Manhunt§6]§r §aLoaded file succeffully !" to console
+    load yaml "plugins/GrimHunt/config.yml" as "bck.server.grimhunt.config"
+    send "§6[§4BCK§6/§5Grimhunt§6]§r §aLoaded file succeffully !" to console
     wait 2 ticks
-    set {_d.0} to manhuntServerConfig("start.time")
-    set {_d.01} to manhuntServerConfig("start.sound")
-    set {_d.02} to manhuntServerConfigBoolean("keepTeam.status")
-    set {_d.03} to manhuntServerConfig("teamChatPrefix")
-    set {_d.04} to manhuntServerConfigBoolean("startHeal.status")
-    set {_d.05} to manhuntServerConfigBoolean("startFeed.status")
-    set {_d.06} to manhuntServerConfigBoolean("startDay.status")
-    set {_d.07} to manhuntServerConfigBoolean("startClear.status")
-    set {_d.08} to manhuntServerConfigBoolean("particles.status")
-    set {_d.09} to manhuntServerConfigBoolean("forge.status")
-    set {_d.10} to manhuntServerConfigBoolean("forge.oresXp")
-    set {_d.11} to manhuntServerConfigBoolean("kits.status")
-    set {_dx.1::*} to yaml list "kits.kit" from "bck.server.manhunt.config"
+    set {_d.0} to grimhuntServerConfig("start.time")
+    set {_d.01} to grimhuntServerConfig("start.sound")
+    set {_d.02} to grimhuntServerConfigBoolean("keepTeam.status")
+    set {_d.03} to grimhuntServerConfig("teamChatPrefix")
+    set {_d.04} to grimhuntServerConfigBoolean("startHeal.status")
+    set {_d.05} to grimhuntServerConfigBoolean("startFeed.status")
+    set {_d.06} to grimhuntServerConfigBoolean("startDay.status")
+    set {_d.07} to grimhuntServerConfigBoolean("startClear.status")
+    set {_d.08} to grimhuntServerConfigBoolean("particles.status")
+    set {_d.09} to grimhuntServerConfigBoolean("forge.status")
+    set {_d.10} to grimhuntServerConfigBoolean("forge.oresXp")
+    set {_d.11} to grimhuntServerConfigBoolean("kits.status")
+    set {_dx.1::*} to yaml list "kits.kit" from "bck.server.grimhunt.config"
 
-    manhuntData("start.time", "set", "%{_d.0}%")
-    manhuntData("start.sound", "set", "%{_d.01}%")
-    manhuntData("keepTeam.status", "set", "%{_d.02}%")
-    manhuntData("teamChatPrefix", "set", "%{_d.03}%")
-    manhuntData("startHeal.status", "set", "%{_d.04}%")
-    manhuntData("startFeed.status", "set", "%{_d.05}%")
-    manhuntData("startDay.status", "set", "%{_d.06}%")
-    manhuntData("startClear.status", "set", "%{_d.07}%")
-    manhuntData("particles.status", "set", "%{_d.08}%")
-    manhuntData("forge.status", "set", "%{_d.09}%")
-    manhuntData("forge.oresXp", "set", "%{_d.10}%")
-    manhuntData("kits.status", "set", "%{_d.11}%")
+    grimhuntData("start.time", "set", "%{_d.0}%")
+    grimhuntData("start.sound", "set", "%{_d.01}%")
+    grimhuntData("keepTeam.status", "set", "%{_d.02}%")
+    grimhuntData("teamChatPrefix", "set", "%{_d.03}%")
+    grimhuntData("startHeal.status", "set", "%{_d.04}%")
+    grimhuntData("startFeed.status", "set", "%{_d.05}%")
+    grimhuntData("startDay.status", "set", "%{_d.06}%")
+    grimhuntData("startClear.status", "set", "%{_d.07}%")
+    grimhuntData("particles.status", "set", "%{_d.08}%")
+    grimhuntData("forge.status", "set", "%{_d.09}%")
+    grimhuntData("forge.oresXp", "set", "%{_d.10}%")
+    grimhuntData("kits.status", "set", "%{_d.11}%")
     if {_dx.1::*} is set:
-        set yaml list "kits.kit" from "bck.manager.manhunt.data" to {_dx.1::*}
-        save yaml "bck.manager.manhunt.data"
+        set yaml list "kits.kit" from "bck.manager.grimhunt.data" to {_dx.1::*}
+        save yaml "bck.manager.grimhunt.data"
     wait 10 ticks
-    send "§6[§4BCK§6/§5Manhunt§6]§r §5Manhunt §econfig has been §aupdated §e!" to console
-#                                      manhuntHeal functions                                                                          #
-function manhuntHeal(player: player):
-    if manhuntDataBoolean("startHeal.status") is true:
+    send "§6[§4BCK§6/§5Grimhunt§6]§r §5Grimhunt §econfig has been §aupdated §e!" to console
+#                                      grimhuntHeal functions                                                                          #
+function grimhuntHeal(player: player):
+    if grimhuntDataBoolean("startHeal.status") is true:
         heal {_player}
-#                                      manhuntFeed functions                                                                          #
-function manhuntFeed(player: player):
-    if manhuntDataBoolean("startFeed.status") is true:
+#                                      grimhuntFeed functions                                                                          #
+function grimhuntFeed(player: player):
+    if grimhuntDataBoolean("startFeed.status") is true:
         feed {_player} by 20 beefs
-#                                      manhuntDay functions                                                                          #
-function manhuntDay():
-    if manhuntDataBoolean("startDay.status") is true:
+#                                      grimhuntDay functions                                                                          #
+function grimhuntDay():
+    if grimhuntDataBoolean("startDay.status") is true:
         set time of world("world") to 06:00
-#                                      manhuntClear functions                                                                          #
-function manhuntClear(player: player):
-    if manhuntDataBoolean("startClear.status") is true:
+#                                      grimhuntClear functions                                                                          #
+function grimhuntClear(player: player):
+    if grimhuntDataBoolean("startClear.status") is true:
         clear {_player}'s inventory
-#                                      manhuntKits functions                                                                          #
-function manhuntKits(player: player):
-    if manhuntDataBoolean("kits.status") is true:
-        set {_items::*} to yaml list "kits.kit" from "bck.manager.manhunt.data"
+#                                      grimhuntKits functions                                                                          #
+function grimhuntKits(player: player):
+    if grimhuntDataBoolean("kits.status") is true:
+        set {_items::*} to yaml list "kits.kit" from "bck.manager.grimhunt.data"
         if {_items::*} is set:
             loop {_items::*}:
                 set {_v} to loop-value
@@ -452,14 +452,14 @@ function manhuntKits(player: player):
                 #broadcast "§a%{_v}% §7= §e%{_i}% §d:: §b%{_vc}%"
                 if "%{_i}%" is not "<none>":
                     give {_vc} of {_i} to {_player}
-#                                      manhuntConfigGuiUpdater functions                                                                          #
-function manhuntConfigGuiUpdater(player: player):
+#                                      grimhuntConfigGuiUpdater functions                                                                          #
+function grimhuntConfigGuiUpdater(player: player):
     set {_gui} to {_player}'s current inventory
-    set {_d} to lang("manhunt.gui.updater.disabled", {_player})
-    set {_e} to lang("manhunt.gui.updater.enabled", {_player})
-    set {_s} to lang("manhunt.gui.updater.status", {_player})
+    set {_d} to lang("grimhunt.gui.updater.disabled", {_player})
+    set {_e} to lang("grimhunt.gui.updater.enabled", {_player})
+    set {_s} to lang("grimhunt.gui.updater.status", {_player})
     set {_startHeal} to golden apple named "§cStarting Heal"
-    if manhuntDataBoolean("startHeal.status") is false:
+    if grimhuntDataBoolean("startHeal.status") is false:
         set {_status_start_heal} to {_d}
         disenchant {_startHeal}
     else:
@@ -467,7 +467,7 @@ function manhuntConfigGuiUpdater(player: player):
         enchant {_startHeal} with unbreaking 1
 
     set {_startFeed} to cooked beef named "§6Starting Feed"
-    if manhuntDataBoolean("startFeed.status") is false:
+    if grimhuntDataBoolean("startFeed.status") is false:
         set {_status_start_feed} to {_d}
         disenchant {_startFeed}
     else:
@@ -475,7 +475,7 @@ function manhuntConfigGuiUpdater(player: player):
         enchant {_startFeed} with unbreaking 1
 
     set {_startDay} to clock named "§eStarting Day"
-    if manhuntDataBoolean("startDay.status") is false:
+    if grimhuntDataBoolean("startDay.status") is false:
         set {_status_start_day} to {_d}
         disenchant {_startDay}
     else:
@@ -483,7 +483,7 @@ function manhuntConfigGuiUpdater(player: player):
         enchant {_startDay} with unbreaking 1
 
     set {_startClear} to lava bucket named "§dStarting Clear"
-    if manhuntDataBoolean("startClear.status") is false:
+    if grimhuntDataBoolean("startClear.status") is false:
         set {_status_start_clear} to {_d}
         disenchant {_startClear}
     else:
@@ -491,7 +491,7 @@ function manhuntConfigGuiUpdater(player: player):
         enchant {_startClear} with unbreaking 1
 
     set {_particles} to redstone named "§4Particles"
-    if manhuntDataBoolean("particles.status") is false:
+    if grimhuntDataBoolean("particles.status") is false:
         set {_status_particles} to {_d}
         disenchant {_particles}
     else:
@@ -499,7 +499,7 @@ function manhuntConfigGuiUpdater(player: player):
         enchant {_particles} with unbreaking 1
 
     set {_forge} to furnace named "§6Forge"
-    if manhuntDataBoolean("forge.status") is false:
+    if grimhuntDataBoolean("forge.status") is false:
         set {_status_forge} to {_d}
         disenchant {_forge}
     else:
@@ -507,7 +507,7 @@ function manhuntConfigGuiUpdater(player: player):
         enchant {_forge} with unbreaking 1
 
     set {_kits} to iron sword named "§1Kits"
-    if manhuntDataBoolean("kits.status") is false:
+    if grimhuntDataBoolean("kits.status") is false:
         set {_status_kits} to {_d}
         disenchant {_kits}
     else:
@@ -515,31 +515,31 @@ function manhuntConfigGuiUpdater(player: player):
         enchant {_kits} with unbreaking 1
 
     set line 2 of lore of {_startHeal} to "%{_s}% %{_status_start_heal}%"
-    set line 4 of lore of {_startHeal} to lang("manhunt.gui.updater.lore.start_heal", {_player})
+    set line 4 of lore of {_startHeal} to lang("grimhunt.gui.updater.lore.start_heal", {_player})
 
     set line 2 of lore of {_startFeed} to "%{_s}% %{_status_start_feed}%"
-    set line 4 of lore of {_startFeed} to lang("manhunt.gui.updater.lore.start_feed", {_player})
+    set line 4 of lore of {_startFeed} to lang("grimhunt.gui.updater.lore.start_feed", {_player})
 
     set line 2 of lore of {_startDay} to "%{_s}% %{_status_start_day}%"
-    set line 4 of lore of {_startDay} to lang("manhunt.gui.updater.lore.start_day", {_player})
+    set line 4 of lore of {_startDay} to lang("grimhunt.gui.updater.lore.start_day", {_player})
 
     set line 2 of lore of {_startClear} to "%{_s}% %{_status_start_clear}%"
-    set line 4 of lore of {_startClear} to lang("manhunt.gui.updater.lore.start_clear", {_player})
+    set line 4 of lore of {_startClear} to lang("grimhunt.gui.updater.lore.start_clear", {_player})
 
     set line 2 of lore of {_particles} to "%{_s}% %{_status_particles}%"
-    set line 4 of lore of {_particles} to lang("manhunt.gui.updater.lore.particles", {_player})
+    set line 4 of lore of {_particles} to lang("grimhunt.gui.updater.lore.particles", {_player})
 
     set line 2 of lore of {_forge} to "%{_s}% %{_status_forge}%"
-    set line 4 of lore of {_forge} to lang("manhunt.gui.updater.lore.forge.1", {_player})
-    set line 5 of lore of {_forge} to lang("manhunt.gui.updater.lore.forge.2", {_player})
+    set line 4 of lore of {_forge} to lang("grimhunt.gui.updater.lore.forge.1", {_player})
+    set line 5 of lore of {_forge} to lang("grimhunt.gui.updater.lore.forge.2", {_player})
 
     set line 2 of lore of {_kits} to "%{_s}% %{_status_kits}%"
-    set line 4 of lore of {_kits} to lang("manhunt.gui.updater.lore.kits", {_player})
-    set {_kits::*} to yaml list "kits.kit" from "bck.manager.manhunt.data"
+    set line 4 of lore of {_kits} to lang("grimhunt.gui.updater.lore.kits", {_player})
+    set {_kits::*} to yaml list "kits.kit" from "bck.manager.grimhunt.data"
     if "%{_kits::*}%" is "<none>":
-        set line 5 of lore of {_kits} to lang("manhunt.gui.updater.noKitFound", {_player})
+        set line 5 of lore of {_kits} to lang("grimhunt.gui.updater.noKitFound", {_player})
     else:
-        set line 6 of lore of {_kits} to lang("manhunt.gui.updater.currentKit", {_player})
+        set line 6 of lore of {_kits} to lang("grimhunt.gui.updater.currentKit", {_player})
         set {_c} to 7
         set {_co} to "§b"
         set {_mm::*} to all items
@@ -567,11 +567,11 @@ function manhuntConfigGuiUpdater(player: player):
     set slot 15 of {_gui} to {_particles}
     set slot 20 of {_gui} to {_forge}
     set slot 21 of {_gui} to {_kits}
-#                                      Manhunt Gui Gestions Trigger                                                                       #
+#                                      Grimhunt Gui Gestions Trigger                                                                       #
 on inventory click: 
     if userData(player, "data.inv") is "false":
         stop
-    if userData(player, "data.inv") is "manager.manhunt.config.main":
+    if userData(player, "data.inv") is "manager.grimhunt.config.main":
         cancel event
         set {_i} to event-slot
         set {_t} to type of {_i}
@@ -583,112 +583,112 @@ on inventory click:
                     close player's inventory
             else if "%{_t}%" contain "redstone":
                 if {_u} contain "Particles":
-                    if manhuntDataBoolean("particles.status") is false:
-                        manhuntDataBoolean("particles.status", "set", true)
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7particles.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7particles.status§r", "6", true)
+                    if grimhuntDataBoolean("particles.status") is false:
+                        grimhuntDataBoolean("particles.status", "set", true)
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7particles.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7particles.status§r", "6", true)
                         play sound "entity.experience_orb.pickup" with volume 0.3 at player
                     else:
-                        manhuntDataBoolean("particles.status", "set")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7particles.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7particles.status§r", "6", true)
+                        grimhuntDataBoolean("particles.status", "set")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7particles.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7particles.status§r", "6", true)
                         play sound "entity.villager.no" with volume 0.5 at player
                     loop all players:
-                        if userData(loop-player, "data.inv") is "manager.manhunt.config.main":
-                            manhuntConfigGuiUpdater(loop-player)
-                    #manhuntConfigGuiUpdater(player)
+                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                            grimhuntConfigGuiUpdater(loop-player)
+                    #grimhuntConfigGuiUpdater(player)
             else if "%{_t}%" is "golden apple":
                 if {_u} is "Starting Heal":
-                    if manhuntDataBoolean("startHeal.status") is false:
-                        manhuntDataBoolean("startHeal.status", "set", true)
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startHeal.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startHeal.status§r", "6", true)
+                    if grimhuntDataBoolean("startHeal.status") is false:
+                        grimhuntDataBoolean("startHeal.status", "set", true)
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startHeal.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startHeal.status§r", "6", true)
                         play sound "entity.experience_orb.pickup" with volume 0.3 at player
                     else:
-                        manhuntDataBoolean("startHeal.status", "set")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startHeal.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startHeal.status§r", "6", true)
+                        grimhuntDataBoolean("startHeal.status", "set")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startHeal.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startHeal.status§r", "6", true)
                         play sound "entity.villager.no" with volume 0.5 at player
                     loop all players:
-                        if userData(loop-player, "data.inv") is "manager.manhunt.config.main":
-                            manhuntConfigGuiUpdater(loop-player)
+                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                            grimhuntConfigGuiUpdater(loop-player)
             else if "%{_t}%" contain "steak":
                 if {_u} is "Starting Feed":
-                    if manhuntDataBoolean("startFeed.status") is false:
-                        manhuntDataBoolean("startFeed.status", "set", true)
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startFeed.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startFeed.status§r", "6", true)
+                    if grimhuntDataBoolean("startFeed.status") is false:
+                        grimhuntDataBoolean("startFeed.status", "set", true)
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startFeed.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startFeed.status§r", "6", true)
                         play sound "entity.experience_orb.pickup" with volume 0.3 at player
                     else:
-                        manhuntDataBoolean("startFeed.status", "set")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startFeed.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startFeed.status§r", "6", true)
+                        grimhuntDataBoolean("startFeed.status", "set")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startFeed.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startFeed.status§r", "6", true)
                         play sound "entity.villager.no" with volume 0.5 at player
                     loop all players:
-                        if userData(loop-player, "data.inv") is "manager.manhunt.config.main":
-                            manhuntConfigGuiUpdater(loop-player)
+                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                            grimhuntConfigGuiUpdater(loop-player)
             else if "%{_t}%" contain "clock":
                 if {_u} is "Starting Day":
-                    if manhuntDataBoolean("startDay.status") is false:
-                        manhuntDataBoolean("startDay.status", "set", true)
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startDay.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startDay.status§r", "6", true)
+                    if grimhuntDataBoolean("startDay.status") is false:
+                        grimhuntDataBoolean("startDay.status", "set", true)
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startDay.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startDay.status§r", "6", true)
                         play sound "entity.experience_orb.pickup" with volume 0.3 at player
                     else:
-                        manhuntDataBoolean("startDay.status", "set")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startDay.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startDay.status§r", "6", true)
+                        grimhuntDataBoolean("startDay.status", "set")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startDay.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startDay.status§r", "6", true)
                         play sound "entity.villager.no" with volume 0.5 at player
                     loop all players:
-                        if userData(loop-player, "data.inv") is "manager.manhunt.config.main":
-                            manhuntConfigGuiUpdater(loop-player)
+                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                            grimhuntConfigGuiUpdater(loop-player)
             else if "%{_t}%" is "lava bucket":
                 if {_u} is "Starting Clear":
-                    if manhuntDataBoolean("startClear.status") is false:
-                        manhuntDataBoolean("startClear.status", "set", true)
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startClear.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startClear.status§r", "6", true)
+                    if grimhuntDataBoolean("startClear.status") is false:
+                        grimhuntDataBoolean("startClear.status", "set", true)
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startClear.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startClear.status§r", "6", true)
                         play sound "entity.experience_orb.pickup" with volume 0.3 at player
                     else:
-                        manhuntDataBoolean("startClear.status", "set")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startClear.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startClear.status§r", "6", true)
+                        grimhuntDataBoolean("startClear.status", "set")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startClear.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startClear.status§r", "6", true)
                         play sound "entity.villager.no" with volume 0.5 at player
                     loop all players:
-                        if userData(loop-player, "data.inv") is "manager.manhunt.config.main":
-                            manhuntConfigGuiUpdater(loop-player)
+                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                            grimhuntConfigGuiUpdater(loop-player)
             else if "%{_t}%" is "furnace":
                 if {_u} is "Forge":
-                    if manhuntDataBoolean("forge.status") is false:
-                        manhuntDataBoolean("forge.status", "set", true)
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7forge.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7forge.status§r", "6", true)
+                    if grimhuntDataBoolean("forge.status") is false:
+                        grimhuntDataBoolean("forge.status", "set", true)
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7forge.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7forge.status§r", "6", true)
                         play sound "entity.experience_orb.pickup" with volume 0.3 at player
                     else:
-                        manhuntDataBoolean("forge.status", "set")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7forge.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7forge.status§r", "6", true)
+                        grimhuntDataBoolean("forge.status", "set")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7forge.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7forge.status§r", "6", true)
                         play sound "entity.villager.no" with volume 0.5 at player
                     loop all players:
-                        if userData(loop-player, "data.inv") is "manager.manhunt.config.main":
-                            manhuntConfigGuiUpdater(loop-player)
+                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                            grimhuntConfigGuiUpdater(loop-player)
             else if "%{_t}%" is "iron sword":
                 if {_u} is "Kits":
-                    if manhuntDataBoolean("kits.status") is false:
-                        manhuntDataBoolean("kits.status", "set", true)
-                        send formatted "§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7kits.status§r" to {log.tier4::*}
-                        send formatted "§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7kits.status§r" to {log.tier5::*}
-                        send "§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7kits.status§r" to console
+                    if grimhuntDataBoolean("kits.status") is false:
+                        grimhuntDataBoolean("kits.status", "set", true)
+                        send formatted "§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7kits.status§r" to {log.tier4::*}
+                        send formatted "§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7kits.status§r" to {log.tier5::*}
+                        send "§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7kits.status§r" to console
                         play sound "entity.experience_orb.pickup" with volume 0.3 at player
                     else:
-                        manhuntDataBoolean("kits.status", "set")
-                        send formatted "§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7kits.status§r" to {log.tier4::*}
-                        send formatted "§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7kits.status§r" to {log.tier5::*}
-                        send "§6[§4BCK§6/§5Manhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7kits.status§r" to console
+                        grimhuntDataBoolean("kits.status", "set")
+                        send formatted "§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7kits.status§r" to {log.tier4::*}
+                        send formatted "§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7kits.status§r" to {log.tier5::*}
+                        send "§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7kits.status§r" to console
                         play sound "entity.villager.no" with volume 0.5 at player
                     loop all players:
-                        if userData(loop-player, "data.inv") is "manager.manhunt.config.main":
-                            manhuntConfigGuiUpdater(loop-player)
+                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                            grimhuntConfigGuiUpdater(loop-player)
     
 command /runner [<text>] [<player>]:
     trigger:
@@ -699,24 +699,24 @@ command /runner [<text>] [<player>]:
             if {bck.runners::*} doesn't contain "%arg-2%":
                 if {bck.hunters::*} doesn't contain "%arg-2%":
                     add arg-2 to {bck.runners::*}
-                    send "§6[§5Manhunt§6] §a%arg-2% §ehas been added to runners !"
+                    send "§6[§5Grimhunt§6] §a%arg-2% §ehas been added to runners !"
                     set {_s} to selector(arg-2)
-                    superLog("§6[§4BCK§6/§5Manhunt§6]§r §7%{_s}% §rhas just been added as a §7runner", "6.4")
+                    superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7%{_s}% §rhas just been added as a §7runner", "6.4")
                 else:
-                    send "§6[§5Manhunt§6] §4%arg-2% §cis hunter !"
+                    send "§6[§5Grimhunt§6] §4%arg-2% §cis hunter !"
             else:
-                send "§6[§5Manhunt§6] §8§l%arg-2%§r§c is already runner !"
+                send "§6[§5Grimhunt§6] §8§l%arg-2%§r§c is already runner !"
         else if arg-1 is "remove":
             if {bck.runners::*} contain "%arg-2%":
                 if {bck.hunters::*} doesn't contain "%arg-2%":
                     remove arg-2 from {bck.runners::*}
-                    send "§6[§5Manhunt§6] §a%arg-2% §ehas been removed from runners !"
+                    send "§6[§5Grimhunt§6] §a%arg-2% §ehas been removed from runners !"
                     set {_s} to selector(arg-2)
-                    superLog("§6[§4BCK§6/§5Manhunt§6]§r §7%{_s}% §rhas just been removed from §7runner", "6.4")
+                    superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7%{_s}% §rhas just been removed from §7runner", "6.4")
                 else:
-                    send "§6[§5Manhunt§6] §4%arg-2% §cis hunter !"
+                    send "§6[§5Grimhunt§6] §4%arg-2% §cis hunter !"
             else:
-                send "§6[§5Manhunt§6] §8§l%arg-2%§r§c is not a runner !"
+                send "§6[§5Grimhunt§6] §8§l%arg-2%§r§c is not a runner !"
         else:
             send "§c/runner <add/remove>"
 command /hunter [<text>] [<player>]:
@@ -732,28 +732,28 @@ command /hunter [<text>] [<player>]:
             if {bck.hunters::*} doesn't contain "%arg-2%":
                 if {bck.runners::*} doesn't contain "%arg-2%":
                     add arg-2 to {bck.hunters::*}
-                    send "§6[§5Manhunt§6] §4%arg-2% §ehas been added to hunters !"
+                    send "§6[§5Grimhunt§6] §4%arg-2% §ehas been added to hunters !"
                     set {_s} to selector(arg-2)
-                    superLog("§6[§4BCK§6/§5Manhunt§6]§r §7%{_s}% §rhas just been added as a §7hunter", "6.4")
+                    superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7%{_s}% §rhas just been added as a §7hunter", "6.4")
                 else:
-                    send "§6[§5Manhunt§6] §a%arg-2% §cis runner !"
+                    send "§6[§5Grimhunt§6] §a%arg-2% §cis runner !"
             else:
-                send "§6[§5Manhunt§6] §8§l%arg-2%§r§c is already hunter !"
+                send "§6[§5Grimhunt§6] §8§l%arg-2%§r§c is already hunter !"
         else if arg-1 is "remove":
             if {bck.hunters::*} contain "%arg-2%":
                 if {bck.runners::*} doesn't contain "%arg-2%":
                     remove arg-2 from {bck.hunters::*}
-                    send "§6[§5Manhunt§6] §4%arg-2% §ehas been removed from hunters !"
+                    send "§6[§5Grimhunt§6] §4%arg-2% §ehas been removed from hunters !"
                     set {_s} to selector(arg-2)
-                    superLog("§6[§4BCK§6/§5Manhunt§6]§r §7%{_s}% §rhas just been removed from §7hunter", "6.4")
+                    superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7%{_s}% §rhas just been removed from §7hunter", "6.4")
                 else:
-                    send "§6[§5Manhunt§6] §a%arg-2% §cis runner !"
+                    send "§6[§5Grimhunt§6] §a%arg-2% §cis runner !"
             else:
-                send "§6[§5Manhunt§6] §8§l%arg-2%§r§c is not a hunter !"
+                send "§6[§5Grimhunt§6] §8§l%arg-2%§r§c is not a hunter !"
         else:
             send "§c/hunter <add/remove>"
-on tab complete of "/manhunt":
-    if hasPermission(player, "server.command.manhunt") is false:
+on tab complete of "/grimhunt":
+    if hasPermission(player, "server.command.grimhunt") is false:
         stop
     add "start" to {_data::*}
     add "stop" to {_data::*}
@@ -789,14 +789,14 @@ on tab complete of "/hunter":
         set tab completions for position 2 to {_x::*}
     else if tab arg-1 is "remove":
         set tab completions for position 2 to {bck.hunters::*}
-#                                      manhuntCompassGive functions                                                                          #
-function manhuntCompassGive(player: player):
+#                                      grimhuntCompassGive functions                                                                          #
+function grimhuntCompassGive(player: player):
     set {_i} to compass
     set {_s} to selector({_player})
-    superLog("§6[§4BCK§6/§5Manhunt§6]§r Compass given to §7%{_s}%", "5")
+    superLog("§6[§4BCK§6/§5Grimhunt§6]§r Compass given to §7%{_s}%", "5")
     give {_i} to {_player}
-#                                      manhuntTeamCreate functions                                                                          #
-function manhuntTeamCreate(callback: boolean=false):
+#                                      grimhuntTeamCreate functions                                                                          #
+function grimhuntTeamCreate(callback: boolean=false):
     make console execute command "/team add bck_runners"
     if {_callback} is true:
         superLog("§6[§4BCK§6]§r team §7bck_runners §r has been §2created", "4")
@@ -805,16 +805,16 @@ function manhuntTeamCreate(callback: boolean=false):
         superLog("§6[§4BCK§6]§r team §7bck_hunters §r has been §2created", "4")
     make console execute command "/team modify bck_runners color green"
     make console execute command "/team modify bck_hunters color dark_red"
-#                                      manhuntTeamDelete functions                                                                          #
-function manhuntTeamDelete(callback: boolean=false):
+#                                      grimhuntTeamDelete functions                                                                          #
+function grimhuntTeamDelete(callback: boolean=false):
     make console execute command "/team remove bck_runners"
     if {_callback} is true:
         superLog("§6[§4BCK§6]§r team §7bck_runners §r has been §4deleted", "4")
     make console execute command "/team remove bck_hunters"
     if {_callback} is true:
         superLog("§6[§4BCK§6]§r team §7bck_hunters §r has been §4deleted", "4")
-#                                      manhuntTeamJoin functions                                                                          #
-function manhuntTeamJoin(callback: boolean=false):
+#                                      grimhuntTeamJoin functions                                                                          #
+function grimhuntTeamJoin(callback: boolean=false):
     loop {bck.runners::*}:
         make console execute command "/team join bck_runners %loop-value%"
         if {_callback} is true:
@@ -825,12 +825,12 @@ function manhuntTeamJoin(callback: boolean=false):
         if {_callback} is true:
             set {_s} to selector(loop-value)
             superLog("§6[§4BCK§6]§r §7%{_s}% §rhas been §2join §4hunter §rteam", "4")
-#                                      manhuntParticles functions                                                                          #
-function manhuntParticle():
-    if manhuntDataBoolean("particles.status") is true:
+#                                      grimhuntParticles functions                                                                          #
+function grimhuntParticle():
+    if grimhuntDataBoolean("particles.status") is true:
         loop {bck.hunters::*}:
             if loop-value's tool is compass:
-                set {_nn} to {manhunt.compass.%loop-value%.num}
+                set {_nn} to {grimhunt.compass.%loop-value%.num}
                 set {_xx} to {bck.runners::%{_nn}%}
                 set {_dist} to distance between loop-value and {_xx}
                 set {_targetLocation} to {_xx}'s location
@@ -880,21 +880,21 @@ function manhuntParticle():
                     #send "g" to loop-value-1
                 #play particles at {_x}, {_y}, {_z} visible to all players with type "FLAME" and count 1
                 #set {_magnitude} to {_magnitude} - 0.1
-#                                      manhunt autoGive compass at death                                                                      #
+#                                      grimhunt autoGive compass at death                                                                      #
 on respawn:
-    if {manhunt.game.started} is true:
+    if {grimhunt.game.started} is true:
         if {bck.hunters::*} contain "%player%":
-            manhuntCompassGive(player)
-#                                      Manhunt ??                                                                          #
+            grimhuntCompassGive(player)
+#                                      grimhunt ??                                                                          #
 on player world change:
     if {bck.runners::*} contain "%player%":
-#                                      Manhunt team chat & global chat                                                                          #
+#                                      grimhunt team chat & global chat                                                                          #
 on chat:
     set {_s} to selector(player)
-    set {_w} to manhuntData("teamChatPrefix")
+    set {_w} to grimhuntData("teamChatPrefix")
     if {_w} is not set:
         set {_w} to "!"
-    if {bck.manhunt.chat} is true:
+    if {bck.grimhunt.chat} is true:
         if {bck.runners::*} contain "%player%":
             cancel event
             set {_x} to message
@@ -929,23 +929,23 @@ on chat:
             else:
                 send formatted "§6[§dTEAM§6] §4<%{_s}%§4> §r%message%" to {bck.hunters::*}
                 send formatted "§6[§dTEAM§6] §4<%player%§4> §r%message%" to console
-#                                      Manhunt compass targeting & Number tracking dimension                                                         #
+#                                      grimhunt compass targeting & Number tracking dimension                                                         #
 every tick:
     loop all players:
         if {bck.runners::*} doesn't contain "%loop-player%":
             if {bck.hunters::*} contain "%loop-player%":
-                if {manhunt.compass.%loop-player%.num} is not set:
-                    set {manhunt.compass.%loop-player%.num} to 1
+                if {grimhunt.compass.%loop-player%.num} is not set:
+                    set {grimhunt.compass.%loop-player%.num} to 1
                 set {_i} to loop-player's tool
                 if {_i} is compass:
-                    if {manhunt.game.started} is not set:
+                    if {grimhunt.game.started} is not set:
                         set line 1 of lore of loop-player's tool to "§eNo Targeting.."
                         stop
-                    set {_nn} to {manhunt.compass.%loop-player%.num}
+                    set {_nn} to {grimhunt.compass.%loop-player%.num}
                     set {_xx} to {bck.runners::%{_nn}%}
                     set {_xa} to "%{_xx}%"
                     set line 1 of lore of loop-player's tool to "§4Target: §a%{_xx}%"
-                    set {_n} to {manhunt.compass.%loop-player%.num}
+                    set {_n} to {grimhunt.compass.%loop-player%.num}
                     set the loop-player's compass target to location of {bck.runners::%{_n}%}
                     if "%loop-player's world%" is not "world":
                         set {_dist} to distance between loop-player and {_xx}
@@ -972,176 +972,176 @@ every tick:
                             send actionbar "§7§o%{_xa}% §d➻ §0%{_dist}%" to loop-player
                     # else:
                     #     send actionbar "§7§k%{_xx}% §d~> §n§3%{_xx}'s world%" to loop-player
-#                                      Manhunt particle show                                                                          #
+#                                      grimhunt particle show                                                                          #
 every 3 ticks:
     loop all players:
         if {bck.runners::*} doesn't contain "%loop-player%":
             if {bck.hunters::*} contain "%loop-player%":
-                manhuntParticle()
-#                                      Manhunt runner change trigger                                                                         #
+                grimhuntParticle()
+#                                      grimhunt runner change trigger                                                                         #
 on right click with compass:
     set {_c} to listCounter({bck.runners::*})
-    if {manhunt.game.started} is not set:
+    if {grimhunt.game.started} is not set:
         set line 1 of lore of player's tool to "§eNo Targeting.."
         stop
     if listCounter({bck.runners::*}) > 1:
         if {bck.hunters::*} contain "%player%":
-            if {manhunt.compass.%player%.num} < {_c}:
-                add 1 to {manhunt.compass.%player%.num}
+            if {grimhunt.compass.%player%.num} < {_c}:
+                add 1 to {grimhunt.compass.%player%.num}
             else:
-                set {manhunt.compass.%player%.num} to 1
-            set {_n} to {manhunt.compass.%player%.num}
+                set {grimhunt.compass.%player%.num} to 1
+            set {_n} to {grimhunt.compass.%player%.num}
             set {_xx} to {bck.runners::%{_n}%}
             send actionbar "§4Target: §a%{_xx}%"
             set line 1 of lore of player's tool to "§4Target: §a%{_xx}%"
             
 
-function manhuntConfig(find: text, mode: text="extract", data: text="") :: text:
+function grimhuntConfig(find: text, mode: text="extract", data: text="") :: text:
     if {_mode} is "extract":
-        set {_result} to yaml value "%{_find}%" from "bck.manager.manhunt.config"
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.config"
         if {_result} isn't set:
             if {_data} isn't empty:
                 set {_result} to {_data}
     else if {_mode} is "delete":
-        set {_result} to yaml value "%{_find}%" from "bck.manager.manhunt.config"
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.config"
         if {_result} is set:
-            delete yaml value "%{_find}%" from "bck.manager.manhunt.config"
-            save yaml "bck.manager.manhunt.config"
+            delete yaml value "%{_find}%" from "bck.manager.grimhunt.config"
+            save yaml "bck.manager.grimhunt.config"
         else:
-            set yaml value "%{_find}%" from "bck.manager.manhunt.config" to {_data}
-            save yaml "bck.manager.manhunt.config"
+            set yaml value "%{_find}%" from "bck.manager.grimhunt.config" to {_data}
+            save yaml "bck.manager.grimhunt.config"
     else if {_mode} is "set":
-        set yaml value "%{_find}%" from "bck.manager.manhunt.config" to {_data}
-        save yaml "bck.manager.manhunt.config"
+        set yaml value "%{_find}%" from "bck.manager.grimhunt.config" to {_data}
+        save yaml "bck.manager.grimhunt.config"
     return "%{_result}%"
-function manhuntConfigInteger(find: text, mode: text="extract", data: integer=0) :: integer:
+function grimhuntConfigInteger(find: text, mode: text="extract", data: integer=0) :: integer:
     if {_mode} is "extract":
-        set {_result} to yaml value "%{_find}%" from "bck.manager.manhunt.config"
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.config"
         if {_result} isn't set:
             if {_data} isn't empty:
                 set {_result} to {_data}
     else if {_mode} is "delete":
-        set {_result} to yaml value "%{_find}%" from "bck.manager.manhunt.config"
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.config"
         if {_result} is set:
-            delete yaml value "%{_find}%" from "bck.manager.manhunt.config"
-            save yaml "bck.manager.manhunt.config"
+            delete yaml value "%{_find}%" from "bck.manager.grimhunt.config"
+            save yaml "bck.manager.grimhunt.config"
         else:
-            set yaml value "%{_find}%" from "bck.manager.manhunt.config" to {_data}
-            save yaml "bck.manager.manhunt.config"
+            set yaml value "%{_find}%" from "bck.manager.grimhunt.config" to {_data}
+            save yaml "bck.manager.grimhunt.config"
     else if {_mode} is "set":
-        set yaml value "%{_find}%" from "bck.manager.manhunt.config" to {_data}
-        save yaml "bck.manager.manhunt.config"
+        set yaml value "%{_find}%" from "bck.manager.grimhunt.config" to {_data}
+        save yaml "bck.manager.grimhunt.config"
     set {_result} to {_result} parsed as integer
     if {_result} is not set:
         set {_result} to 0
     return {_result}
 
-function manhuntData(find: text, mode: text="extract", data: text="") :: text:
+function grimhuntData(find: text, mode: text="extract", data: text="") :: text:
     if {_mode} is "extract":
-        set {_result} to yaml value "%{_find}%" from "bck.manager.manhunt.data"
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.data"
         if {_result} isn't set:
             if {_data} isn't empty:
                 set {_result} to {_data}
     else if {_mode} is "delete":
-        set {_result} to yaml value "%{_find}%" from "bck.manager.manhunt.data"
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.data"
         if {_result} is set:
-            delete yaml value "%{_find}%" from "bck.manager.manhunt.data"
-            save yaml "bck.manager.manhunt.data"
+            delete yaml value "%{_find}%" from "bck.manager.grimhunt.data"
+            save yaml "bck.manager.grimhunt.data"
         else:
-            set yaml value "%{_find}%" from "bck.manager.manhunt.data" to {_data}
-            save yaml "bck.manager.manhunt.data"
+            set yaml value "%{_find}%" from "bck.manager.grimhunt.data" to {_data}
+            save yaml "bck.manager.grimhunt.data"
     else if {_mode} is "set":
-        set yaml value "%{_find}%" from "bck.manager.manhunt.data" to {_data}
-        save yaml "bck.manager.manhunt.data"
+        set yaml value "%{_find}%" from "bck.manager.grimhunt.data" to {_data}
+        save yaml "bck.manager.grimhunt.data"
     return "%{_result}%"
-function manhuntDataInteger(find: text, mode: text="extract", data: integer=0) :: integer:
+function grimhuntDataInteger(find: text, mode: text="extract", data: integer=0) :: integer:
     if {_mode} is "extract":
-        set {_result} to yaml value "%{_find}%" from "bck.manager.manhunt.data"
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.data"
         if {_result} isn't set:
             if {_data} isn't empty:
                 set {_result} to {_data}
     else if {_mode} is "delete":
-        set {_result} to yaml value "%{_find}%" from "bck.manager.manhunt.data"
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.data"
         if {_result} is set:
-            delete yaml value "%{_find}%" from "bck.manager.manhunt.data"
-            save yaml "bck.manager.manhunt.data"
+            delete yaml value "%{_find}%" from "bck.manager.grimhunt.data"
+            save yaml "bck.manager.grimhunt.data"
         else:
-            set yaml value "%{_find}%" from "bck.manager.manhunt.data" to {_data}
-            save yaml "bck.manager.manhunt.data"
+            set yaml value "%{_find}%" from "bck.manager.grimhunt.data" to {_data}
+            save yaml "bck.manager.grimhunt.data"
     else if {_mode} is "set":
-        set yaml value "%{_find}%" from "bck.manager.manhunt.data" to {_data}
-        save yaml "bck.manager.manhunt.data"
+        set yaml value "%{_find}%" from "bck.manager.grimhunt.data" to {_data}
+        save yaml "bck.manager.grimhunt.data"
     set {_result} to "%{_result}%" parsed as integer
     if {_result} is not set:
         set {_result} to 0
     return {_result}
 
-function manhuntDataBoolean(find: text, mode: text="extract", data: boolean=false) :: boolean:
+function grimhuntDataBoolean(find: text, mode: text="extract", data: boolean=false) :: boolean:
     if {_mode} is "extract":
-        set {_result} to yaml value "%{_find}%" from "bck.manager.manhunt.data"
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.data"
         if {_result} isn't set:
             if {_data} isn't empty:
                 set {_result} to {_data}
     else if {_mode} is "delete":
-        set {_result} to yaml value "%{_find}%" from "bck.manager.manhunt.data"
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.data"
         if {_result} is set:
-            delete yaml value "%{_find}%" from "bck.manager.manhunt.data"
-            save yaml "bck.manager.manhunt.data"
+            delete yaml value "%{_find}%" from "bck.manager.grimhunt.data"
+            save yaml "bck.manager.grimhunt.data"
         else:
-            set yaml value "%{_find}%" from "bck.manager.manhunt.data" to {_data}
-            save yaml "bck.manager.manhunt.data"
+            set yaml value "%{_find}%" from "bck.manager.grimhunt.data" to {_data}
+            save yaml "bck.manager.grimhunt.data"
     else if {_mode} is "set":
-        set yaml value "%{_find}%" from "bck.manager.manhunt.data" to {_data}
-        save yaml "bck.manager.manhunt.data"
+        set yaml value "%{_find}%" from "bck.manager.grimhunt.data" to {_data}
+        save yaml "bck.manager.grimhunt.data"
     if {_result} is not set:
         set {_result} to false
     return {_result}
-function manhuntServerConfig(find: text, mode: text="extract", data: text="") :: text:
+function grimhuntServerConfig(find: text, mode: text="extract", data: text="") :: text:
     if {_mode} is "extract":
-        set {_result} to yaml value "%{_find}%" from "bck.server.manhunt.config"
+        set {_result} to yaml value "%{_find}%" from "bck.server.grimhunt.config"
         if {_result} isn't set:
             if {_data} isn't empty:
                 set {_result} to {_data}
     else if {_mode} is "delete":
-        set {_result} to yaml value "%{_find}%" from "bck.server.manhunt.config"
+        set {_result} to yaml value "%{_find}%" from "bck.server.grimhunt.config"
         if {_result} is set:
-            delete yaml value "%{_find}%" from "bck.server.manhunt.config"
-            save yaml "bck.server.manhunt.config"
+            delete yaml value "%{_find}%" from "bck.server.grimhunt.config"
+            save yaml "bck.server.grimhunt.config"
         else:
-            set yaml value "%{_find}%" from "bck.server.manhunt.config" to {_data}
-            save yaml "bck.server.manhunt.config"
+            set yaml value "%{_find}%" from "bck.server.grimhunt.config" to {_data}
+            save yaml "bck.server.grimhunt.config"
     else if {_mode} is "set":
-        set yaml value "%{_find}%" from "bck.server.manhunt.config" to {_data}
-        save yaml "bck.server.manhunt.config"
+        set yaml value "%{_find}%" from "bck.server.grimhunt.config" to {_data}
+        save yaml "bck.server.grimhunt.config"
     if "%{_result}%" is "<none>":
         set {_result} to {_find}
     return {_result}
-function manhuntServerConfigBoolean(find: text, mode: text="extract", data: boolean=false) :: boolean:
+function grimhuntServerConfigBoolean(find: text, mode: text="extract", data: boolean=false) :: boolean:
     if {_mode} is "extract":
-        set {_result} to yaml value "%{_find}%" from "bck.server.manhunt.config"
+        set {_result} to yaml value "%{_find}%" from "bck.server.grimhunt.config"
         if {_result} isn't set:
             if {_data} isn't empty:
                 set {_result} to {_data}
     else if {_mode} is "delete":
-        set {_result} to yaml value "%{_find}%" from "bck.server.manhunt.config"
+        set {_result} to yaml value "%{_find}%" from "bck.server.grimhunt.config"
         if {_result} is set:
-            delete yaml value "%{_find}%" from "bck.server.manhunt.config"
-            save yaml "bck.server.manhunt.config"
+            delete yaml value "%{_find}%" from "bck.server.grimhunt.config"
+            save yaml "bck.server.grimhunt.config"
         else:
-            set yaml value "%{_find}%" from "bck.server.manhunt.config" to {_data}
-            save yaml "bck.server.manhunt.config"
+            set yaml value "%{_find}%" from "bck.server.grimhunt.config" to {_data}
+            save yaml "bck.server.grimhunt.config"
     else if {_mode} is "set":
-        set yaml value "%{_find}%" from "bck.server.manhunt.config" to {_data}
-        save yaml "bck.server.manhunt.config"
+        set yaml value "%{_find}%" from "bck.server.grimhunt.config" to {_data}
+        save yaml "bck.server.grimhunt.config"
     if {_result} is not set:
         set {_result} to false
     return {_result}
-#                                      Manhunt forge trigger & Xp drop                                                                         #
+#                                      grimhunt forge trigger & Xp drop                                                                         #
 on break:
-    set {_v} to manhuntDataBoolean("forge.status")
+    set {_v} to grimhuntDataBoolean("forge.status")
     if {_v} is false:
         stop
-    if {manhunt.game.started} is false:
+    if {grimhunt.game.started} is false:
         stop
     if player's gamemode is creative:
         stop
@@ -1266,11 +1266,11 @@ function deleteAndDropNoFortune(player: player, location: location, dropItem: it
     drop {_dropItem} at {_location}
 #                                       experienceDrop function                                                                                 #
 function experienceDrop(location: location, minxp: integer=1, maxxp: integer=3):
-    if manhuntDataBoolean("forge.oresXp") is true:
+    if grimhuntDataBoolean("forge.oresXp") is true:
         set {_xp} to random number between {_minxp} and {_maxxp}
         spawn {_xp} of experience orb at {_location}
-#                                       Manhunt Function Win or Loose                                                                            #
-function manhuntWin(team: text):
+#                                       grimhunt Function Win or Loose                                                                            #
+function grimhuntWin(team: text):
     if {_team} is "runner":
 
     else if {_team} is "hunter":
@@ -1287,7 +1287,7 @@ on damage:
             if {_w} > {_d}:
                 stop
             if "%type of {_a}%" is not "player":
-                userData({_v}, "data.manhunt.temp.dead", "set", "true")
+                userData({_v}, "data.grimhunt.temp.dead", "set", "true")
                 cancel event
                 play sound "entity.player.death" with volume 1 at {_v}
                 set {_se} to selector({_v})
@@ -1298,7 +1298,7 @@ on damage:
                     set {_sa} to "Tnt Minecart"
                 else:   
                     broadcast "%{_a}%"
-                set {_txt} to lang("manhunt.death.runner_death.%{_c}%.1", {_v})
+                set {_txt} to lang("grimhunt.death.runner_death.%{_c}%.1", {_v})
                 if {_a} is set:
                     set {_cc} to randomColor()
                     if {_cc} is "§r":
@@ -1307,12 +1307,12 @@ on damage:
                         set {_cc} to randomColor()
                     add "§a%{_se}%§r" to {_args::*}
                     add "%{_cc}%%{_sa}%" to {_args::*}
-                    manhuntPlayersMultiLangSend("manhunt.death.runner_death.%{_c}%.1", {_args::*})
+                    grimhuntPlayersMultiLangSend("grimhunt.death.runner_death.%{_c}%.1", {_args::*})
                 else:
                     add "§a%{_se}%§r" to {_args::*}
-                    manhuntPlayersMultiLangSend("manhunt.death.runner_death.%{_c}%.1", {_args::*})
-                    #manhuntPlayersSend("§a%{_se}%§r %{_txt}%")
-                manhuntInventorySaver({_v}, true)
+                    grimhuntPlayersMultiLangSend("grimhunt.death.runner_death.%{_c}%.1", {_args::*})
+                    #grimhuntPlayersSend("§a%{_se}%§r %{_txt}%")
+                grimhuntInventorySaver({_v}, true)
                 heal {_v}
                 set gamemode of {_v} to spectator
                 clear all the potion effects of {_v}
@@ -1321,30 +1321,30 @@ on damage:
                 stop
         
             set {_n} to listCounter({bck.runners::*})
-            userData({_v}, "data.manhunt.temp.dead", "set", "true")
+            userData({_v}, "data.grimhunt.temp.dead", "set", "true")
             cancel event
             play sound "entity.player.death" with volume 1 at {_v}
             set {_se} to selector({_v})
             set {_sa} to selector({_a})
-            set {_txt} to lang("manhunt.death.runner_killed.%rng(1, 5)%", {_v})
+            set {_txt} to lang("grimhunt.death.runner_killed.%rng(1, 5)%", {_v})
             if {_v} is {_a}:
                 add "§a%{_se}%§r" to {_args::*}
-                set {_txt} to lang("manhunt.death.runner_suicide.1", {_v})
-                manhuntPlayersMultiLangSend("manhunt.death.runner_suicide.1", {_args::*})
-                #manhuntPlayersSend("§a%{_se}%§r %{_txt}%")
+                set {_txt} to lang("grimhunt.death.runner_suicide.1", {_v})
+                grimhuntPlayersMultiLangSend("grimhunt.death.runner_suicide.1", {_args::*})
+                #grimhuntPlayersSend("§a%{_se}%§r %{_txt}%")
             else:
                 add "§a%{_se}%§r" to {_args::*}
                 add "§c%{_sa}%" to {_args::*}
-                manhuntPlayersMultiLangSend("manhunt.death.runner_killed.%rng(1, 5)%", {_args::*})
-                #manhuntPlayersSend("§a%{_se}%§r %{_txt}% §c%{_sa}%")
-            manhuntInventorySaver({_v}, true)
+                grimhuntPlayersMultiLangSend("grimhunt.death.runner_killed.%rng(1, 5)%", {_args::*})
+                #grimhuntPlayersSend("§a%{_se}%§r %{_txt}% §c%{_sa}%")
+            grimhuntInventorySaver({_v}, true)
             heal {_v}
             set gamemode of {_v} to spectator
             clear all the potion effects of {_v}
             feed {_v}
             clear {_v}'s inventory
-#                                       manhuntPlayersMultiLangSend functions                                                                         #
-function manhuntPlayersMultiLangSend(key: text, args: objects):
+#                                       grimhuntPlayersMultiLangSend functions                                                                         #
+function grimhuntPlayersMultiLangSend(key: text, args: objects):
     loop {bck.runners::*}:
         set {_v} to loop-value
         set {_w} to lang({_key}, {_v})
@@ -1368,7 +1368,7 @@ function manhuntPlayersMultiLangSend(key: text, args: objects):
             add 1 to {_c}
         send formatted {_r} to {_v}
 #                                       Inventory Saver functions                                                                         #
-function manhuntInventorySaver(player: player, drop: boolean=false):
+function grimhuntInventorySaver(player: player, drop: boolean=false):
     set {_s} to 0
     if {_helmet} is not set:
         set {_helmet} to air
@@ -1387,7 +1387,7 @@ function manhuntInventorySaver(player: player, drop: boolean=false):
         set {_c} to {_c} parsed as integer
         if "%{_i}%" doesn't contain "0" or "1" or "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9":
             set {_c} to 1
-        set yaml value "inventory.%{_player}%.%{_s}%" from "bck.manager.manhunt.data" to "%{_i}%"
+        set yaml value "inventory.%{_player}%.%{_s}%" from "bck.manager.grimhunt.data" to "%{_i}%"
         if {_drop} is true:
             drop {_i} at {_player}'s location
         #broadcast "Item: %{_i}%/%{_s}%"
@@ -1398,10 +1398,10 @@ function manhuntInventorySaver(player: player, drop: boolean=false):
         drop {_player}'s leggings at {_player}'s location
         drop {_player}'s boots at {_player}'s location
         drop offhand tool of {_player} at {_player}'s location
-    set yaml value "inventory.%{_player}%.helmet" from "bck.manager.manhunt.data" to {_player}'s helmet
-    set yaml value "inventory.%{_player}%.chestplate" from "bck.manager.manhunt.data" to {_player}'s chestplate
-    set yaml value "inventory.%{_player}%.leggings" from "bck.manager.manhunt.data" to {_player}'s leggings
-    set yaml value "inventory.%{_player}%.boots" from "bck.manager.manhunt.data" to {_player}'s boots
-    set yaml value "inventory.%{_player}%.off_hand" from "bck.manager.manhunt.data" to offhand tool of {_player}
-    set yaml value "inventory.%{_player}%.location" from "bck.manager.manhunt.data" to {_player}'s location
-    save "bck.manager.manhunt.data"
+    set yaml value "inventory.%{_player}%.helmet" from "bck.manager.grimhunt.data" to {_player}'s helmet
+    set yaml value "inventory.%{_player}%.chestplate" from "bck.manager.grimhunt.data" to {_player}'s chestplate
+    set yaml value "inventory.%{_player}%.leggings" from "bck.manager.grimhunt.data" to {_player}'s leggings
+    set yaml value "inventory.%{_player}%.boots" from "bck.manager.grimhunt.data" to {_player}'s boots
+    set yaml value "inventory.%{_player}%.off_hand" from "bck.manager.grimhunt.data" to offhand tool of {_player}
+    set yaml value "inventory.%{_player}%.location" from "bck.manager.grimhunt.data" to {_player}'s location
+    save "bck.manager.grimhunt.data"

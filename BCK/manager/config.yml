@@ -54,10 +54,10 @@ data:
                     - ru
                     - sv
                     - tr 
-        manhunt:
+        grimhunt:
             item: dragon egg
-            name: "§5⟪ Manhunt ⟫"
-            guiName: "§5Manhunt"
+            name: "§5⟪ Grimhunt ⟫"
+            guiName: "§5Grimhunt"
             lore:
         debug:
             item: barrier

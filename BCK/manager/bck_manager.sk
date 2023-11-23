@@ -71,7 +71,7 @@ command /manager:
     trigger:
         managerGuiMain(player)
 function guiMain(player: player, type: text):
-    if {_type} is "manhunt":
+    if {_type} is "grimhunt":
         set {_gn} to managerConfig("data.gui.%{_type}%.guiName")
         set {_gui} to genericGui({_gn}, 3, true)
         set {_i} to compass named "§4§lHunters"
@@ -418,11 +418,11 @@ function addonDeleter(player: player, cat: text):
 function HuntersGui(player: player):
     set {_gui} to genericGui("§4§lHunters", 3, true)
     open {_gui} to {_player}
-    userData({_player}, "data.inv", "set", "manager.manhunt.hunters")
+    userData({_player}, "data.inv", "set", "manager.grimhunt.hunters")
 function RunnersGui(player: player):
     set {_gui} to genericGui("§a§lHunters", 3, true)
     open {_gui} to {_player}
-    userData({_player}, "data.inv", "set", "manager.manhunt.runners")
+    userData({_player}, "data.inv", "set", "manager.grimhunt.runners")
 on inventory click: 
     if userData(player, "data.inv") is "manager.main":
         cancel event
@@ -437,8 +437,8 @@ on inventory click:
                 if {_u} contain "Money":
                     guiMain(player, "money")
             else if "%{_t}%" is "dragon egg":
-                if {_u} contain "Manhunt":
-                    guiMain(player, "manhunt")
+                if {_u} contain "Grimhunt":
+                    guiMain(player, "grimhunt")
             else if "%{_t}%" is "writable book":
                 if {_u} contain "Account":
                     guiMain(player, "account")
@@ -490,7 +490,7 @@ on inventory click:
             else if "%{_t}%" contains "ender dragon head":
                 if {_u} contain "Head Collector":
                     guiMain(player, "head_collector")
-    else if userData(player, "data.inv") is "manager.manhunt.main":
+    else if userData(player, "data.inv") is "manager.grimhunt.main":
         cancel event
         set {_i} to event-slot
         set {_t} to type of {_i}
@@ -506,7 +506,7 @@ on inventory click:
             else if "%{_t}%" contain "rabbit":
                 if {_u} contain "Runners":
                     RunnersGui(player)
-    else if userData(player, "data.inv") is "manager.manhunt.hunters":
+    else if userData(player, "data.inv") is "manager.grimhunt.hunters":
         cancel event
         set {_i} to event-slot
         set {_t} to type of {_i}
@@ -515,8 +515,8 @@ on inventory click:
         if {_t} is not air:
             if "%{_t}%" contain "barrier":
                 if {_u} contain "Back":
-                    guiMain(player, "manhunt")
-    else if userData(player, "data.inv") is "manager.manhunt.runners":
+                    guiMain(player, "grimhunt")
+    else if userData(player, "data.inv") is "manager.grimhunt.runners":
         cancel event
         set {_i} to event-slot
         set {_t} to type of {_i}
@@ -525,7 +525,7 @@ on inventory click:
         if {_t} is not air:
             if "%{_t}%" contain "barrier":
                 if {_u} contain "Back":
-                    guiMain(player, "manhunt")
+                    guiMain(player, "grimhunt")
     else if userData(player, "data.inv") is "manager.money.main":
         cancel event
         set {_i} to event-slot

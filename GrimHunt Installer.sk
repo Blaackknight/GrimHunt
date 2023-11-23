@@ -18,10 +18,44 @@ on load:
     broadcast "§6[§4BCK§6]§r Installing manager..."
     broadcast "§6[§4BCK§6]§r Setup..."
     set {_link} to "https://raw.githubusercontent.com/Blaackknight/GrimHunt/main/GrimHunt"
-    
 
+    download file from "%{_link}%/core/core.sk" to file "plugins/Skript/scripts/BCK/core/core.sk"
+    download file from "%{_link}%/core/core_functions.sk" to file "plugins/Skript/scripts/BCK/core/core_functions.sk"
+    download file from "%{_link}%/core/config.yml" to file "plugins/Skript/scripts/BCK/core/config.yml"
+    download file from "%{_link}%/core/data.yml" to file "plugins/Skript/scripts/BCK/core/data.yml"
+    download file from "%{_link}%/core/bdd.yml" to file "plugins/Skript/scripts/BCK/core/bdd.yml"
+    download file from "%{_link}%/core/base.yml" to file "plugins/Skript/scripts/BCK/core/base.yml"
 
+    download file from "%{_link}%/manager/bck_manager.sk" to file "plugins/Skript/scripts/BCK/manager/bck_manager.sk"
+    download file from "%{_link}%/manager/bck_manager_debug.sk" to file "plugins/Skript/scripts/BCK/manager/bck_manager_debug.sk"
+    download file from "%{_link}%/manager/config.yml" to file "plugins/Skript/scripts/BCK/manager/config.yml"
+    download file from "%{_link}%/manager/data.yml" to file "plugins/Skript/scripts/BCK/manager/data.yml"
 
+    download file from "%{_link}%/manager/debug/bck_debug.sk" to file "plugins/Skript/scripts/BCK/manager/debug/bck_debug.sk"
+    download file from "%{_link}%/manager/debug/test.yml" to file "plugins/Skript/scripts/BCK/manager/debug/test.yml"
+
+    download file from "%{_link}%/manager/language/bck_language.sk" to file "plugins/Skript/scripts/BCK/manager/language/bck_language.sk"
+    download file from "%{_link}%/manager/language/config.yml" to file "plugins/Skript/scripts/BCK/manager/language/config.yml"
+    download file from "%{_link}%/manager/language/data.yml" to file "plugins/Skript/scripts/BCK/manager/language/data.yml"
+    download file from "%{_link}%/manager/language/language/en.yml" to file "plugins/Skript/scripts/BCK/manager/language/language/en.yml"
+    download file from "%{_link}%/manager/language/language/fr.yml" to file "plugins/Skript/scripts/BCK/manager/language/language/fr.yml"
+
+    download file from "%{_link}%/manager/manhunt/bck_manhunt.sk" to file "plugins/Skript/scripts/BCK/manager/manhunt/bck_manhunt.sk"
+    download file from "%{_link}%/manager/manhunt/config.yml" to file "plugins/Skript/scripts/BCK/manager/manhunt/config.yml"
+    download file from "%{_link}%/manager/manhunt/data.yml" to file "plugins/Skript/scripts/BCK/manager/manhunt/data.yml"
+
+    download file from "%{_link}%/manager/other/bck_other.sk" to file "plugins/Skript/scripts/BCK/manager/other/bck_other.sk"
+    download file from "%{_link}%/manager/other/logLevel.sk" to file "plugins/Skript/scripts/BCK/manager/other/logLevel.sk"
+    download file from "%{_link}%/manager/other/onJoin.sk" to file "plugins/Skript/scripts/BCK/manager/other/onJoin.sk"
+
+    wait 0.5 seconds
+    delete file "plugins/Skript/scripts/GrimHunt installer.sk"
+    unload script file "GrimHunt installer.sk"
+    wait 0.5 seconds
+    make console execute command "/sk reload scripts"
+    wait 1.5 seconds
+    send "§6[§4BCK§6]§r Finish..." to console
+    stop
 
 #    ___           ___ _            _    _          _       _     _   
 #   / __\_   _    / __\ | __ _  ___| | _| | ___ __ (_) __ _| |__ | |_ 
