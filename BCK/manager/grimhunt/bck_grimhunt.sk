@@ -105,8 +105,11 @@ command /grimhunt [<text>] [<text>]:
                     set {grimhunt.compass.%loop-value%.num} to 1
                 loop {bck.runners::*}:
                     userData(loop-value, "data.grimhunt.temp.dead", "set", "false")
-                make console execute command "/tp @a[team=bck_runners] %player%"
-                make console execute command "/tp @a[team=bck_hunters] %player%"
+                loop grimhuntPlayersList():
+                    set {_bg} to loop-value
+                    teleport {_bg} to player
+                # make console execute command "/tp @a[team=bck_runners] %player%"
+                # make console execute command "/tp @a[team=bck_hunters] %player%"
                 set {_time} to grimhuntData("start.time")
                 set {_u} to "s"
                 if {_time} contain "s" or "second" or "seconds":
@@ -115,7 +118,9 @@ command /grimhunt [<text>] [<text>]:
                     set {_u} to "m"
                 set {_data::*} to {_time} split by {_u}
                 set {_timer} to {_data::1} parsed as integer
-                set {_timer.5} to {_timer} / 20
+                if {_u} is "m":
+                    set {_timer} to {_timer} * 60
+                set {_timer.5} to {_timer} / 2
                 set {_timer.25} to {_timer} / 4
                 set {_timer.50} to {_timer} / 2
                 set {_timer.75} to {_timer} / 1.32
@@ -137,46 +142,48 @@ command /grimhunt [<text>] [<text>]:
                 loop {bck.runners::*}:
                     grimhuntKits(loop-value)
                 wait 1 seconds
-                if {_u} is "s":
-                    loop {_timer.75} times:
-                        wait 1 seconds
-                        remove 1 from {_timer}
-                else if {_u} is "m":
-                    loop {_timer.75} times:
-                        wait 1 minutes
-                        remove 60 from {_timer}
-                send title "§eGame starts in §7%{_timer.25}%%{_u}%" to {bck.hunters::*}
-                send title "§eGame starts in §7%{_timer.25}%%{_u}%" to {bck.runners::*}
-                if {_u} is "s":
-                    loop {_timer.50} times:
-                        wait 1 seconds
-                        remove 1 from {_timer}
-                else if {_u} is "m":
-                    loop {_timer.50} times:
-                        wait 1 minutes
-                        remove 60 from {_timer}
-                send title "§eGame starts in §6%{_timer.50}%%{_u}%" to {bck.hunters::*}
-                send title "§eGame starts in §6%{_timer.50}%%{_u}%" to {bck.runners::*}
-                if {_u} is "s":
-                    loop {_timer.25} times:
-                        wait 1 seconds
-                        remove 1 from {_timer}
-                else if {_u} is "m":
-                    loop {_timer.25} times:
-                        wait 1 minutes
-                        remove 60 from {_timer}
-                send title "§eGame starts in §1%{_timer.25}%%{_u}%" to {bck.hunters::*}
-                send title "§eGame starts in §1%{_timer.25}%%{_u}%" to {bck.runners::*}
+                #broadcast "100: %{_timer.100}%%nl%75: %{_timer.75}%%nl%50: %{_timer.50}%%nl%25: %{_timer.25}%%nl%5: %{_timer.5}%"
                 
-                loop {_timer.5} times:
-                    set {_n} to loop-number
-                    send title "§eStarting Game %randomColor()%%{_n}%" to {bck.hunters::*}
+                set {_ff} to {_timer.100}
+                loop {_ff}+1 times:
+                    if {_ff} > 60:
+                        set {_tmk} to {_ff} / 60
+                        set {_tim} to "%{_tmk}%"
+                        replace "." with "m" in {_tim}
+                        set {_converted} to "%{_tim}%"
+                    else:
+                        set {_converted} to "%{_ff}%"
+                    set {_txt} to "%randomColor()%§l%{_converted}%"
+                    add {_txt} to {_args::*}
+                    grimhuntPlayersMultiLangSend("grimhunt.command.start.timer", {_args::*}, "title")
+                    if {_ff} is 5:
+                        loop grimhuntPlayersList():
+                            set {_bg} to loop-value-2
+                            play sound "entity.experience_orb.pickup" with volume 1 with pitch 0.5 for {_bg}
+                    else if {_ff} is 4:
+                        loop grimhuntPlayersList():
+                            set {_bg} to loop-value-2
+                            play sound "entity.experience_orb.pickup" with volume 1 with pitch 0.6 for {_bg}
+                    else if {_ff} is 3:
+                        loop grimhuntPlayersList():
+                            set {_bg} to loop-value-2
+                            play sound "entity.experience_orb.pickup" with volume 1 with pitch 0.7 for {_bg}
+                    else if {_ff} is 2:
+                        loop grimhuntPlayersList():
+                            set {_bg} to loop-value-2
+                            play sound "entity.experience_orb.pickup" with volume 1 with pitch 0.8 for {_bg}
+                    else if {_ff} is 1:
+                        loop grimhuntPlayersList():
+                            set {_bg} to loop-value-2
+                            play sound "entity.experience_orb.pickup" with volume 1 with pitch 0.9 for {_bg}      
+                    else if {_ff} is 0:
+                        loop grimhuntPlayersList():
+                            set {_bg} to loop-value-2
+                            play sound "entity.experience_orb.pickup" with volume 1 with pitch 1 for {_bg}  
+                    remove 1 from {_ff}
+                    clear {_args::*}
                     wait 1 seconds
-                    remove 1 from {_timer}
-                set {bck.grimhunt.chat} to true
-                grimhuntPlayersLangSend("grimhunt.command.start.chatActivated")
-                wait 1 second
-                remove 1 from {_timer}
+                wait 1 tick
                 set {_sound} to grimhuntData("start.sound")
                 replace all "_" with "." in {_sound}
                 replace all " " with "." in {_sound}
@@ -184,7 +191,7 @@ command /grimhunt [<text>] [<text>]:
                     play sound {_sound} with volume 0.7 at loop-value
                 loop {bck.runners::*}:
                     play sound {_sound} with volume 0.7 at loop-value
-                grimhuntPlayersSend("§bStarting !!", "title")
+                    grimhuntPlayersLangSend("grimhunt.command.start.starting", "title")
                 grimhuntDay()
                 loop {bck.hunters::*}:
                     grimhuntHeal(loop-value)
@@ -1361,7 +1368,7 @@ on damage:
             feed {_v}
             clear {_v}'s inventory
 #                                       grimhuntPlayersMultiLangSend functions                                                                         #
-function grimhuntPlayersMultiLangSend(key: text, args: objects):
+function grimhuntPlayersMultiLangSend(key: text, args: objects, type: text="text"):
     loop {bck.runners::*}:
         set {_v} to loop-value
         set {_w} to lang({_key}, {_v})
@@ -1372,7 +1379,10 @@ function grimhuntPlayersMultiLangSend(key: text, args: objects):
             if "%{_w}%" contain "<arg%{_c}%>":
                 replace all "<arg%{_c}%>" with {_e} in {_r}
             add 1 to {_c}
-        send formatted {_r} to {_v}
+        if {_type} is "text":
+            send formatted {_r} to {_v}
+        else if {_type} is "title":
+            send title {_r} to {_v}
     loop {bck.hunters::*}:
         set {_v} to loop-value
         set {_w} to lang({_key}, {_v})
@@ -1383,7 +1393,10 @@ function grimhuntPlayersMultiLangSend(key: text, args: objects):
             if "%{_w}%" contain "<arg%{_c}%>":
                 replace all "<arg%{_c}%>" with {_e} in {_r}
             add 1 to {_c}
-        send formatted {_r} to {_v}
+        if {_type} is "text":
+            send formatted {_r} to {_v}
+        else if {_type} is "title":
+            send title {_r} to {_v}
 #                                       Inventory Saver functions                                                                         #
 function grimhuntInventorySaver(player: player, drop: boolean=false):
     set {_s} to 0

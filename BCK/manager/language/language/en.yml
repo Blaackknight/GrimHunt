@@ -20,6 +20,8 @@ grimhunt:
             chatActivated: "§6[§5Grimhunt§6] §eChat §Aactivated §e!"
             runners_running: "§6[§5Grimhunt§6] §eThe §arunners §ecan now start leaving !"
             alreadyStarted: "§6[§5Grimhunt§6] §eGame is already started.."
+            timer: "§eGame starts in <arg0>s"
+            starting: "§bStarting !!"
         stop:
             notStarted: "§6[§5Grimhunt§6] §eGame not started.."
         revive:
