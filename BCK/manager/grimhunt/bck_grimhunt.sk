@@ -116,6 +116,8 @@ command /grimhunt [<text>] [<text>]:
                     set {_u} to "s"
                 else if {_time} contain "m" or "minute" or "minutes":
                     set {_u} to "m"
+                else:
+                    set {_time} to "%{_time}%s"
                 set {_data::*} to {_time} split by {_u}
                 set {_timer} to {_data::1} parsed as integer
                 if {_u} is "m":
@@ -147,13 +149,28 @@ command /grimhunt [<text>] [<text>]:
                 set {_ff} to {_timer.100}
                 loop {_ff}+1 times:
                     if {_ff} > 60:
-                        set {_tmk} to {_ff} / 60
-                        set {_tim} to "%{_tmk}%"
-                        replace "." with "m" in {_tim}
-                        set {_converted} to "%{_tim}%"
+                        set {_m} to {_ff} / 60 
+                        set {_s} to mod({_ff}, 60)
+                        if "%{_m}%" contain ".":
+                            set {_b::*} to "%{_m}%" split by "."
+                            set {_m} to {_b::1} parsed as integer
+                        set {_converted} to "§6%{_m}%§d§n§lm§r§6%{_s}%§a§n§ls§r"
                     else:
-                        set {_converted} to "%{_ff}%"
-                    set {_txt} to "%randomColor()%§l%{_converted}%"
+                        set {_co} to "§6"
+                        if {_ff} is 5:
+                            set {_co} to "§4"
+                        else if {_ff} is 4:
+                            set {_co} to "§c"
+                        else if {_ff} is 3:
+                            set {_co} to "§6"
+                        else if {_ff} is 2:
+                            set {_co} to "§e"
+                        else if {_ff} is 1:
+                            set {_co} to "§2"
+                        else if {_ff} is 0:
+                            set {_co} to "§a"
+                        set {_converted} to "%{_co}%%{_ff}%§n§ls§r"
+                    set {_txt} to "%{_converted}%"
                     add {_txt} to {_args::*}
                     grimhuntPlayersMultiLangSend("grimhunt.command.start.timer", {_args::*}, "title")
                     if {_ff} is 5:
@@ -188,9 +205,9 @@ command /grimhunt [<text>] [<text>]:
                 replace all "_" with "." in {_sound}
                 replace all " " with "." in {_sound}
                 loop {bck.hunters::*}:
-                    play sound {_sound} with volume 0.7 at loop-value
+                    play sound {_sound} with volume 0.7 for loop-value
                 loop {bck.runners::*}:
-                    play sound {_sound} with volume 0.7 at loop-value
+                    play sound {_sound} with volume 0.7 for loop-value
                     grimhuntPlayersLangSend("grimhunt.command.start.starting", "title")
                 grimhuntDay()
                 loop {bck.hunters::*}:

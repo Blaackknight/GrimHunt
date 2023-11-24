@@ -6,9 +6,35 @@ on load:
         #load yaml "plugins/Skript/scripts/BCK/manager/other/data.yml" as "bck.manager.clan.data"
     else:
         broadcast "§6[§4BCK§6/§3Debug§6]§r Script loading cancel It requires (§lcore.sk§r and §lbck_manager.sk§r)"
-command /bck_debug [<text="en">]:
+command /bck_debug [<text="1s">]:
     trigger:
-        make console execute command "/sk reload scripts"
+        set {_v} to arg-1
+        if {_v} contain "s":
+            set {_u} to "s"
+        else if {_v} contain "m":
+            set {_u} to "m"
+        else:
+            set {_u} to "s"
+            set {_v} to "%{_v}%s"
+        set {_d::*} to {_v} split by {_u}
+        #broadcast "%{_v}%"
+        set {_time} to {_d::1} parsed as integer
+        if {_u} is "m":
+            set {_time} to {_time} * 60
+        # broadcast "%{_test}%§nm§r%{_tast}%§ns§r (%{_time}%)"
+        loop {_time}+1 times:
+            if {_time} > 60:
+                set {_test} to {_time} / 60 
+                set {_tast} to mod({_time}, 60)
+                if "%{_test}%" contain ".":
+                    set {_b::*} to "%{_test}%" split by "."
+                    set {_test} to {_b::1} parsed as integer
+                send title "§b§l%{_test}%§nm§r§d§l%{_tast}%§ns§r" to player
+            else:
+                send title "§d§l%{_time}%§ns§r" to player
+            remove 1 from {_time}
+            wait 0.9 seconds
+        #make console execute command "/sk reload scripts"
         #debug(player, arg-1)
         # set {_af} to lang("debug.afterDebug", player)
         # bckTimer("%{_af}% §a(%arg-1%)", player, arg-1)
