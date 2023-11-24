@@ -689,7 +689,7 @@ on inventory click:
                     loop all players:
                         if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                             grimhuntConfigGuiUpdater(loop-player)
-    
+#                                      runner command                                                                          #
 command /runner [<text>] [<player>]:
     trigger:
         if arg-1 is not set:
@@ -719,6 +719,7 @@ command /runner [<text>] [<player>]:
                 send "§6[§5Grimhunt§6] §8§l%arg-2%§r§c is not a runner !"
         else:
             send "§c/runner <add/remove>"
+#                                      hunter command                                                                          #
 command /hunter [<text>] [<player>]:
     trigger:
         if hasPermission(player, "server.command.hunter") is false:
@@ -752,6 +753,7 @@ command /hunter [<text>] [<player>]:
                 send "§6[§5Grimhunt§6] §8§l%arg-2%§r§c is not a hunter !"
         else:
             send "§c/hunter <add/remove>"
+#                                      tab complete grimhunt                                                                          #
 on tab complete of "/grimhunt":
     if hasPermission(player, "server.command.grimhunt") is false:
         stop
@@ -767,6 +769,7 @@ on tab complete of "/grimhunt":
         add "admin.stop" to {_data::*}
         add "admin.allList" to {_data::*}
     set tab completions for position 1 to {_data::*}
+#                                      tab complete runner                                                                          #
 on tab complete of "/runner":
     if hasPermission(player, "server.command.runner") is false:
         stop
@@ -778,6 +781,7 @@ on tab complete of "/runner":
         set tab completions for position 2 to {_x::*}
     else if tab arg-1 is "remove":
         set tab completions for position 2 to {bck.runners::*}
+#                                      tab complete hunter                                                                          #
 on tab complete of "/hunter":
     if hasPermission(player, "server.command.hunter") is false:
         stop
