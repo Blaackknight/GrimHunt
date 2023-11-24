@@ -1325,7 +1325,30 @@ on damage:
     set {_w} to {_v}'s health
     if "%type of {_v}%" is "player":
         if {bck.runners::*} contain {_v}:
-            if {_w} > {_d}:
+            set {_a.0} to level of protection of {_v}'s helmet
+            set {_a.1} to level of protection of {_v}'s chestplate
+            set {_a.2} to level of protection of {_v}'s leggings
+            set {_a.3} to level of protection of {_v}'s boots
+            set {_resistance} to the amplifier of resistance of {_v}
+            set {_rd} to 0
+            loop {_a.0} times:
+                add 4 to {_rd}
+            loop {_a.1} times:
+                add 4 to {_rd}
+            loop {_a.2} times:
+                add 4 to {_rd}
+            loop {_a.3} times:
+                add 4 to {_rd}
+            loop {_resistance} times:
+                add 20 to {_rd}
+                #broadcast "R added"
+            set {_r.0} to {_rd} / 100 
+            set {_r.1} to mod({_rd}, 100)
+            set {_r} to "%{_r.0}%" parsed as number
+            #broadcast "O: %{_r}%"
+            set {_reduced} to {_d} * (1 - {_r})
+            #broadcast "Result: %{_reduced}%/%{_d}% (%{_w}%/%{_r}%)"
+            if {_w} > {_reduced}:
                 stop
             if "%type of {_a}%" is not "player":
                 userData({_v}, "data.grimhunt.temp.dead", "set", "true")

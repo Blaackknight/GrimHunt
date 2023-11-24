@@ -936,3 +936,23 @@ function randomColor(text: text="<none>", bold: text="none") :: text:
     return {_r}
 function rng(min: integer=0, max: integer=10) :: integer:
     return random integer between {_min} and {_max}
+function serverPropertiesList() :: objects:
+    set {_i} to 0
+    loop file contents of "server.properties":
+        set {_v} to loop-value
+        set {_data::*} to {_v} split by "="
+        add {_data::1} to {_r::*}
+        add 1 to {_i}
+    return {_r::*}
+function serverPropertiesBoolean(properties: text) :: boolean:
+    set {_r} to false
+    set {_i} to 0
+    loop file contents of "server.properties":
+        set {_v} to loop-value
+        if "%{_v}%" contain {_properties}:
+            set {_data::*} to {_v} split by "="
+            set {_name} to {_data::1}
+            set {_va} to {_data::2} parsed as boolean
+            set {_r} to {_va}
+        add 1 to {_i}
+    return {_r}

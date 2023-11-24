@@ -182,28 +182,30 @@ on inventory click:
                         coreDataBoolean("tnt.status", "set", true)
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §aactivated §7tnt.status§r", "4")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §aactivated §7tnt.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         coreDataBoolean("tnt.status", "set")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §4desactivated §7tnt.status§r", "4")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §4desactivated §7tnt.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "core.bck.rules.main":
                             coreRulesGuiUpdater(loop-player)
                     #grimhuntConfigGuiUpdater(player)
             else if "%{_t}%" contain "command block":
                 if {_u} is "Command Block":
-                    if coreDataBoolean("commandBlock.status") is false:
+                    if serverPropertiesBoolean("enable-command-block") is false:
+                        play sound "block.anvil.place" with volume 0.5 for player
+                    else if coreDataBoolean("commandBlock.status") is false:
                         coreDataBoolean("commandBlock.status", "set", true)
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §aactivated §7commandBlock.status§r", "4")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §aactivated §7commandBlock.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         coreDataBoolean("commandBlock.status", "set")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §4desactivated §7commandBlock.status§r", "4")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §4desactivated §7commandBlock.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "core.bck.rules.main":
                             coreRulesGuiUpdater(loop-player)
@@ -213,12 +215,12 @@ on inventory click:
                         coreDataBoolean("pvp.status", "set", true)
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §aactivated §7pvp.status§r", "4")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §aactivated §7pvp.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         coreDataBoolean("pvp.status", "set")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §4desactivated §7pvp.status§r", "4")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §4desactivated §7pvp.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "core.bck.rules.main":
                             coreRulesGuiUpdater(loop-player)
@@ -228,12 +230,12 @@ on inventory click:
                         coreDataBoolean("startDay.status", "set", true)
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §aactivated §7startDay.status§r", "4")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §aactivated §7startDay.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         coreDataBoolean("startDay.status", "set")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §4desactivated §7startDay.status§r", "4")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §4desactivated §7startDay.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "core.bck.rules.main":
                             coreRulesGuiUpdater(loop-player)
@@ -243,12 +245,12 @@ on inventory click:
                         coreDataBoolean("startClear.status", "set", true)
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §aactivated §7startClear.status§r", "4")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §aactivated §7startClear.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         coreDataBoolean("startClear.status", "set")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §4desactivated §7startClear.status§r", "4")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §4desactivated §7startClear.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "core.bck.rules.main":
                             coreRulesGuiUpdater(loop-player)
@@ -258,12 +260,12 @@ on inventory click:
                         coreDataBoolean("forge.status", "set", true)
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §aactivated §7forge.status§r", "4")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §aactivated §7forge.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         coreDataBoolean("forge.status", "set")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §4desactivated §7forge.status§r", "4")
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §4desactivated §7forge.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "core.bck.rules.main":
                             coreRulesGuiUpdater(loop-player)
@@ -274,13 +276,13 @@ on inventory click:
                         send formatted "§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §aactivated §7kits.status§r" to {log.tier4::*}
                         send formatted "§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §aactivated §7kits.status§r" to {log.tier5::*}
                         send "§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §aactivated §7kits.status§r" to console
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         coreDataBoolean("kits.status", "set")
                         send formatted "§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §4desactivated §7kits.status§r" to {log.tier4::*}
                         send formatted "§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §4desactivated §7kits.status§r" to {log.tier5::*}
                         send "§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%player%§r has been §4desactivated §7kits.status§r" to console
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "core.bck.rules.main":
                             coreRulesGuiUpdater(loop-player)
@@ -300,7 +302,10 @@ function coreRulesGuiUpdater(player: player):
         enchant {_tnt} with thorns 1
 
     set {_commandBlock} to command block named "§dCommand Block"
-    if coreDataBoolean("commandBlock.status") is false:
+    set {_commandBlockStatus} to coreDataBoolean("commandBlock.status")
+    if serverPropertiesBoolean("enable-command-block") is false:
+        set {_commandBlockStatus} to false
+    if {_commandBlockStatus} is false:
         set {_statusCommandBlock} to {_d}
         disenchant {_commandBlock}
     else:
