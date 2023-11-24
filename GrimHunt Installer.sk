@@ -68,9 +68,10 @@ on load:
     unload script file "GrimHunt Installer.sk"
     wait 0.5 seconds
     make console execute command "/sk reload scripts"
-    send "§6[§4BCK§6]§r Finish..." to console
     wait 1.5 seconds
     make console execute command "/sk reload scripts"
+    wait 1.5 seconds
+    broadcast "§6[§4BCK§6]§r Finish..."
     stop
 
 #    ___           ___ _            _    _          _       _     _   
