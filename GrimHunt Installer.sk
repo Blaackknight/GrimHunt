@@ -64,8 +64,8 @@ on load:
     download file from "%{_link}%/manager/other/onJoin.sk" to file "plugins/Skript/scripts/BCK/manager/other/onJoin.sk"
 
     wait 0.5 seconds
-    delete file "plugins/Skript/scripts/GrimHunt_installer.sk"
-    unload script file "GrimHunt_installer.sk"
+    delete file "plugins/Skript/scripts/GrimHunt Installer.sk"
+    unload script file "GrimHunt Installer.sk"
     wait 0.5 seconds
     make console execute command "/sk reload scripts"
     wait 1.5 seconds
