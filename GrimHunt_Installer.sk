@@ -19,6 +19,21 @@ on load:
     broadcast "§6[§4BCK§6]§r Setup..."
     set {_link} to "https://raw.githubusercontent.com/Blaackknight/GrimHunt/main/BCK"
 
+    create script "plugins/Skript/scripts/BCK/manager/temp.txt"
+    delete file "plugins/Skript/scripts/BCK/manager/temp.txt"
+    create script "plugins/Skript/scripts/BCK/core/temp.txt"
+    delete file "plugins/Skript/scripts/BCK/core/temp.txt"
+    create script "plugins/Skript/scripts/BCK/manager/debug/temp.txt"
+    delete file "plugins/Skript/scripts/BCK/manager/debug/temp.txt"
+    create script "plugins/Skript/scripts/BCK/manager/language/temp.txt"
+    delete file "plugins/Skript/scripts/BCK/manager/language/temp.txt"
+    create script "plugins/Skript/scripts/BCK/manager/language/language/temp.txt"
+    delete file "plugins/Skript/scripts/BCK/manager/language/language/temp.txt"
+    create script "plugins/Skript/scripts/BCK/manager/grimhunt/temp.txt"
+    delete file "plugins/Skript/scripts/BCK/manager/grimhunt/temp.txt"
+    create script "plugins/Skript/scripts/BCK/manager/other/temp.txt"
+    delete file "plugins/Skript/scripts/BCK/manager/other/temp.txt"
+
     download file from "%{_link}%/core/core.sk" to file "plugins/Skript/scripts/BCK/core/core.sk"
     download file from "%{_link}%/core/core_functions.sk" to file "plugins/Skript/scripts/BCK/core/core_functions.sk"
     download file from "%{_link}%/core/config.yml" to file "plugins/Skript/scripts/BCK/core/config.yml"
@@ -49,13 +64,13 @@ on load:
     download file from "%{_link}%/manager/other/onJoin.sk" to file "plugins/Skript/scripts/BCK/manager/other/onJoin.sk"
 
     wait 0.5 seconds
-    delete file "plugins/Skript/scripts/GrimHunt installer.sk"
-    unload script file "GrimHunt installer.sk"
+    delete file "plugins/Skript/scripts/GrimHunt_installer.sk"
+    unload script file "GrimHunt_installer.sk"
     wait 0.5 seconds
     make console execute command "/sk reload scripts"
-    wait 1 seconds
+    wait 1.5 seconds
     make console execute command "/sk reload scripts"
-    wait 1 seconds
+    wait 1.5 seconds
     send "§6[§4BCK§6]§r Finish..." to console
     stop
 
