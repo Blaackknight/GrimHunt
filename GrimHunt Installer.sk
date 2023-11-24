@@ -72,6 +72,7 @@ on load:
     make console execute command "/sk reload scripts"
     wait 1.5 seconds
     broadcast "§6[§4BCK§6]§r Install Successful"
+    broadcast "   _____    _       __ __          __ %nl%  / ___/___(_)_ _  / // /_ _____  / /_%nl% / (_ / __/ /  ' \/ _  / // / _ \/ __/%nl% \___/_/ /_/_/_/_/_//_/\_,_/_//_/\__/ %nl%                                      %nl% §eBy §4§lBlaackknight"
     stop
 
 #    ___           ___ _            _    _          _       _     _   
