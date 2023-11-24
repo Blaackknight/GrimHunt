@@ -71,7 +71,7 @@ on load:
     wait 1.5 seconds
     make console execute command "/sk reload scripts"
     wait 1.5 seconds
-    broadcast "§6[§4BCK§6]§r Finish..."
+    broadcast "§6[§4BCK§6]§r Install Successful"
     stop
 
 #    ___           ___ _            _    _          _       _     _   
