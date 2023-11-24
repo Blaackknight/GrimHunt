@@ -58,6 +58,17 @@ data:
             - "    kit:"
             - "        - cooked mutton <32>"
             - ""
+            - "#rules: Allows you to manage certain rules of your server"
+            - "rules:"
+            - "    #rules.tnt: Allows you to manage explosions. Default value is true"
+            - "    tnt:"
+            - "        status: true"
+            - "    #rules.commandBlock: Allows you to manage command blocks. Default value is true"
+            - "    commandBlock:"
+            - "        status: true"
+            - "    #rules.pvp: Allows you to manage pvp. Default value is true"
+            - "    pvp:"
+            - "        status: true"
         config:
             forge: "§6Forge"
             gui_updater:

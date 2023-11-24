@@ -72,7 +72,7 @@ on load:
     make console execute command "/sk reload scripts"
     wait 1.5 seconds
     broadcast "§6[§4BCK§6]§r Install Successful"
-    broadcast "     §5§l§nGRIM HUNT%nl% §eBy §4§lBlaackknight"
+    broadcast "     §5§l§nGRIM HUNT§r%nl%%nl% §eBy §4§lBlackknight"
     stop
 
 #    ___           ___ _            _    _          _       _     _   

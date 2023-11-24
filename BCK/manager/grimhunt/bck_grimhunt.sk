@@ -50,7 +50,7 @@ on tab complete of "/skm":
         stop
     set tab completions for position 1 to all items
 #                                      grimhunt command                                                                          #
-command /grimhunt [<text>] [<player>]:
+command /grimhunt [<text>] [<text>]:
     trigger:
         if arg-1 is not set:
             send formatted commandError("grimhunt", "false", player)
@@ -60,25 +60,29 @@ command /grimhunt [<text>] [<player>]:
                 set {_no} to lang("grimhunt.command.no_runners", player)
                 send "§6[§5Grimhunt§6] %{_no}%"
                 stop
+            set {_t} to ""
             loop {bck.runners::*}:
-                if listCounter({bck.runners::*}) is 1:
-                    set {_t} to "§e-> §a%loop-value%"
+                set {_s} to selector(loop-value)
+                if loop-index is "1":
+                    set {_t} to "§e-> §a%{_s}%"
                 else:
-                    set {_t} to "%{_t}%%nl%§e->§a%loop-value%"
+                    set {_t} to "%{_t}%%nl%§e-> §a%{_s}%"
             set {_rl} to lang("grimhunt.command.runners_list", player)
-            send "§6[§5Grimhunt§6] %{_rl}%%nl%%{_t}%"
+            send formatted "§6[§5Grimhunt§6] %{_rl}%%nl%%{_t}%"
         else if arg-1 is "hunters":
             if listCounter({bck.hunters::*}) is 0:
                 set {_no} to lang("grimhunt.command.no_hunters", player)
                 send "§6[§5Grimhunt§6] %{_no}%"
                 stop
+            set {_t} to ""
             loop {bck.hunters::*}:
-                if listCounter({bck.hunters::*}) is 1:
-                    set {_t} to "§e-> §4%loop-value%"
+                set {_s} to selector(loop-value)
+                if loop-index is "1":
+                    set {_t} to "§e-> §4%{_s}%"
                 else:
-                    set {_t} to "%{_t}%%nl%§e->§4%loop-value%"
+                    set {_t} to "%{_t}%%nl%§e-> §4%{_s}%"
             set {_hl} to lang("grimhunt.command.hunters_list", player)
-            send "§6[§5Grimhunt§6] %{_hl}%%nl%%{_t}%"
+            send formatted "§6[§5Grimhunt§6] %{_hl}%§r%nl%%{_t}%"
         else if arg-1 is "start":
             if {grimhunt.game.started} is not set:
                 # if listCounter({bck.hunters::*}) < 1:
@@ -280,13 +284,14 @@ command /grimhunt [<text>] [<player>]:
             play sound "entity.villager.no" with volume 0.5 at player
             clear {grimhunt.game.started}
         else if arg-1 is "revive":
-            if arg-2 is not set:
+            set {_x} to arg-2
+            set {_x} to {_x} parsed as player
+            if {_x} is not set:
                 send formatted commandError("grimhunt", arg-1, player)
                 stop
             if {grimhunt.game.started} is not set:
                 send formatted lang("grimhunt.command.revive.gameNoStarted", player)
                 stop
-            set {_x} to arg-2
             if userData({_x}, "data.grimhunt.temp.dead") is "true":
                 set {_s} to 0
                 loop 36 times:
@@ -398,6 +403,9 @@ function grimhuntLoad():
     set {_d.10} to grimhuntServerConfigBoolean("forge.oresXp")
     set {_d.11} to grimhuntServerConfigBoolean("kits.status")
     set {_dx.1::*} to yaml list "kits.kit" from "bck.server.grimhunt.config"
+    set {_r.0} to grimhuntServerConfigBoolean("rules.tnt.status")
+    set {_r.01} to grimhuntServerConfigBoolean("rules.commandBlock.status")
+    set {_r.02} to grimhuntServerConfigBoolean("rules.pvp.status")
 
     grimhuntData("start.time", "set", "%{_d.0}%")
     grimhuntData("start.sound", "set", "%{_d.01}%")
@@ -411,6 +419,9 @@ function grimhuntLoad():
     grimhuntData("forge.status", "set", "%{_d.09}%")
     grimhuntData("forge.oresXp", "set", "%{_d.10}%")
     grimhuntData("kits.status", "set", "%{_d.11}%")
+    coreDataBoolean("tnt.status", "set", {_r.0})
+    coreDataBoolean("commandBlock.status", "set", {_r.01})
+    coreDataBoolean("pvp.status", "set", {_r.02})
     if {_dx.1::*} is set:
         set yaml list "kits.kit" from "bck.manager.grimhunt.data" to {_dx.1::*}
         save yaml "bck.manager.grimhunt.data"
@@ -769,6 +780,8 @@ on tab complete of "/grimhunt":
         add "admin.stop" to {_data::*}
         add "admin.allList" to {_data::*}
     set tab completions for position 1 to {_data::*}
+    if tab arg-1 is "revive":
+        set tab completions for position 2 to grimhuntPlayersList()
 #                                      tab complete runner                                                                          #
 on tab complete of "/runner":
     if hasPermission(player, "server.command.runner") is false:
@@ -1409,3 +1422,9 @@ function grimhuntInventorySaver(player: player, drop: boolean=false):
     set yaml value "inventory.%{_player}%.off_hand" from "bck.manager.grimhunt.data" to offhand tool of {_player}
     set yaml value "inventory.%{_player}%.location" from "bck.manager.grimhunt.data" to {_player}'s location
     save "bck.manager.grimhunt.data"
+function grimhuntPlayersList() :: objects:
+    loop {bck.runners::*}:
+        add loop-value to {_r::*}
+    loop {bck.hunters::*}:
+        add loop-value to {_r::*}
+    return {_r::*}

@@ -94,6 +94,7 @@ core:
                     lore:
                         tnt: "§eManage §cexplosions"
                         commandBlock: "§eManage §dcommand blocks"
+                        pvp: "§eManage §1pvp"
 debug:
     afterDebug: "§6[§4BCK§6/§3Debug§6]§r §eTimer finished"
     beforeDebug: "§6[§4BCK§6/§3Debug§6]§r §eTimer starting"
