@@ -93,10 +93,14 @@ core:
                     enabled: "§2Enabled"
                     disabled: "§4Disabled"
                     status: "§eStatus:"
+                    forced: "§3§l§nForced"
                     lore:
                         tnt: "§eManage §cexplosions"
                         commandBlock: "§eManage §dcommand blocks"
                         pvp: "§eManage §1pvp"
+            god:
+                activated: "§6[§4BCK§6]§r §eGod mode §aactivated §e!"
+                removed: "§6[§4BCK§6]§r §eGod mode §cdisabled §e!"
 debug:
     afterDebug: "§6[§4BCK§6/§3Debug§6]§r §eTimer finished"
     beforeDebug: "§6[§4BCK§6/§3Debug§6]§r §eTimer starting"

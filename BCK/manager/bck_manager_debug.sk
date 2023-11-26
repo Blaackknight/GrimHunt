@@ -101,7 +101,7 @@ on command:
         if {_co} is "§r" or "§f":
             set {_co} to randomColor()
         superLog("§6[§4BCK§6]§r %{_co}%§l%{_player}%§r has just executed the command §7/%complete command%", "4")
-    else:
+    else if {_player} is not "@":
         superLog("§6[§4BCK§6]§r §7%selector(player)%§r has just executed the command §7/%complete command%", "4")
 on command "/pl":
     if hasPermission(player, "server.owner") is false:

@@ -320,7 +320,7 @@ command /grimhunt [<text>] [<text>]:
                 set {_s} to 0
                 loop 36 times:
                     set {_i} to yaml value "inventory.%{_x}%.%{_s}%" from "bck.manager.grimhunt.data"
-                    set {_i} to {_i} parsed as item
+                    #set {_i} to {_i} parsed as item
                     set slot {_s} of {_x}'s inventory to {_i}
                     add 1 to {_s}
                 set {_w.00} to yaml value "inventory.%{_x}%.helmet" from "bck.manager.grimhunt.data"
@@ -1193,34 +1193,34 @@ on break:
         if {_v} is true:
             cancel event
             delete block
-            play sound "entity.blaze.shoot" with volume 0.05 at event-block's location
+            play sound "entity.blaze.shoot" with volume 0.05 for player
             deleteAndDrop(player, event-location, iron ingot)
             experienceDrop(event-location, 1, 4)
     else if event-block is gold ore or deepslate gold ore:
         if {_v} is true:
             cancel event
             delete block
-            play sound "entity.blaze.shoot" with volume 0.05 at event-block's location
+            play sound "entity.blaze.shoot" with volume 0.05 for player
             deleteAndDrop(player, event-location, gold ingot)
             experienceDrop(event-location, 2, 7)
     else if event-block is copper ore or deepslate copper ore:
         if {_v} is true:
             cancel event
             delete block
-            play sound "entity.blaze.shoot" with volume 0.05 at event-block's location
+            play sound "entity.blaze.shoot" with volume 0.05 for player
             deleteAndDropMore(player, event-location, copper ingot)
             experienceDrop(event-location)
     else if event-block is stone:
         if {_v} is true:
             cancel event
             delete block
-            play sound "entity.blaze.shoot" with volume 0.05 at event-block's location
+            play sound "entity.blaze.shoot" with volume 0.05 for player
             deleteAndDropNoFortune(player, event-location, stone)
     else if event-block is deepslate:
         if {_v} is true:
             cancel event
             delete block
-            play sound "entity.blaze.shoot" with volume 0.05 at event-block's location
+            play sound "entity.blaze.shoot" with volume 0.05 for player 
             deleteAndDropNoFortune(player, event-location, deepslate)
 #                                      deleteAndDrop functions                                                                          #
 function deleteAndDrop(player: player, location: location, dropItem: item):
@@ -1270,38 +1270,56 @@ function deleteAndDrop(player: player, location: location, dropItem: item):
         #drop {_r} of {_dropItem} at {_location}
     else:
         drop {_dropItem} at {_location}
+        experienceDrop({_location}, 1, {_rng})
 #                                      deleteAndDropMore functions                                                                          #
-function deleteAndDropMore(player: player, location: location, dropItem: item):
+function deleteAndDropMore(player: player, location: location, dropItem: item, boosted: boolean=false):
     set {_fortune} to level of fortune of {_player}'s tool
     if {_fortune} is 1:
-        set {_rng} to random integer between 3 and 5
+        set {_rng} to random integer between 3 and 8
         set {_r} to {_rng} + {_fortune}
-        loop {_r} times:
-            drop {_dropItem} at {_location}
+        drop {_r} of {_dropItem} at {_location}
+        experienceDrop({_location}, 1, {_rng})
     else if {_fortune} is 2:
-        set {_rng} to random integer between 3 and 5
+        set {_rng} to random integer between 4 and 12
         set {_r} to {_rng} + {_fortune}
-        loop {_r} times:
-            drop {_dropItem} at {_location}
+        drop {_r} of {_dropItem} at {_location}
+        experienceDrop({_location}, 1, {_rng})
     else if {_fortune} is 3:
-        set {_rng} to random integer between 3 and 5
+        set {_rng} to random integer between 5 and 18
         set {_r} to {_rng} + {_fortune}
-        loop {_r} times:
-            drop {_dropItem} at {_location}
+        drop {_r} of {_dropItem} at {_location}
+        experienceDrop({_location}, 1, {_rng})
     else if {_fortune} is 4:
-        set {_rng} to random integer between 5 and 8
+        set {_rng} to random integer between 7 and 25
         set {_r} to {_rng} + {_fortune}
-        loop {_r} times:
-            drop {_dropItem} at {_location}
+        drop {_r} of {_dropItem} at {_location}
+        experienceDrop({_location}, 2, {_rng})
     else if {_fortune} is 5:
-        set {_rng} to random integer between 5 and 8
+        set {_rng} to random integer between 15 and 34
         set {_r} to {_rng} + {_fortune}
-        loop {_r} times:
-            drop {_dropItem} at {_location}
+        drop {_r} of {_dropItem} at {_location}
+        experienceDrop({_location}, 2, {_rng})
+    else if {_fortune} > 5:
+        set {_rng} to random integer between 15 and {_fortune}
+        set {_r} to {_rng}
+        set {_g} to {_r}
+        set {_c} to {_g}
+        if {_g} >= 65:
+            set {_gg} to {_g} / 64
+            set {_gg} to ceil({_gg})
+            loop {_gg} times:
+                if {_c} < 64:
+                    drop {_c} of {_dropItem} at {_location}
+                else:
+                    drop 64 of {_dropItem} at {_location}
+                remove 64 from {_c}
+        else:
+            drop {_g} of {_dropItem} at {_location}
+        experienceDrop({_location}, 5, {_rng})
     else:
         set {_rng} to random integer between 3 and 5
-        loop {_rng} times:
-            drop {_dropItem} at {_location}
+        drop {_rng} of {_dropItem} at {_location}
+        experienceDrop({_location}, 1, {_rng})
 #                                       deleteAndDropNoFortune function                                                                        #
 function deleteAndDropNoFortune(player: player, location: location, dropItem: item):
     drop {_dropItem} at {_location}
@@ -1324,7 +1342,14 @@ on damage:
     set {_max} to maximum health of {_v}
     set {_w} to {_v}'s health
     if "%type of {_v}%" is "player":
+        if userDataBoolean({_v}, "player.god") is true:
+            cancel event
+            stop
         if {bck.runners::*} contain {_v}:
+            if {_v}'s tool is totem of undying:
+                stop
+            if offhand tool of {_v} is totem of undying:
+                stop
             set {_a.0} to level of protection of {_v}'s helmet
             set {_a.1} to level of protection of {_v}'s chestplate
             set {_a.2} to level of protection of {_v}'s leggings
@@ -1347,7 +1372,7 @@ on damage:
             set {_r} to "%{_r.0}%" parsed as number
             #broadcast "O: %{_r}%"
             set {_reduced} to {_d} * (1 - {_r})
-            #broadcast "Result: %{_reduced}%/%{_d}% (%{_w}%/%{_r}%)"
+            broadcast "    §e%{_v}%:§r%nl%§bFinal damage: §3%{_reduced}%§r%nl%§dOriginal damage: §5%{_d}%§r%nl%§cHealth: §4%{_w}%♥§r%nl%§7Resistance: §8%{_r}%§r"
             if {_w} > {_reduced}:
                 stop
             if "%type of {_a}%" is not "player":
@@ -1361,7 +1386,7 @@ on damage:
                 else if "%{_a}%" is "explosive minecart":
                     set {_sa} to "Tnt Minecart"
                 else:   
-                    broadcast "%{_a}%"
+                    #broadcast "%{_a}%"
                 set {_txt} to lang("grimhunt.death.runner_death.%{_c}%.1", {_v})
                 if {_a} is set:
                     set {_cc} to randomColor()
@@ -1457,7 +1482,7 @@ function grimhuntInventorySaver(player: player, drop: boolean=false):
         set {_c} to {_c} parsed as integer
         if "%{_i}%" doesn't contain "0" or "1" or "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9":
             set {_c} to 1
-        set yaml value "inventory.%{_player}%.%{_s}%" from "bck.manager.grimhunt.data" to "%{_i}%"
+        set yaml value "inventory.%{_player}%.%{_s}%" from "bck.manager.grimhunt.data" to {_i}
         if {_drop} is true:
             drop {_i} at {_player}'s location
         #broadcast "Item: %{_i}%/%{_s}%"

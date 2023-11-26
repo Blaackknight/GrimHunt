@@ -829,6 +829,36 @@ function userData(player: player, find: text="data", mode: text="extract", data:
         set yaml value "%{_find}%" from "bck.userdata.%{_player}'s uuid%" to {_data}
         save yaml "bck.userdata.%{_player}'s uuid%"
     return "%{_result}%"
+function userDataBoolean(player: player, find: text="data", mode: text="extract", data: boolean=false, type: text="string") :: boolean:
+    if file "plugins/Skript/scripts/BCK/manager/userdata/%{_player}'s uuid%.yml" doesn't exist:
+        create file "plugins/Skript/scripts/BCK/manager/userdata/%{_player}'s uuid%.yml"
+        loadUserData({_player})
+        set yaml value "data.username" from "bck.userdata.%{_player}'s uuid%" to {_player}'s display name
+        set yaml value "data.uuid" from "bck.userdata.%{_player}'s uuid%" to {_player}'s uuid
+        set yaml value "data.inv" from "bck.userdata.%{_player}'s uuid%" to false
+        set yaml value "data.money" from "bck.userdata.%{_player}'s uuid%" to 0
+        set yaml value "data.coordinate" from "bck.userdata.%{_player}'s uuid%" to false
+        set yaml value "data.permissions" from "bck.userdata.%{_player}'s uuid%" to {_r}
+        set yaml value "data.inv" from "bck.userdata.%{_player}'s uuid%" to false
+        save yaml "bck.userdata.%{_player}'s uuid%"
+    loadUserData({_player})
+    if {_mode} is "extract":
+        set {_result} to yaml value "%{_find}%" from "bck.userdata.%{_player}'s uuid%"
+    else if {_mode} is "delete":
+        set {_result} to yaml value "%{_find}%" from "bck.userdata.%{_player}'s uuid%"
+        if {_result} is set:
+            delete yaml value "%{_find}%" from "bck.userdata.%{_player}'s uuid%"
+            save yaml "bck.userdata.%{_player}'s uuid%"
+        else:
+            set yaml value "%{_find}%" from "bck.userdata.%{_player}'s uuid%" to {_data}
+            save yaml "bck.userdata.%{_player}'s uuid%"
+    else if {_mode} is "set":
+        set yaml value "%{_find}%" from "bck.userdata.%{_player}'s uuid%" to {_data}
+        save yaml "bck.userdata.%{_player}'s uuid%"
+    if {_result} is not set:
+        set {_result} to false
+    set {_result} to {_result}
+    return {_result}
 function userDataNumber(player: player, find: text="data", mode: text="extract", data: number=0, type: text="string") :: number:
     if file "plugins/Skript/scripts/BCK/manager/userdata/%{_player}'s uuid%.yml" doesn't exist:
         create file "plugins/Skript/scripts/BCK/manager/userdata/%{_player}'s uuid%.yml"

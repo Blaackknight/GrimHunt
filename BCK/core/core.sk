@@ -159,6 +159,18 @@ command /bck [<text>] [<text>] [<text>]:
                 userData(player, "data.inv", "set", "core.bck.rules.main")
                 open {_gui} to player
                 coreRulesGuiUpdater(player)
+            else if arg-1 is "god":
+                set {_s} to selector(player)
+                if userDataBoolean(player, "player.god") is false:
+                    userDataBoolean(player, "player.god", "set", true)
+                    send formatted lang("core.command.bck.god.activated", player)
+                    superLog("§6[§4BCK§6]§r §7%{_s}%§r activated his §7god mode", "4")
+                    superLog("§6[§4BCK§6]§r §7%player%§r activated his §7god mode", "6", true)
+                else if userDataBoolean(player, "player.god") is true:
+                    userDataBoolean(player, "player.god", "set", false)
+                    send formatted lang("core.command.bck.god.removed", player)
+                    superLog("§6[§4BCK§6]§r §7%{_s}%§r disabled his §7god mode", "4")
+                    superLog("§6[§4BCK§6]§r §7%player%§r disabled his §7god mode", "6", true)
             else:
                 send "§cOption iconnue (%arg-1%)"
         else:
@@ -195,7 +207,7 @@ on inventory click:
             else if "%{_t}%" contain "command block":
                 if {_u} is "Command Block":
                     if serverPropertiesBoolean("enable-command-block") is false:
-                        play sound "block.anvil.place" with volume 0.5 for player
+                        play sound "block.anvil.place" with volume 0.1 for player
                     else if coreDataBoolean("commandBlock.status") is false:
                         coreDataBoolean("commandBlock.status", "set", true)
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §aactivated §7commandBlock.status§r", "4")
@@ -292,6 +304,7 @@ function coreRulesGuiUpdater(player: player):
     set {_d} to lang("core.command.bck.rules.updater.disabled", {_player})
     set {_e} to lang("core.command.bck.rules.updater.enabled", {_player})
     set {_s} to lang("core.command.bck.rules.updater.status", {_player})
+    set {_f} to lang("core.command.bck.rules.updater.forced", {_player})
 
     set {_tnt} to tnt named "§cTnt"
     if coreDataBoolean("tnt.status") is false:
@@ -308,6 +321,8 @@ function coreRulesGuiUpdater(player: player):
     if {_commandBlockStatus} is false:
         set {_statusCommandBlock} to {_d}
         disenchant {_commandBlock}
+        if serverPropertiesBoolean("enable-command-block") is false:
+            set {_statusCommandBlock} to {_f}
     else:
         set {_statusCommandBlock} to {_e}
         enchant {_commandBlock} with thorns 1
@@ -414,6 +429,7 @@ on tab complete of "/bck":
     add "nbt" to {_x::*}
     add "first" to {_x::*}
     add "config" to {_x::*}
+    add "god" to {_x::*}
     if hasPermission(player, "server.owner") is true:
         add "itemCheck" to {_x::*}
         add "rules" to {_x::*}
@@ -422,31 +438,31 @@ on tab complete of "/bck":
         set tab completions for position 2 to 1, 2, 3, 4, 5 and 6
 on command:
     if "%sender%" is "@":
-        #cancel event
-        #send "§6[§4BCK§6/§1Permission§6] §e(§dCommand Block§e) > %sender% §c§lHey! §7Tu n'a pas la permission :/ §e--> §7%complete command%" to console
-        add 1 to {permission.temp.command_block.count}
-        set {permission.temp.command_block.sender} to sender
-        set {permission.temp.command_block.command} to complete command
-        set {_x} to x-coordinate of sender
-        set {_y} to y-coordinate of sender
-        set {_z} to z-coordinate of sender
-        set {_loc} to location({_x}, {_y}, {_z})
-        coreData("data.permission.temp.command_block.sender", "set", "%{_loc}%")
-        #broadcast executor's location
-        stop
+        if coreDataBoolean("commandBlock.status") is false:
+            cancel event
+            #send "§6[§4BCK§6/§1Permission§6] §e(§dCommand Block§e) > %sender% §c§lHey! §7Tu n'a pas la permission :/ §e--> §7%complete command%" to console
+            add 1 to {permission.temp.command_block.count}
+            set {permission.temp.command_block.sender} to sender
+            set {permission.temp.command_block.command} to complete command
+            set {_x} to x-coordinate of sender
+            set {_y} to y-coordinate of sender
+            set {_z} to z-coordinate of sender
+            set {_loc} to location({_x}, {_y}, {_z})
+            coreData("data.permission.temp.command_block.sender", "set", "%{_loc}%")
+            #broadcast executor's location
+            stop
     
 every 1 second:
     if {permission.temp.command_block.count} > 1000:
         set {_sender} to {permission.temp.command_block.sender}
         set {_command} to {permission.temp.command_block.command}
         set {_loc} to coreData("data.permission.temp.command_block.sender")
-        send "§6[§4BCK§6/§1Permission§6] §e(§dCommand Block§e) ==> <%{_sender}%> §c§lHey! §7Tu n'a pas la permission :/ §e--> §3/%{_command}% §eat §c%{_loc}%" to console
-        send "§6[§4BCK§6/§1Permission§6] §e(§dCommand Block§e) ==> <%{_sender}%> §c§lHey! §7Tu n'a pas la permission :/ §e--> §3/%{_command}% §eat §c%{_loc}%" to {log.tier5::*}
+        superLog("§6[§4BCK§6/§1Permission§6] §e(§dCommand Block§e) ==> <%{_sender}%> §c§lHey! §7Tu n'a pas la permission :/ §e--> §3/%{_command}% §eat §c%{_loc}%", "6.5")
+        # send "§6[§4BCK§6/§1Permission§6] §e(§dCommand Block§e) ==> <%{_sender}%> §c§lHey! §7Tu n'a pas la permission :/ §e--> §3/%{_command}% §eat §c%{_loc}%" to console
+        # send "§6[§4BCK§6/§1Permission§6] §e(§dCommand Block§e) ==> <%{_sender}%> §c§lHey! §7Tu n'a pas la permission :/ §e--> §3/%{_command}% §eat §c%{_loc}%" to {log.tier5::*}
         clear {permission.temp.command_block.count}
         coreData("data.permission.temp.command_block.sender", "delete")
         clear {permission.temp.command_block.command}
-
-
 
 function coreData(find: text, mode: text="extract", data: text="") :: text:
     if {_mode} is "extract":

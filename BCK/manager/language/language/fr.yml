@@ -20,6 +20,8 @@ grimhunt:
             chatActivated: "§6[§5Grimhunt§6] §eChat §aactivé §e!"
             runners_running: "§6[§5Grimhunt§6] §eLes §acoureurs §epeuvent maintenant commencer à partir !"
             alreadyStarted: "§6[§5Grimhunt§6] §eLe jeu est déjà commencé.."
+            timer: "§eLe jeu commence dans <arg0>"
+            starting: "§bDépart !!"
         stop:
             notStarted: "§6[§5Grimhunt§6] §eLe jeu n'a pas démarré.."
         revive:
@@ -91,9 +93,14 @@ core:
                     enabled: "§2Activé"
                     disabled: "§4Disabled"
                     status: "§eStatut:"
+                    forced: "§3§l§nForcé"
                     lore:
                         tnt: "§eGérer les §cexplosions"
                         commandBlock: "§eGérer les §dblocs de commande"
+                        pvp: "§eGérer le §1pvp"
+            god:
+                activated: "§6[§4BCK§6]§r §eMode dieux §aactivé §e!"
+                removed: "§6[§4BCK§6]§r §eMode dieux §cdésactivé §e!"
 debug:
     afterDebug: "§6[§4BCK§6/§3Debug§6]§r §eMinuterie terminée"
     beforeDebug: "§6[§4BCK§6/§3Debug§6]§r §eDémarrage de la minuterie"

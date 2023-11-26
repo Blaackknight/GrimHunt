@@ -219,14 +219,14 @@ function guiMain(player: player, type: text):
             loop {_list::*}:
                 set {_t} to userData({_p}, "%loop-value-2%")
                 if {_t} is not set:
-                    set {_t} to "§nfalse"
+                    set {_t} to "§n??"
                 set line {_line} of lore of {_i} to "§b§l%loop-value-2%: §7%{_t}%"
                 #broadcast "%{_p}% => %{_line}% => %loop-value-1%"
                 add 1 to {_line}
             loop {_xlist::*}:
                 set {_t} to userData({_p}, "%loop-value-2%")
                 if {_t} is not set:
-                    set {_t} to "§nfalse"
+                    set {_t} to "§n??"
                 set line {_line} of lore of {_i} to "§d§l%loop-value-2%: §7%{_t}%"
                 #broadcast "%{_p}% => %{_line}% => %loop-value-1%"
                 add 1 to {_line}
