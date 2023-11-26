@@ -144,6 +144,8 @@ command /grimhunt [<text>] [<text>]:
                 loop {bck.runners::*}:
                     grimhuntKits(loop-value)
                 wait 1 seconds
+                set {bck.grimhunt.chat} to true  
+                grimhuntPlayersLangSend("grimhunt.command.start.chatActivated") 
                 #broadcast "100: %{_timer.100}%%nl%75: %{_timer.75}%%nl%50: %{_timer.50}%%nl%25: %{_timer.25}%%nl%5: %{_timer.5}%"
                 
                 set {_ff} to {_timer.100}
@@ -192,7 +194,7 @@ command /grimhunt [<text>] [<text>]:
                     else if {_ff} is 1:
                         loop grimhuntPlayersList():
                             set {_bg} to loop-value-2
-                            play sound "entity.experience_orb.pickup" with volume 1 with pitch 0.9 for {_bg}      
+                            play sound "entity.experience_orb.pickup" with volume 1 with pitch 0.9 for {_bg}   
                     else if {_ff} is 0:
                         loop grimhuntPlayersList():
                             set {_bg} to loop-value-2
