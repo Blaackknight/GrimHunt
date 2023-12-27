@@ -85,17 +85,17 @@ command /grimhunt [<text>] [<text>]:
             send formatted "§6[§5Grimhunt§6] %{_hl}%§r%nl%%{_t}%"
         else if arg-1 is "start":
             if {grimhunt.game.started} is not set:
-                # if listCounter({bck.hunters::*}) < 1:
-                #     if  listCounter({bck.runners::*}) < 1:
-                #         send "§6[§5grimhunt§6] §cMissing §a1 Runner §cand §41 Hunter §cfor starting.."
-                #         stop
-                #     else:
-                #         send "§6[§5grimhunt§6] §cMissing §41 Hunter §cfor starting.."
-                #         stop
-                # else:
-                #     if  listCounter({bck.runners::*}) < 1:
-                #         send "§6[§5grimhunt§6] §cMissing §a1 Runner §cfor starting.."
-                #         stop
+                if listCounter({bck.hunters::*}) < 1:
+                    if  listCounter({bck.runners::*}) < 1:
+                        send "§6[§5grimhunt§6] §cMissing §a1 Runner §cand §41 Hunter §cfor starting.."
+                        stop
+                    else:
+                        send "§6[§5grimhunt§6] §cMissing §41 Hunter §cfor starting.."
+                        stop
+                else:
+                    if  listCounter({bck.runners::*}) < 1:
+                        send "§6[§5grimhunt§6] §cMissing §a1 Runner §cfor starting.."
+                        stop
                 set {grimhunt.game.started} to true
                 grimhuntTeamCreate(true)
                 grimhuntTeamJoin(true)
@@ -986,7 +986,8 @@ every tick:
                         stop
                     set {_nn} to {grimhunt.compass.%loop-player%.num}
                     set {_xx} to {bck.runners::%{_nn}%}
-                    set {_xa} to "%{_xx}%"
+                    set {_xa} to "%{bck.runners::*}%"
+                    #broadcast "%loop-player%: %{_xx}%"
                     set line 1 of lore of loop-player's tool to "§4Target: §a%{_xx}%"
                     set {_n} to {grimhunt.compass.%loop-player%.num}
                     set the loop-player's compass target to location of {bck.runners::%{_n}%}
@@ -1374,7 +1375,7 @@ on damage:
             set {_r} to "%{_r.0}%" parsed as number
             #broadcast "O: %{_r}%"
             set {_reduced} to {_d} * (1 - {_r})
-            broadcast "    §e%{_v}%:§r%nl%§bFinal damage: §3%{_reduced}%§r%nl%§dOriginal damage: §5%{_d}%§r%nl%§cHealth: §4%{_w}%♥§r%nl%§7Resistance: §8%{_r}%§r"
+            #broadcast "    §e%{_v}%:§r%nl%§bFinal damage: §3%{_reduced}%§r%nl%§dOriginal damage: §5%{_d}%§r%nl%§cHealth: §4%{_w}%♥§r%nl%§7Resistance: §8%{_r}%§r"
             if {_w} > {_reduced}:
                 stop
             if "%type of {_a}%" is not "player":

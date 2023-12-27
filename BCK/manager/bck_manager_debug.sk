@@ -12,6 +12,7 @@ on load:
     addServerPermission("item.pickup")
     addServerPermission("player.move")
     addServerPermission("player.jump")
+    addDefaultPermission("player.craft")
     addServerPermission("server.command")
     addServerPermission("server.owner")
     addServerPermission("server.command.grimhunt")
@@ -28,6 +29,7 @@ on load:
     addDefaultPermission("item.pickup")
     addDefaultPermission("player.move")
     addDefaultPermission("player.jump")
+    addDefaultPermission("player.craft")
     addDefaultPermission("server.command")
     addDefaultPermission("server.command.msg")
     addDefaultPermission("server.command.tell")
@@ -157,7 +159,7 @@ on explosion prime:
         delete event-entity
         kill event-entity
 on craft:
-    if hasPermission(player, "item.craft") is false:
+    if hasPermission(player, "player.craft") is false:
         cancel event
         #send "§c§lHey! §7Tu n'a pas la permission :|"
 on player move:
