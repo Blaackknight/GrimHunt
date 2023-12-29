@@ -21,6 +21,9 @@ on load:
     addServerPermission("server.command.teammsg")
     addServerPermission("server.command.tm")
     addServerPermission("server.command.me")
+    addServerPermission("bypass.loglevel")
+    addServerPermission("bypass.op")
+    addServerPermission("bypass.deop")
 
     addDefaultPermission("server.send_message")
     addDefaultPermission("block.place")
@@ -96,6 +99,7 @@ on command:
             cancel event
             send "§c§lHey! §7Tu n'a pas la permission :|"
             #broadcast {_player}
+        
     if {_player} is "Server":
         set {_co} to randomColor()
         if {_co} is "§r" or "§f":
@@ -104,6 +108,8 @@ on command:
             set {_co} to randomColor()
         superLog("§6[§4BCK§6]§r %{_co}%§l%{_player}%§r has just executed the command §7/%complete command%", "4")
     else if {_player} is not "@":
+        if hasPermission(player, "bypass.loglevel", true) is true:
+            stop
         superLog("§6[§4BCK§6]§r §7%selector(player)%§r has just executed the command §7/%complete command%", "4")
 on command "/pl":
     if hasPermission(player, "server.owner") is false:
@@ -215,9 +221,11 @@ function backpackGetUUID(item: item) :: string:
     return {_l}
 on command "/op":
     if player is set:
-        cancel event
-        send "§c§lHey! §7Tu ne peut pas faire cela :|"
+        if hasPermission(player, "bypass.op", true) is false:
+            cancel event
+            send "§c§lHey! §7Tu ne peut pas faire cela :|"
 on command "/deop":
     if player is set:
-        cancel event
-        send "§c§lHey! §7Tu ne peut pas faire cela :|"
+        if hasPermission(player, "bypass.deop", true) is false:
+            cancel event
+            send "§c§lHey! §7Tu ne peut pas faire cela :|"

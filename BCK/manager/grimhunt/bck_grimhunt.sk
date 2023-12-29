@@ -300,14 +300,14 @@ command /grimhunt [<text>] [<text>]:
                 if "%player%" is not "<none>":
                     send formatted commandError("grimhunt", arg-1, player)
                     stop
-            play sound "entity.experience_orb.pickup" with volume 0.3 at player
+            play sound "entity.experience_orb.pickup" with volume 0.3 for player
             set {grimhunt.game.started} to true
         else if arg-1 is "admin.stop":
             if hasPermission(player, "server.owner") is false:
                 if "%player%" is not "<none>":
                     send formatted commandError("grimhunt", arg-1, player)
                     stop
-            play sound "entity.villager.no" with volume 0.5 at player
+            play sound "entity.villager.no" with volume 0.5 for player
             clear {grimhunt.game.started}
         else if arg-1 is "revive":
             set {_x} to arg-2
@@ -489,6 +489,21 @@ function grimhuntKits(player: player):
                 #broadcast "§a%{_v}% §7= §e%{_i}% §d:: §b%{_vc}%"
                 if "%{_i}%" is not "<none>":
                     give {_vc} of {_i} to {_player}
+function grimhuntRandomHunterCoordinate():
+    if grimhuntDataBoolean("randomHunterCoordinate.status") is true:
+        set {_n} to rng(1, listCounter({bck.hunters::*}))
+        set {_r} to {bck.hunters::%{_n}%}
+        set {_a} to {_r} parsed as player
+        set {_x} to x-coordinate of {_a}
+        set {_y} to x-coordinate of {_a}
+        set {_z} to x-coordinate of {_a}
+        set {_w} to world of {_a}
+        add selector({_a}) to {_args::*}
+        add {_x} to {_args::*}
+        add {_y} to {_args::*}
+        add {_z} to {_args::*}
+        add {_w} to {_args::*}
+        grimhuntPlayersMultiLangSend("grimhunt.randomHunterCoordinate.coordinate", {_args::*})
 #                                      grimhuntConfigGuiUpdater functions                                                                          #
 function grimhuntConfigGuiUpdater(player: player):
     set {_gui} to {_player}'s current inventory
@@ -550,6 +565,14 @@ function grimhuntConfigGuiUpdater(player: player):
     else:
         set {_status_kits} to {_e}
         enchant {_kits} with unbreaking 1
+    
+    set {_randomHunterCoordinate} to compass named "§bRandom Hunter Coordinate"
+    if grimhuntDataBoolean("randomHunterCoordinate.status") is false:
+        set {_status_randomHunterCoordinate} to {_d}
+        disenchant {_randomHunterCoordinate}
+    else:
+        set {_status_randomHunterCoordinate} to {_e}
+        enchant {_randomHunterCoordinate} with unbreaking 1
 
     set line 2 of lore of {_startHeal} to "%{_s}% %{_status_start_heal}%"
     set line 4 of lore of {_startHeal} to lang("grimhunt.gui.updater.lore.start_heal", {_player})
@@ -569,6 +592,11 @@ function grimhuntConfigGuiUpdater(player: player):
     set line 2 of lore of {_forge} to "%{_s}% %{_status_forge}%"
     set line 4 of lore of {_forge} to lang("grimhunt.gui.updater.lore.forge.1", {_player})
     set line 5 of lore of {_forge} to lang("grimhunt.gui.updater.lore.forge.2", {_player})
+    set {_forgeOresXpStatus} to {_d}
+    if grimhuntDataBoolean("forge.oresXp") is true:
+        set {_forgeOresXpStatus} to {_e}
+    add {_forgeOresXpStatus} to {_fArgs::*}
+    set line 7 of lore of {_forge} to superLang("grimhunt.gui.updater.lore.forge.oresXp", {_player}, {_fArgs::*})
 
     set line 2 of lore of {_kits} to "%{_s}% %{_status_kits}%"
     set line 4 of lore of {_kits} to lang("grimhunt.gui.updater.lore.kits", {_player})
@@ -596,6 +624,10 @@ function grimhuntConfigGuiUpdater(player: player):
                 set {_co} to "§3§m"
             set line {_c} of lore of {_kits} to "§e➛ %{_co}%%{_vn}%§r §dx%{_vc}%§r"
             add 1 to {_c}
+    
+    set line 2 of lore of {_randomHunterCoordinate} to "%{_s}% %{_status_kits}%"
+    set line 4 of lore of {_randomHunterCoordinate} to lang("grimhunt.gui.updater.lore.randomHunterCoordinate", {_player})
+    
     set slot 22 of {_gui} to air
     set slot 11 of {_gui} to {_startHeal}
     set slot 12 of {_gui} to {_startFeed}
@@ -604,6 +636,7 @@ function grimhuntConfigGuiUpdater(player: player):
     set slot 15 of {_gui} to {_particles}
     set slot 20 of {_gui} to {_forge}
     set slot 21 of {_gui} to {_kits}
+    set slot 22 of {_gui} to {_randomHunterCoordinate}
 #                                      Grimhunt Gui Gestions Trigger                                                                       #
 on inventory click: 
     if userData(player, "data.inv") is "false":
@@ -624,12 +657,12 @@ on inventory click:
                         grimhuntDataBoolean("particles.status", "set", true)
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7particles.status§r", "4")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7particles.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         grimhuntDataBoolean("particles.status", "set")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7particles.status§r", "4")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7particles.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                             grimhuntConfigGuiUpdater(loop-player)
@@ -640,12 +673,12 @@ on inventory click:
                         grimhuntDataBoolean("startHeal.status", "set", true)
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startHeal.status§r", "4")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startHeal.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         grimhuntDataBoolean("startHeal.status", "set")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startHeal.status§r", "4")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startHeal.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                             grimhuntConfigGuiUpdater(loop-player)
@@ -655,12 +688,12 @@ on inventory click:
                         grimhuntDataBoolean("startFeed.status", "set", true)
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startFeed.status§r", "4")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startFeed.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         grimhuntDataBoolean("startFeed.status", "set")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startFeed.status§r", "4")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startFeed.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                             grimhuntConfigGuiUpdater(loop-player)
@@ -670,12 +703,12 @@ on inventory click:
                         grimhuntDataBoolean("startDay.status", "set", true)
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startDay.status§r", "4")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startDay.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         grimhuntDataBoolean("startDay.status", "set")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startDay.status§r", "4")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startDay.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                             grimhuntConfigGuiUpdater(loop-player)
@@ -685,12 +718,12 @@ on inventory click:
                         grimhuntDataBoolean("startClear.status", "set", true)
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startClear.status§r", "4")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startClear.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         grimhuntDataBoolean("startClear.status", "set")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startClear.status§r", "4")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startClear.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                             grimhuntConfigGuiUpdater(loop-player)
@@ -700,12 +733,12 @@ on inventory click:
                         grimhuntDataBoolean("forge.status", "set", true)
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7forge.status§r", "4")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7forge.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         grimhuntDataBoolean("forge.status", "set")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7forge.status§r", "4")
                         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7forge.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                             grimhuntConfigGuiUpdater(loop-player)
@@ -713,19 +746,33 @@ on inventory click:
                 if {_u} is "Kits":
                     if grimhuntDataBoolean("kits.status") is false:
                         grimhuntDataBoolean("kits.status", "set", true)
-                        send formatted "§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7kits.status§r" to {log.tier4::*}
-                        send formatted "§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7kits.status§r" to {log.tier5::*}
-                        send "§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7kits.status§r" to console
-                        play sound "entity.experience_orb.pickup" with volume 0.3 at player
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7kits.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7kits.status§r", "6", true)
+                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
                     else:
                         grimhuntDataBoolean("kits.status", "set")
-                        send formatted "§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7kits.status§r" to {log.tier4::*}
-                        send formatted "§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7kits.status§r" to {log.tier5::*}
-                        send "§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7kits.status§r" to console
-                        play sound "entity.villager.no" with volume 0.5 at player
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7kits.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7kits.status§r", "6", true)
+                        play sound "entity.villager.no" with volume 0.5 for player
                     loop all players:
                         if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                             grimhuntConfigGuiUpdater(loop-player)
+            else if "%{_t}%" is "compass":
+                if {_u} is "Random Hunter Coordinate":
+                    if grimhuntDataBoolean("randomHunterCoordinate.status") is false:
+                        if listCounter({bck.hunters::*}) > 1:
+                            grimhuntDataBoolean("randomHunterCoordinate.status", "set", true)
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7randomHunterCoordinate.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7randomHunterCoordinate.status§r", "6", true)
+                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                        else:
+                            send lang("grimhunt.randomHunterCoordinate.notEnoughHunters", player)
+                            play sound "entity.villager.no" with volume 0.5 for player
+                    else:
+                        grimhuntDataBoolean("randomHunterCoordinate.status", "set")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7randomHunterCoordinate.status§r", "4")
+                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7randomHunterCoordinate.status§r", "6", true)
+                        play sound "entity.villager.no" with volume 0.5 for player                
 #                                      runner command                                                                          #
 command /runner [<text>] [<player>]:
     trigger:
@@ -980,42 +1027,56 @@ every tick:
                 if {grimhunt.compass.%loop-player%.num} is not set:
                     set {grimhunt.compass.%loop-player%.num} to 1
                 set {_i} to loop-player's tool
-                if {_i} is compass:
-                    if {grimhunt.game.started} is not set:
-                        set line 1 of lore of loop-player's tool to "§eNo Targeting.."
-                        stop
-                    set {_nn} to {grimhunt.compass.%loop-player%.num}
-                    set {_xx} to {bck.runners::%{_nn}%}
-                    set {_xa} to "%{bck.runners::*}%"
-                    #broadcast "%loop-player%: %{_xx}%"
-                    set line 1 of lore of loop-player's tool to "§4Target: §a%{_xx}%"
-                    set {_n} to {grimhunt.compass.%loop-player%.num}
-                    set the loop-player's compass target to location of {bck.runners::%{_n}%}
-                    if "%loop-player's world%" is not "world":
-                        set {_dist} to distance between loop-player and {_xx}
-                        if "%{_xx}'s world%" is "world":
-                            set {_w} to "world"
-                        else:
-                            set {_w} to "world_nether"
-                        if {_xx}'s world is not loop-player's world:
-                            send actionbar "§7§o%{_xa}% §d➻ §a%{_xx}'s world%" to loop-player
+                set {_o} to loop-player's offhand tool
+                if {grimhunt.game.started} is not set:
+                    if {_i} is not compass:
+                        if {_o} is not compass:
                             stop
-                        if {_dist} < 11:
-                            send actionbar "§7§o%{_xa}% §d➻ §a%{_dist}%" to loop-player
-                        else if {_dist} < 16:
-                            send actionbar "§7§o%{_xa}% §d➻ §2%{_dist}%" to loop-player
-                        else if {_dist} < 26:
-                            send actionbar "§7§o%{_xa}% §d➻ §e%{_dist}%" to loop-player
-                        else if {_dist} < 51:
-                            send actionbar "§7§o%{_xa}% §d➻ §6%{_dist}%" to loop-player
-                        else if {_dist} < 101:
-                            send actionbar "§7§o%{_xa}% §d➻ §c%{_dist}%" to loop-player
-                        else if {_dist} < 151:
-                            send actionbar "§7§o%{_xa}% §d➻ §4%{_dist}%" to loop-player
                         else:
-                            send actionbar "§7§o%{_xa}% §d➻ §0%{_dist}%" to loop-player
-                    # else:
-                    #     send actionbar "§7§k%{_xx}% §d~> §n§3%{_xx}'s world%" to loop-player
+                            set {_i} to {_o}
+                    set line 1 of lore of {_i} to lang("grimhunt.game.compass.notStarted", loop-player)
+                    stop
+                if {_i} is not compass:
+                    if {_o} is not compass:
+                        stop
+                    else:
+                        set {_i} to {_o}
+                set {_nn} to {grimhunt.compass.%loop-player%.num}
+                set {_xx} to {bck.runners::%{_nn}%}
+                set {_xa} to "%{bck.runners::*}%"
+                #broadcast "%loop-player%: %{_xx}%"
+                if {_xx} is "<none>":
+                    set {_xx} to lang("grimhunt.game.compass.notFound", loop-player)
+                else:
+                    set {_xx} to "§a%{_xx}%"
+                set line 1 of lore of {_i} to "§4Target: %{_xx}%"
+                set {_n} to {grimhunt.compass.%loop-player%.num}
+                set the loop-player's compass target to location of {bck.runners::%{_n}%}
+                if "%loop-player's world%" is not "world":
+                    set {_dist} to distance between loop-player and {_xx}
+                    if "%{_xx}'s world%" is "world":
+                        set {_w} to "world"
+                    else:
+                        set {_w} to "world_nether"
+                    if {_xx}'s world is not loop-player's world:
+                        send actionbar "§7§o%{_xa}% §d➻ §a%{_xx}'s world%" to loop-player
+                        stop
+                    if {_dist} < 11:
+                        send actionbar "§7§o%{_xa}% §d➻ §a%{_dist}%" to loop-player
+                    else if {_dist} < 16:
+                        send actionbar "§7§o%{_xa}% §d➻ §2%{_dist}%" to loop-player
+                    else if {_dist} < 26:
+                        send actionbar "§7§o%{_xa}% §d➻ §e%{_dist}%" to loop-player
+                    else if {_dist} < 51:
+                        send actionbar "§7§o%{_xa}% §d➻ §6%{_dist}%" to loop-player
+                    else if {_dist} < 101:
+                        send actionbar "§7§o%{_xa}% §d➻ §c%{_dist}%" to loop-player
+                    else if {_dist} < 151:
+                        send actionbar "§7§o%{_xa}% §d➻ §4%{_dist}%" to loop-player
+                    else:
+                        send actionbar "§7§o%{_xa}% §d➻ §0%{_dist}%" to loop-player
+                # else:
+                #     send actionbar "§7§k%{_xx}% §d~> §n§3%{_xx}'s world%" to loop-player
 #                                      grimhunt particle show                                                                          #
 every 3 ticks:
     loop all players:
@@ -1026,7 +1087,7 @@ every 3 ticks:
 on right click with compass:
     set {_c} to listCounter({bck.runners::*})
     if {grimhunt.game.started} is not set:
-        set line 1 of lore of player's tool to "§eNo Targeting.."
+        set line 1 of lore of player's tool to lang("grimhunt.game.compass.notStarted", player)
         stop
     if listCounter({bck.runners::*}) > 1:
         if {bck.hunters::*} contain "%player%":

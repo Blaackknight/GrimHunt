@@ -90,7 +90,7 @@ on tab complete of "/permission":
     loop all players:
         if "%loop-value%" is tab arg-1:
             if tab arg-2 is "add":
-                set tab completions for position 3 to getServerPermission(loop-value)
+                set tab completions for position 3 to getServerPermission(loop-value, true)
             else if tab arg-2 is "remove":
                 set tab completions for position 3 to {server.permission.%loop-value%.list::*}
 command /bck [<text>] [<text>] [<text>]:

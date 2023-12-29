@@ -204,3 +204,24 @@ function serverLang(key: text, addon: text="language", replace: boolean=false) :
     replace all "<randomColor>" with randomColor() in {_r}
     replace all "<addon>" with {_addon} in {_r}
     return {_r}
+function superLang(key: text, player: player, args: objects, addon: text="language") :: text:
+    set {_lang} to userData({_player}, "data.language")
+    if "%{_lang}%" is "<none>":
+        set {_lang} to languageConfig("data.defaultLanguage")
+        userData({_player}, "data.language", "set", "en")
+    load yaml "plugins/Skript/scripts/BCK/manager/%{_addon}%/language/%{_lang}%.yml" as "bck.manager.%{_addon}%.%{_lang}%"
+    set {_r} to yaml value {_key} from "bck.manager.%{_addon}%.%{_lang}%"
+    if "%{_r}%" is "<none>":
+        set {_r} to {_key}
+    set {_c} to 0
+    loop {_args::*}:
+        set {_e} to loop-value
+        if "%{_r}%" contain "<arg%{_c}%>":
+            replace all "<arg%{_c}%>" with {_e} in {_r}
+        add 1 to {_c}
+    replace all "<player>" with "%{_player}%" in {_r}
+    replace all "<uuid>" with {_player}'s uuid in {_r}
+    replace all "<lang>" with {_lang} in {_r}
+    replace all "<randomColor>" with randomColor() in {_r}
+    replace all "<addon>" with {_addon} in {_r}
+    return {_r}

@@ -670,10 +670,12 @@ function addPermission(player: player, perm: text, callback: boolean=false):
 function addServerPermission(perm: text, callback: boolean=false):
     if {server.perms::*} doesn't contain {_perm}:
         add {_perm} to {server.perms::*}
-function getServerPermission(player: player) :: objects:
-    set {_p::*} to {server.perms::*}
+function getServerPermission(player: player, combine: boolean=false) :: objects:
     set {_pp::*} to {server.permission.%{_player}%.list::*}
-    loop {_p::*}:
+    loop {server.perms::*}:
+        if {_pp::*} doesn't contain loop-value:
+            add loop-value to {_list::*}
+    loop {server.bypass.perms::*}:
         if {_pp::*} doesn't contain loop-value:
             add loop-value to {_list::*}
     return {_list::*}
@@ -684,16 +686,19 @@ function removePermission(player: player, perm: text, callback: boolean=false):
             if {_callback} is true:
                 logCustom("Permission §7%{_perm}%§r has been removed from §7%selector({_player})%§r", 4)
                 logCustom("Permission §7%{_perm}%§r has been removed from §7%selector({_player})%§r", 5)
-function hasPermission(player: player, perm: text="op") :: boolean:
-    if {server.permission.%{_player}%.list::*} is not set:
+function hasPermission(player: player, perm: text="op", b: boolean=false) :: boolean:
     set {_v} to false
     loop {server.permission.%{_player}%.list::*}:
         if loop-value is {_perm}:
             set {_v} to true
         else if loop-value is "op":
+            if {_b} is true:
+                stop
             if {_perm} is not "server.owner":
                 set {_v} to true
         else if loop-value is "server.owner":
+            if {_b} is true:
+                stop
             set {_v} to true
     return {_v}
 function addDefaultPermission(perm: text):
@@ -709,6 +714,7 @@ function getDefaultPermission() :: objects:
 function defaultPermission(player: player):
     loop {server.default.perms::*}:
         addPermission({_player}, loop-value, true)
+#                                                                                                                #       
 function isBlock(block: block) :: boolean:
     set {_blocks::*} to all blocks
     set {_ty} to type of {_block}

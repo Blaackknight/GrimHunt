@@ -50,7 +50,9 @@ grimhunt:
                 forge:
                     1: "§eAutomatically cooks §dall ores §7upon breaking§r"
                     2: "§aDrop <randomColor>random §aexperience §ewhen breaking ores§r"
+                    oresXp: "§6Ores Xp:§r <arg0>§r"
                 kits: "§7At the §2start §7of the game, §egive §7a §1starting kit §7to the §arunners§r"
+                randomHunterCoordinate: "§7Randomly sends a §4hunter §acoordinate §7in the chat§r"
             noKitFound: §7§mNo kits found..
             currentKit: "§eCurrent kit:§r"
     death:
@@ -79,6 +81,13 @@ grimhunt:
                 1: "<arg0> was blown up by <arg1>"
             drowning:
                 1: "<arg0> drowned"
+    randomHunterCoordinate: 
+        coordinate: "§6[§5Grimhunt§6/§1RandomCoordinate§6]§r §4<arg0> §ecoordinate is X: §b<arg1>§r §eY: §b<arg2>§r §eZ: §b<arg3>§r §eand World: <arg4>"
+        notEnoughHunters: "§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r Not enough hunters to activate this.."
+    game:
+        compass:
+            notFound: "§c§nNot Found§r"
+            notStarted: "§e§nNot Started§r"
 core:
     functions:
         commandError:
