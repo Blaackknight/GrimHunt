@@ -41,6 +41,8 @@ grimhunt:
             enabled: "§2Enabled"
             disabled: "§4Disabled"
             status: "§eStatus:"
+            rightClick: "§7§o(Right Click)§r"
+            leftClick: "§7§o(Left Click)§r"
             lore:
                 start_heal: "§7At the §2start §7of the game grants a §aheal §7to §eall players§r"
                 start_feed: "§7At the §2start §7of the game grants §6satiation §7to §eall players§r"
@@ -50,9 +52,11 @@ grimhunt:
                 forge:
                     1: "§eAutomatically cooks §dall ores §7upon breaking§r"
                     2: "§aDrop <randomColor>random §aexperience §ewhen breaking ores§r"
-                    oresXp: "§6Ores Xp:§r <arg0>§r"
+                    oresXp: "§6Ores Xp"
                 kits: "§7At the §2start §7of the game, §egive §7a §1starting kit §7to the §arunners§r"
                 randomHunterCoordinate: "§7Randomly sends a §4hunter §acoordinate §7in the chat§r"
+                startClearAdvancements: "§7At the §2start §7of the game §dclear all players §aadvancements§r"
+                keepTeam: "§aKeep §7current teams before §eeach restart"
             noKitFound: §7§mNo kits found..
             currentKit: "§eCurrent kit:§r"
     death:

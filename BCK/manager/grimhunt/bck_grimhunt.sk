@@ -510,6 +510,8 @@ function grimhuntConfigGuiUpdater(player: player):
     set {_d} to lang("grimhunt.gui.updater.disabled", {_player})
     set {_e} to lang("grimhunt.gui.updater.enabled", {_player})
     set {_s} to lang("grimhunt.gui.updater.status", {_player})
+    set {_rc} to lang("grimhunt.gui.updater.rightClick", {_player})
+    set {_lc} to lang("grimhunt.gui.updater.leftClick", {_player})
     set {_startHeal} to golden apple named "§cStarting Heal"
     if grimhuntDataBoolean("startHeal.status") is false:
         set {_status_start_heal} to {_d}
@@ -574,31 +576,48 @@ function grimhuntConfigGuiUpdater(player: player):
         set {_status_randomHunterCoordinate} to {_e}
         enchant {_randomHunterCoordinate} with unbreaking 1
 
-    set line 2 of lore of {_startHeal} to "%{_s}% %{_status_start_heal}%"
+    set {_startClearAdvancements} to empty bottle named "§aStarting Clear Advancements"
+    if grimhuntDataBoolean("startClearAdvancements.status") is false:
+        set {_status_startClearAdvancements} to {_d}
+        disenchant {_startClearAdvancements}
+    else:
+        set {_status_startClearAdvancements} to {_e}
+        enchant {_startClearAdvancements} with unbreaking 1
+
+    set {_keepTeam} to writable book named "§5Keep Team"
+    if grimhuntDataBoolean("keepTeam.status") is false:
+        set {_status_keepTeam} to {_d}
+        disenchant {_keepTeam}
+    else:
+        set {_status_keepTeam} to {_e}
+        enchant {_keepTeam} with unbreaking 1
+
+    set line 2 of lore of {_startHeal} to "%{_s}% %{_status_start_heal}% %{_lc}%"
     set line 4 of lore of {_startHeal} to lang("grimhunt.gui.updater.lore.start_heal", {_player})
 
-    set line 2 of lore of {_startFeed} to "%{_s}% %{_status_start_feed}%"
+    set line 2 of lore of {_startFeed} to "%{_s}% %{_status_start_feed}% %{_lc}%"
     set line 4 of lore of {_startFeed} to lang("grimhunt.gui.updater.lore.start_feed", {_player})
 
-    set line 2 of lore of {_startDay} to "%{_s}% %{_status_start_day}%"
+    set line 2 of lore of {_startDay} to "%{_s}% %{_status_start_day}% %{_lc}%"
     set line 4 of lore of {_startDay} to lang("grimhunt.gui.updater.lore.start_day", {_player})
 
-    set line 2 of lore of {_startClear} to "%{_s}% %{_status_start_clear}%"
+    set line 2 of lore of {_startClear} to "%{_s}% %{_status_start_clear}% %{_lc}%"
     set line 4 of lore of {_startClear} to lang("grimhunt.gui.updater.lore.start_clear", {_player})
 
-    set line 2 of lore of {_particles} to "%{_s}% %{_status_particles}%"
+    set line 2 of lore of {_particles} to "%{_s}% %{_status_particles}% %{_lc}%"
     set line 4 of lore of {_particles} to lang("grimhunt.gui.updater.lore.particles", {_player})
 
-    set line 2 of lore of {_forge} to "%{_s}% %{_status_forge}%"
+    set line 2 of lore of {_forge} to "%{_s}% %{_status_forge}% %{_lc}%"
     set line 4 of lore of {_forge} to lang("grimhunt.gui.updater.lore.forge.1", {_player})
-    set line 5 of lore of {_forge} to lang("grimhunt.gui.updater.lore.forge.2", {_player})
     set {_forgeOresXpStatus} to {_d}
     if grimhuntDataBoolean("forge.oresXp") is true:
         set {_forgeOresXpStatus} to {_e}
     add {_forgeOresXpStatus} to {_fArgs::*}
-    set line 7 of lore of {_forge} to superLang("grimhunt.gui.updater.lore.forge.oresXp", {_player}, {_fArgs::*})
+    set line 6 of lore of {_forge} to superLang("grimhunt.gui.updater.lore.forge.oresXp", {_player}, {_fArgs::*})
+    set line 8 of lore of {_forge} to "%{_s}% %{_forgeOresXpStatus}% %{_rc}%"
+    set line 10 of lore of {_forge} to lang("grimhunt.gui.updater.lore.forge.2", {_player})
 
-    set line 2 of lore of {_kits} to "%{_s}% %{_status_kits}%"
+    set line 2 of lore of {_kits} to "%{_s}% %{_status_kits}% %{_rc}%"
     set line 4 of lore of {_kits} to lang("grimhunt.gui.updater.lore.kits", {_player})
     set {_kits::*} to yaml list "kits.kit" from "bck.manager.grimhunt.data"
     if "%{_kits::*}%" is "<none>":
@@ -625,18 +644,26 @@ function grimhuntConfigGuiUpdater(player: player):
             set line {_c} of lore of {_kits} to "§e➛ %{_co}%%{_vn}%§r §dx%{_vc}%§r"
             add 1 to {_c}
     
-    set line 2 of lore of {_randomHunterCoordinate} to "%{_s}% %{_status_kits}%"
+    set line 2 of lore of {_randomHunterCoordinate} to "%{_s}% %{_status_randomHunterCoordinate}% %{_lc}%"
     set line 4 of lore of {_randomHunterCoordinate} to lang("grimhunt.gui.updater.lore.randomHunterCoordinate", {_player})
+
+    set line 2 of lore of {_startClearAdvancements} to "%{_s}% %{_status_startClearAdvancements}% %{_lc}%"
+    set line 4 of lore of {_startClearAdvancements} to lang("grimhunt.gui.updater.lore.startClearAdvancements", {_player})
+
+    set line 2 of lore of {_keepTeam} to "%{_s}% %{_status_keepTeam}% %{_lc}%"
+    set line 4 of lore of {_keepTeam} to lang("grimhunt.gui.updater.lore.keepTeam", {_player})
     
     set slot 22 of {_gui} to air
     set slot 11 of {_gui} to {_startHeal}
     set slot 12 of {_gui} to {_startFeed}
     set slot 13 of {_gui} to {_startDay}
     set slot 14 of {_gui} to {_startClear}
-    set slot 15 of {_gui} to {_particles}
-    set slot 20 of {_gui} to {_forge}
-    set slot 21 of {_gui} to {_kits}
-    set slot 22 of {_gui} to {_randomHunterCoordinate}
+    set slot 15 of {_gui} to {_startClearAdvancements}
+    set slot 20 of {_gui} to {_particles}
+    set slot 21 of {_gui} to {_forge}
+    set slot 22 of {_gui} to {_kits}
+    set slot 23 of {_gui} to {_randomHunterCoordinate}
+    set slot 24 of {_gui} to {_keepTeam}
 #                                      Grimhunt Gui Gestions Trigger                                                                       #
 on inventory click: 
     if userData(player, "data.inv") is "false":
@@ -647,132 +674,184 @@ on inventory click:
         set {_t} to type of {_i}
         set {_n} to display name of {_i}
         set {_u} to uncolored {_n}
-        if {_t} is not air:
-            if "%{_t}%" contain "barrier":
-                if {_u} contain "Back":
-                    close player's inventory
-            else if "%{_t}%" contain "redstone":
-                if {_u} contain "Particles":
-                    if grimhuntDataBoolean("particles.status") is false:
-                        grimhuntDataBoolean("particles.status", "set", true)
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7particles.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7particles.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
-                    else:
-                        grimhuntDataBoolean("particles.status", "set")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7particles.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7particles.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 for player
-                    loop all players:
-                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
-                            grimhuntConfigGuiUpdater(loop-player)
-                    #grimhuntConfigGuiUpdater(player)
-            else if "%{_t}%" is "golden apple":
-                if {_u} is "Starting Heal":
-                    if grimhuntDataBoolean("startHeal.status") is false:
-                        grimhuntDataBoolean("startHeal.status", "set", true)
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startHeal.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startHeal.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
-                    else:
-                        grimhuntDataBoolean("startHeal.status", "set")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startHeal.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startHeal.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 for player
-                    loop all players:
-                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
-                            grimhuntConfigGuiUpdater(loop-player)
-            else if "%{_t}%" contain "steak":
-                if {_u} is "Starting Feed":
-                    if grimhuntDataBoolean("startFeed.status") is false:
-                        grimhuntDataBoolean("startFeed.status", "set", true)
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startFeed.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startFeed.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
-                    else:
-                        grimhuntDataBoolean("startFeed.status", "set")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startFeed.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startFeed.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 for player
-                    loop all players:
-                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
-                            grimhuntConfigGuiUpdater(loop-player)
-            else if "%{_t}%" contain "clock":
-                if {_u} is "Starting Day":
-                    if grimhuntDataBoolean("startDay.status") is false:
-                        grimhuntDataBoolean("startDay.status", "set", true)
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startDay.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startDay.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
-                    else:
-                        grimhuntDataBoolean("startDay.status", "set")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startDay.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startDay.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 for player
-                    loop all players:
-                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
-                            grimhuntConfigGuiUpdater(loop-player)
-            else if "%{_t}%" is "lava bucket":
-                if {_u} is "Starting Clear":
-                    if grimhuntDataBoolean("startClear.status") is false:
-                        grimhuntDataBoolean("startClear.status", "set", true)
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startClear.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startClear.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
-                    else:
-                        grimhuntDataBoolean("startClear.status", "set")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startClear.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startClear.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 for player
-                    loop all players:
-                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
-                            grimhuntConfigGuiUpdater(loop-player)
-            else if "%{_t}%" is "furnace":
-                if {_u} is "Forge":
-                    if grimhuntDataBoolean("forge.status") is false:
-                        grimhuntDataBoolean("forge.status", "set", true)
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7forge.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7forge.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
-                    else:
-                        grimhuntDataBoolean("forge.status", "set")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7forge.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7forge.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 for player
-                    loop all players:
-                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
-                            grimhuntConfigGuiUpdater(loop-player)
-            else if "%{_t}%" is "iron sword":
-                if {_u} is "Kits":
-                    if grimhuntDataBoolean("kits.status") is false:
-                        grimhuntDataBoolean("kits.status", "set", true)
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7kits.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7kits.status§r", "6", true)
-                        play sound "entity.experience_orb.pickup" with volume 0.3 for player
-                    else:
-                        grimhuntDataBoolean("kits.status", "set")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7kits.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7kits.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 for player
-                    loop all players:
-                        if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
-                            grimhuntConfigGuiUpdater(loop-player)
-            else if "%{_t}%" is "compass":
-                if {_u} is "Random Hunter Coordinate":
-                    if grimhuntDataBoolean("randomHunterCoordinate.status") is false:
-                        if listCounter({bck.hunters::*}) > 1:
-                            grimhuntDataBoolean("randomHunterCoordinate.status", "set", true)
-                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7randomHunterCoordinate.status§r", "4")
-                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7randomHunterCoordinate.status§r", "6", true)
+        if click action is left mouse button:
+            if {_t} is not air:
+                if "%{_t}%" contain "barrier":
+                    if {_u} contain "Back":
+                        close player's inventory
+                else if "%{_t}%" contain "redstone":
+                    if {_u} contain "Particles":
+                        if grimhuntDataBoolean("particles.status") is false:
+                            grimhuntDataBoolean("particles.status", "set", true)
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7particles.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7particles.status§r", "6", true)
                             play sound "entity.experience_orb.pickup" with volume 0.3 for player
                         else:
-                            send lang("grimhunt.randomHunterCoordinate.notEnoughHunters", player)
+                            grimhuntDataBoolean("particles.status", "set")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7particles.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7particles.status§r", "6", true)
                             play sound "entity.villager.no" with volume 0.5 for player
-                    else:
-                        grimhuntDataBoolean("randomHunterCoordinate.status", "set")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7randomHunterCoordinate.status§r", "4")
-                        superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7randomHunterCoordinate.status§r", "6", true)
-                        play sound "entity.villager.no" with volume 0.5 for player                
+                        loop all players:
+                            if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                                grimhuntConfigGuiUpdater(loop-player)
+                        #grimhuntConfigGuiUpdater(player)
+                else if "%{_t}%" is "golden apple":
+                    if {_u} is "Starting Heal":
+                        if grimhuntDataBoolean("startHeal.status") is false:
+                            grimhuntDataBoolean("startHeal.status", "set", true)
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startHeal.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startHeal.status§r", "6", true)
+                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                        else:
+                            grimhuntDataBoolean("startHeal.status", "set")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startHeal.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startHeal.status§r", "6", true)
+                            play sound "entity.villager.no" with volume 0.5 for player
+                        loop all players:
+                            if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                                grimhuntConfigGuiUpdater(loop-player)
+                else if "%{_t}%" contain "steak":
+                    if {_u} is "Starting Feed":
+                        if grimhuntDataBoolean("startFeed.status") is false:
+                            grimhuntDataBoolean("startFeed.status", "set", true)
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startFeed.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startFeed.status§r", "6", true)
+                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                        else:
+                            grimhuntDataBoolean("startFeed.status", "set")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startFeed.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startFeed.status§r", "6", true)
+                            play sound "entity.villager.no" with volume 0.5 for player
+                        loop all players:
+                            if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                                grimhuntConfigGuiUpdater(loop-player)
+                else if "%{_t}%" contain "clock":
+                    if {_u} is "Starting Day":
+                        if grimhuntDataBoolean("startDay.status") is false:
+                            grimhuntDataBoolean("startDay.status", "set", true)
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startDay.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startDay.status§r", "6", true)
+                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                        else:
+                            grimhuntDataBoolean("startDay.status", "set")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startDay.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startDay.status§r", "6", true)
+                            play sound "entity.villager.no" with volume 0.5 for player
+                        loop all players:
+                            if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                                grimhuntConfigGuiUpdater(loop-player)
+                else if "%{_t}%" is "lava bucket":
+                    if {_u} is "Starting Clear":
+                        if grimhuntDataBoolean("startClear.status") is false:
+                            grimhuntDataBoolean("startClear.status", "set", true)
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startClear.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startClear.status§r", "6", true)
+                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                        else:
+                            grimhuntDataBoolean("startClear.status", "set")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startClear.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startClear.status§r", "6", true)
+                            play sound "entity.villager.no" with volume 0.5 for player
+                        loop all players:
+                            if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                                grimhuntConfigGuiUpdater(loop-player)
+                else if "%{_t}%" is "furnace":
+                    if {_u} is "Forge":
+                        if grimhuntDataBoolean("forge.status") is false:
+                            grimhuntDataBoolean("forge.status", "set", true)
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7forge.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7forge.status§r", "6", true)
+                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                        else:
+                            grimhuntDataBoolean("forge.status", "set")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7forge.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7forge.status§r", "6", true)
+                            play sound "entity.villager.no" with volume 0.5 for player
+                        loop all players:
+                            if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                                grimhuntConfigGuiUpdater(loop-player)
+                else if "%{_t}%" is "iron sword":
+                    if {_u} is "Kits":
+                        if grimhuntDataBoolean("kits.status") is false:
+                            grimhuntDataBoolean("kits.status", "set", true)
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7kits.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7kits.status§r", "6", true)
+                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                        else:
+                            grimhuntDataBoolean("kits.status", "set")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7kits.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7kits.status§r", "6", true)
+                            play sound "entity.villager.no" with volume 0.5 for player
+                        loop all players:
+                            if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                                grimhuntConfigGuiUpdater(loop-player)
+                else if "%{_t}%" is "compass":
+                    if {_u} is "Random Hunter Coordinate":
+                        if grimhuntDataBoolean("randomHunterCoordinate.status") is false:
+                            if listCounter({bck.hunters::*}) > 1:
+                                grimhuntDataBoolean("randomHunterCoordinate.status", "set", true)
+                                superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7randomHunterCoordinate.status§r", "4")
+                                superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7randomHunterCoordinate.status§r", "6", true)
+                                play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                            else:
+                                send lang("grimhunt.randomHunterCoordinate.notEnoughHunters", player)
+                                play sound "entity.villager.no" with volume 0.5 for player
+                        else:
+                            grimhuntDataBoolean("randomHunterCoordinate.status", "set")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7randomHunterCoordinate.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7randomHunterCoordinate.status§r", "6", true)
+                            play sound "entity.villager.no" with volume 0.5 for player
+                else if "%{_t}%" is "empty bottle":
+                    if {_u} is "Starting Clear Advancements":
+                        if grimhuntDataBoolean("startClearAdvancements.status") is false:
+                            grimhuntDataBoolean("startClearAdvancements.status", "set", true)
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startClearAdvancements.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7startClearAdvancements.status§r", "6", true)
+                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                        else:
+                            grimhuntDataBoolean("startClearAdvancements.status", "set")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startClearAdvancements.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startClearAdvancements.status§r", "6", true)
+                            play sound "entity.villager.no" with volume 0.5 for player
+                else if "%{_t}%" is "writable book":
+                    if {_u} is "Keep Team":
+                        if grimhuntDataBoolean("keepTeam.status") is false:
+                            grimhuntDataBoolean("keepTeam.status", "set", true)
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7keepTeam.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7keepTeam.status§r", "6", true)
+                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                        else:
+                            grimhuntDataBoolean("keepTeam.status", "set")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7keepTeam.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7keepTeam.status§r", "6", true)
+                            play sound "entity.villager.no" with volume 0.5 for player      
+                loop all players:
+                    if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                        grimhuntConfigGuiUpdater(loop-player)
+        else if click action is right mouse button:
+            if {_t} is not air:
+                if "%{_t}%" contain "barrier":
+                    if {_u} contain "Back":
+                        close player's inventory
+                else if "%{_t}%" is "furnace":
+                    if {_u} is "Forge":
+                        if grimhuntDataBoolean("forge.status") is false:
+                            play sound "block.anvil.place" with volume 0.5 for player
+                            stop
+                        if grimhuntDataBoolean("forge.oresXp") is false:
+                            grimhuntDataBoolean("forge.oresXp", "set", true)
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7forge.oresXp§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7forge.oresXp§r", "6", true)
+                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                        else:
+                            grimhuntDataBoolean("forge.oresXp", "set")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7forge.oresXp§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7forge.oresXp§r", "6", true)
+                            play sound "entity.villager.no" with volume 0.5 for player
+                        loop all players:
+                            if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
+                                grimhuntConfigGuiUpdater(loop-player)
+                    
 #                                      runner command                                                                          #
 command /runner [<text>] [<player>]:
     trigger:

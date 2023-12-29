@@ -207,7 +207,7 @@ on inventory click:
             else if "%{_t}%" contain "command block":
                 if {_u} is "Command Block":
                     if serverPropertiesBoolean("enable-command-block") is false:
-                        play sound "block.anvil.place" with volume 0.1 for player
+                        play sound "block.anvil.place" with volume 0.5 for player
                     else if coreDataBoolean("commandBlock.status") is false:
                         coreDataBoolean("commandBlock.status", "set", true)
                         superLog("§6[§4BCK§6/§eCore§6/§1Rules§6]§r §7%selector(player)%§r has been §aactivated §7commandBlock.status§r", "4")
