@@ -36,6 +36,32 @@ grimhunt:
         config:
             gui:
                 title: "§5Grimhunt §aConfiguration"
+        runner:
+            noOptions: "§c/runner <add/remove>"
+            isHunter: "§6[§5Grimhunt§6] §4<arg0> §cis hunter !"
+            add:
+                notSpecified: "§c/runner add <player>"
+                success: "§6[§5Grimhunt§6] §a<arg0> §ehas been §2added§e to §arunners§e !"
+                sendSuccess: "§6[§5Grimhunt§6] §eYou are now §arunner §e!"
+                alreadyRunner: "§6[§5Grimhunt§6] §8§l<arg0>§r§c is already §arunner§c !"
+            remove:
+                notSpecified: "§c/runner remove <player>"
+                success: "§6[§5Grimhunt§6] §a<arg0> §ehas been §4removed §efrom §arunners§e !"
+                sendSuccess: "§6[§5Grimhunt§6] §eYou're no longer a §arunner §e!"
+                notRunner: "§6[§5Grimhunt§6] §8§l<arg0>§r§c is not a §arunner§c !"
+        hunter:
+            noOptions: "§c/hunter <add/remove>"
+            isRunner: "§6[§5Grimhunt§6] §a<arg0> §cis §arunner§c !"
+            add:
+                notSpecified: "§c/hunter add <player>"
+                success: "§6[§5Grimhunt§6] §4<arg0> §ehas been §2added§e to §chunters !"
+                sendSuccess: "§6[§5Grimhunt§6] §eYou are now §chunters §e!"
+                alreadyHunter: "§6[§5Grimhunt§6] §8§l<arg0>§r§c is already hunter !"
+            remove:
+                notSpecified: "§c/hunter remove <player>"
+                success: "§6[§5Grimhunt§6] §4<arg0> §ehas been §4removed §efrom §chunters§e !"
+                sendSuccess: "§6[§5Grimhunt§6] §eYou're no longer a §chunters §e!"
+                notHunter: "§6[§5Grimhunt§6] §8§l<arg0>§r§c is not a hunter !"
     gui:
         updater:
             enabled: "§2Enabled"

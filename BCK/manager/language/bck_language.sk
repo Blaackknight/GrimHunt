@@ -174,7 +174,7 @@ function languageData(find: text, mode: text="extract", data: text="") :: text:
 #     #     replace ".yml" with "" in {_l}
 #     #     load yaml "plugins/Skript/scripts/BCK/manager/%loop-value%" as "bck.manager.language.%{_l}%"
 #     #     broadcast "Raw: %{_l}%"
-function lang(key: text, player: player, addon: text="language", replace: boolean=false) :: text:
+function lang(key: text, player: player, addon: text="language", replace: boolean=true) :: text:
     set {_lang} to userData({_player}, "data.language")
     if "%{_lang}%" is "<none>":
         set {_lang} to languageConfig("data.defaultLanguage")
@@ -183,11 +183,12 @@ function lang(key: text, player: player, addon: text="language", replace: boolea
     set {_r} to yaml value {_key} from "bck.manager.%{_addon}%.%{_lang}%"
     if "%{_r}%" is "<none>":
         set {_r} to {_key}
-    replace all "<player>" with "%{_player}%" in {_r}
-    replace all "<uuid>" with {_player}'s uuid in {_r}
-    replace all "<lang>" with {_lang} in {_r}
-    replace all "<randomColor>" with randomColor() in {_r}
-    replace all "<addon>" with {_addon} in {_r}
+    if {_replace} is true:
+        replace all "<player>" with "%{_player}%" in {_r}
+        replace all "<uuid>" with {_player}'s uuid in {_r}
+        replace all "<lang>" with {_lang} in {_r}
+        replace all "<randomColor>" with randomColor() in {_r}
+        replace all "<addon>" with {_addon} in {_r}
     return {_r}
 function serverLang(key: text, addon: text="language", replace: boolean=false) :: text:
     set {_lang} to languageData("data.server.language")

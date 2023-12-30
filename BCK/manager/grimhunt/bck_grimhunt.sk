@@ -141,13 +141,16 @@ command /grimhunt [<text>] [<text>]:
                     grimhuntHeal(loop-value)
                     grimhuntFeed(loop-value)
                     grimhuntClear(loop-value)
-                loop {bck.runners::*}:
-                    grimhuntKits(loop-value)
+                    grimhuntClearAdvancements(loop-value)
+                    grimhuntKits(loop-value)                    
                 wait 1 seconds
                 set {bck.grimhunt.chat} to true  
                 grimhuntPlayersLangSend("grimhunt.command.start.chatActivated") 
                 #broadcast "100: %{_timer.100}%%nl%75: %{_timer.75}%%nl%50: %{_timer.50}%%nl%25: %{_timer.25}%%nl%5: %{_timer.5}%"
-                
+                loop grimhuntPlayersList():
+                    set {_x} to loop-value
+                    set {_x}'s level to {_timer.100} 
+
                 set {_ff} to {_timer.100}
                 loop {_ff}+1 times:
                     if {_ff} > 60:
@@ -199,6 +202,9 @@ command /grimhunt [<text>] [<text>]:
                         loop grimhuntPlayersList():
                             set {_bg} to loop-value-2
                             play sound "entity.experience_orb.pickup" with volume 1 with pitch 1 for {_bg}  
+                    loop grimhuntPlayersList():
+                        set {_x} to loop-value-2
+                        set {_x}'s level to {_ff} 
                     remove 1 from {_ff}
                     clear {_args::*}
                     wait 1 seconds
@@ -218,6 +224,7 @@ command /grimhunt [<text>] [<text>]:
                     grimhuntClear(loop-value)
                     addPermission(loop-value, "player.move", true)
                     grimhuntCompassGive(loop-value)
+                    grimhuntClearAdvancements(loop-value)
             else:
                 send lang("grimhunt.command.start.alreadyStarted", player)
         else if arg-1 is "stop":
@@ -418,16 +425,20 @@ function grimhuntLoad():
     wait 2 ticks
     set {_d.0} to grimhuntServerConfig("start.time")
     set {_d.01} to grimhuntServerConfig("start.sound")
+    set {_dx.0::*} to yaml list "join.permissions" from "bck.server.grimhunt.config"
     set {_d.02} to grimhuntServerConfigBoolean("keepTeam.status")
     set {_d.03} to grimhuntServerConfig("teamChatPrefix")
-    set {_d.04} to grimhuntServerConfigBoolean("startHeal.status")
-    set {_d.05} to grimhuntServerConfigBoolean("startFeed.status")
-    set {_d.06} to grimhuntServerConfigBoolean("startDay.status")
-    set {_d.07} to grimhuntServerConfigBoolean("startClear.status")
-    set {_d.08} to grimhuntServerConfigBoolean("particles.status")
-    set {_d.09} to grimhuntServerConfigBoolean("forge.status")
-    set {_d.10} to grimhuntServerConfigBoolean("forge.oresXp")
-    set {_d.11} to grimhuntServerConfigBoolean("kits.status")
+    set {_d.04} to grimhuntServerConfigBoolean("randomHunterCoordinate.status")
+    set {_d.05} to grimhuntServerConfig("randomHunterCoordinate.chance")
+    set {_d.06} to grimhuntServerConfigBoolean("startHeal.status")
+    set {_d.07} to grimhuntServerConfigBoolean("startFeed.status")
+    set {_d.08} to grimhuntServerConfigBoolean("startDay.status")
+    set {_d.09} to grimhuntServerConfigBoolean("startClear.status")
+    set {_d.10} to grimhuntServerConfigBoolean("startClearAdvancements.status")
+    set {_d.11} to grimhuntServerConfigBoolean("particles.status")
+    set {_d.12} to grimhuntServerConfigBoolean("forge.status")
+    set {_d.13} to grimhuntServerConfigBoolean("forge.oresXp")
+    set {_d.14} to grimhuntServerConfigBoolean("kits.status")
     set {_dx.1::*} to yaml list "kits.kit" from "bck.server.grimhunt.config"
     set {_r.0} to grimhuntServerConfigBoolean("rules.tnt.status")
     set {_r.01} to grimhuntServerConfigBoolean("rules.commandBlock.status")
@@ -435,16 +446,22 @@ function grimhuntLoad():
 
     grimhuntData("start.time", "set", "%{_d.0}%")
     grimhuntData("start.sound", "set", "%{_d.01}%")
+    if {_dx.0::*} is set:
+        set yaml list "join.permissions" from "bck.manager.grimhunt.data" to {_dx.0::*}
+        save yaml "bck.manager.grimhunt.data"
     grimhuntData("keepTeam.status", "set", "%{_d.02}%")
     grimhuntData("teamChatPrefix", "set", "%{_d.03}%")
-    grimhuntData("startHeal.status", "set", "%{_d.04}%")
-    grimhuntData("startFeed.status", "set", "%{_d.05}%")
-    grimhuntData("startDay.status", "set", "%{_d.06}%")
-    grimhuntData("startClear.status", "set", "%{_d.07}%")
-    grimhuntData("particles.status", "set", "%{_d.08}%")
-    grimhuntData("forge.status", "set", "%{_d.09}%")
-    grimhuntData("forge.oresXp", "set", "%{_d.10}%")
-    grimhuntData("kits.status", "set", "%{_d.11}%")
+    grimhuntData("randomHunterCoordinate.status", "set", "%{_d.04}%")
+    grimhuntData("randomHunterCoordinate.chance", "set", "%{_d.05}%")
+    grimhuntData("startHeal.status", "set", "%{_d.06}%")
+    grimhuntData("startFeed.status", "set", "%{_d.07}%")
+    grimhuntData("startDay.status", "set", "%{_d.08}%")
+    grimhuntData("startClear.status", "set", "%{_d.09}%")
+    grimhuntData("startClearAdvancements.status", "set", "%{_d.10}%")
+    grimhuntData("particles.status", "set", "%{_d.11}%")
+    grimhuntData("forge.status", "set", "%{_d.12}%")
+    grimhuntData("forge.oresXp", "set", "%{_d.13}%")
+    grimhuntData("kits.status", "set", "%{_d.14}%")
     coreDataBoolean("tnt.status", "set", {_r.0})
     coreDataBoolean("commandBlock.status", "set", {_r.01})
     coreDataBoolean("pvp.status", "set", {_r.02})
@@ -469,6 +486,11 @@ function grimhuntDay():
 function grimhuntClear(player: player):
     if grimhuntDataBoolean("startClear.status") is true:
         clear {_player}'s inventory
+#                                      grimhuntClearAdvancements functions                                                                          #
+function grimhuntClearAdvancements(player: player):
+    if grimhuntDataBoolean("startClearAdvancements.status") is true:
+        make console execute command "/advancement revoke %{_player}% everything"
+        #superLog("§6[§4BCK§6/§5Grimhunt§6]§r",)
 #                                      grimhuntKits functions                                                                          #
 function grimhuntKits(player: player):
     if grimhuntDataBoolean("kits.status") is true:
@@ -851,71 +873,103 @@ on inventory click:
                         loop all players:
                             if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                                 grimhuntConfigGuiUpdater(loop-player)
-                    
+#                                      randomHunterCoordinate trigger                                                                          #                    
+every 1 seconds:
+    if {grimhunt.game.started} is true:
+        set {_c} to grimhuntDataInteger("randomHunterCoordinate.chance")
+        if grimhuntDataInteger("randomHunterCoordinate.chance") is not set:
+            set {_c} to 5
+        set {_v} to false
+        chance of {_c}%:
+            grimhuntRandomHunterCoordinate()
 #                                      runner command                                                                          #
 command /runner [<text>] [<player>]:
     trigger:
         if arg-1 is not set:
-            send "§c/runner <add/remove>"
+            send lang("grimhunt.command.runner.noOptions", player)
             stop
         if arg-1 is "add":
+            if arg-2 is not set:
+                send lang("grimhunt.command.runner.add.notSpecified", player, "language", false)
+                stop
             if {bck.runners::*} doesn't contain "%arg-2%":
                 if {bck.hunters::*} doesn't contain "%arg-2%":
                     add arg-2 to {bck.runners::*}
-                    send "§6[§5Grimhunt§6] §a%arg-2% §ehas been added to runners !"
+                    add "%arg-2%" to {_args::*}
+                    send superLang("grimhunt.command.runner.add.success", player, {_args::*})
+                    send lang("grimhunt.command.runner.add.sendSuccess", arg-2) to arg-2
                     set {_s} to selector(arg-2)
                     superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7%{_s}% §rhas just been added as a §7runner", "6.4")
                 else:
-                    send "§6[§5Grimhunt§6] §4%arg-2% §cis hunter !"
+                    add "%arg-2%" to {_args::*}
+                    send superLang("grimhunt.command.runner.isHunter", player, {_args::*})
             else:
-                send "§6[§5Grimhunt§6] §8§l%arg-2%§r§c is already runner !"
+                add "%arg-2%" to {_args::*}
+                send superLang("grimhunt.command.runner.add.alreadyRunner", player, {_args::*})
         else if arg-1 is "remove":
+            if arg-2 is not set:
+                send lang("grimhunt.command.runner.remove.notSpecified", player, "language", false)
+                stop
             if {bck.runners::*} contain "%arg-2%":
                 if {bck.hunters::*} doesn't contain "%arg-2%":
                     remove arg-2 from {bck.runners::*}
-                    send "§6[§5Grimhunt§6] §a%arg-2% §ehas been removed from runners !"
+                    add "%arg-2%" to {_args::*}
+                    send superLang("grimhunt.command.runner.remove.success", player, {_args::*})
+                    send lang("grimhunt.command.runner.remove.sendSuccess", arg-2) to arg-2
                     set {_s} to selector(arg-2)
                     superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7%{_s}% §rhas just been removed from §7runner", "6.4")
                 else:
-                    send "§6[§5Grimhunt§6] §4%arg-2% §cis hunter !"
+                    add "%arg-2%" to {_args::*}
+                    send superLang("grimhunt.command.runner.isHunter", player, {_args::*})
             else:
-                send "§6[§5Grimhunt§6] §8§l%arg-2%§r§c is not a runner !"
+                add "%arg-2%" to {_args::*}
+                send superLang("grimhunt.command.runner.remove.notRunner", player, {_args::*})
         else:
-            send "§c/runner <add/remove>"
+            send lang("grimhunt.command.runner.noOptions", player)
 #                                      hunter command                                                                          #
 command /hunter [<text>] [<player>]:
     trigger:
-        if hasPermission(player, "server.command.hunter") is false:
-            if "%player%" is not "<none>":
-                send "§c§lHey! §7Tu n'a pas la permission :/"
-                stop
         if arg-1 is not set:
-            send "§c/hunter <add/remove>"
+            send lang("grimhunt.command.hunter.noOptions", player)
             stop
         if arg-1 is "add":
+            if arg-2 is not set:
+                send lang("grimhunt.command.hunter.add.notSpecified", player, "language", false)
+                stop
             if {bck.hunters::*} doesn't contain "%arg-2%":
                 if {bck.runners::*} doesn't contain "%arg-2%":
                     add arg-2 to {bck.hunters::*}
-                    send "§6[§5Grimhunt§6] §4%arg-2% §ehas been added to hunters !"
+                    add "%arg-2%" to {_args::*}
+                    send superLang("grimhunt.command.hunter.add.success", player, {_args::*})
+                    send lang("grimhunt.command.hunter.add.sendSuccess", arg-2) to arg-2
                     set {_s} to selector(arg-2)
                     superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7%{_s}% §rhas just been added as a §7hunter", "6.4")
                 else:
-                    send "§6[§5Grimhunt§6] §a%arg-2% §cis runner !"
+                    add "%arg-2%" to {_args::*}
+                    send superLang("grimhunt.command.hunter.isRunner", player, {_args::*})
             else:
-                send "§6[§5Grimhunt§6] §8§l%arg-2%§r§c is already hunter !"
+                add "%arg-2%" to {_args::*}
+                send superLang("grimhunt.command.hunter.add.alreadyHunter", player, {_args::*})
         else if arg-1 is "remove":
+            if arg-2 is not set:
+                send lang("grimhunt.command.hunter.remove.notSpecified", player, "language", false)
+                stop
             if {bck.hunters::*} contain "%arg-2%":
                 if {bck.runners::*} doesn't contain "%arg-2%":
                     remove arg-2 from {bck.hunters::*}
-                    send "§6[§5Grimhunt§6] §4%arg-2% §ehas been removed from hunters !"
+                    add "%arg-2%" to {_args::*}
+                    send superLang("grimhunt.command.hunter.remove.success", player, {_args::*})
+                    send lang("grimhunt.command.hunter.remove.sendSuccess", arg-2) to arg-2
                     set {_s} to selector(arg-2)
                     superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7%{_s}% §rhas just been removed from §7hunter", "6.4")
                 else:
-                    send "§6[§5Grimhunt§6] §a%arg-2% §cis runner !"
+                    add "%arg-2%" to {_args::*}
+                    send superLang("grimhunt.command.hunter.isRunner", player, {_args::*})
             else:
-                send "§6[§5Grimhunt§6] §8§l%arg-2%§r§c is not a hunter !"
+                add "%arg-2%" to {_args::*}
+                send superLang("grimhunt.command.hunter.remove.notHunter", player, {_args::*})
         else:
-            send "§c/hunter <add/remove>"
+            send lang("grimhunt.command.hunter.noOptions", player)
 #                                      tab complete grimhunt                                                                          #
 on tab complete of "/grimhunt":
     if hasPermission(player, "server.command.grimhunt") is false:
