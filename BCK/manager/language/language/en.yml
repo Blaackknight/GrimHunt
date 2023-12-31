@@ -69,6 +69,7 @@ grimhunt:
             status: "§eStatus:"
             rightClick: "§7§o(Right Click)§r"
             leftClick: "§7§o(Left Click)§r"
+            comingSoon: "§7§o(Coming Soon)§r"
             lore:
                 start_heal: "§7At the §2start §7of the game grants a §aheal §7to §eall players§r"
                 start_feed: "§7At the §2start §7of the game grants §6satiation §7to §eall players§r"
@@ -83,6 +84,7 @@ grimhunt:
                 randomHunterCoordinate: "§7Randomly sends a §4hunter §acoordinate §7in the chat§r"
                 startClearAdvancements: "§7At the §2start §7of the game §dclear all players §aadvancements§r"
                 keepTeam: "§aKeep §7current teams before §eeach restart"
+                smoker: "§eAutomatically cooks §7the meat of passive mobs§r"
             noKitFound: §7§mNo kits found..
             currentKit: "§eCurrent kit:§r"
     death:
@@ -140,6 +142,9 @@ core:
             god:
                 activated: "§6[§4BCK§6]§r §eGod mode §aactivated §e!"
                 removed: "§6[§4BCK§6]§r §eGod mode §cdisabled §e!"
+    rules:
+        pvp:
+            notAllowed: "§6[§4BCK§6]§r §l§8Hey §c! Pvp is not allowed."
 debug:
     afterDebug: "§6[§4BCK§6/§3Debug§6]§r §eTimer finished"
     beforeDebug: "§6[§4BCK§6/§3Debug§6]§r §eTimer starting"

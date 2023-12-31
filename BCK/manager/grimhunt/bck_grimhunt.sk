@@ -234,7 +234,7 @@ command /grimhunt [<text>] [<text>]:
                 grimhuntTeamDelete(true)
                 loop {bck.hunters::*}:
                     addPermission(loop-value, "player.move", true)
-                    clear {grimhunt.compass.%loop-value%.num}
+                    set {grimhunt.compass.%loop-value%.num} to 1
                 if grimhuntDataBoolean("keepTeam.status") is false:
                     clear {bck.hunters::*}
                     clear {bck.runners::*}
@@ -440,6 +440,17 @@ function grimhuntLoad():
     set {_d.13} to grimhuntServerConfigBoolean("forge.oresXp")
     set {_d.14} to grimhuntServerConfigBoolean("kits.status")
     set {_dx.1::*} to yaml list "kits.kit" from "bck.server.grimhunt.config"
+    set {_d.15} to grimhuntServerConfigBoolean("smoker.status")
+    set {_ent::*} to all entities
+    set {_cc} to 2
+    loop {_ent::*}:
+        set {_e} to loop-value
+        set {_t} to type of {_e}
+        set {_gg::*} to yaml list "smoker.%{_t}%" from "bck.server.grimhunt.config"
+        if {_gg::*} is "<none>":
+            stop
+        set {_dx.%{_cc}%::*} to {_gg::*}
+        add 1 to {_cc}
     set {_r.0} to grimhuntServerConfigBoolean("rules.tnt.status")
     set {_r.01} to grimhuntServerConfigBoolean("rules.commandBlock.status")
     set {_r.02} to grimhuntServerConfigBoolean("rules.pvp.status")
@@ -462,12 +473,24 @@ function grimhuntLoad():
     grimhuntData("forge.status", "set", "%{_d.12}%")
     grimhuntData("forge.oresXp", "set", "%{_d.13}%")
     grimhuntData("kits.status", "set", "%{_d.14}%")
+    grimhuntData("smoker.status", "set", "%{_d.15}%")
+    grimhuntData("smoker.loots", "set", "%{_d.16}%")
     coreDataBoolean("tnt.status", "set", {_r.0})
     coreDataBoolean("commandBlock.status", "set", {_r.01})
     coreDataBoolean("pvp.status", "set", {_r.02})
     if {_dx.1::*} is set:
         set yaml list "kits.kit" from "bck.manager.grimhunt.data" to {_dx.1::*}
         save yaml "bck.manager.grimhunt.data"
+    set {_aa} to 2
+    loop {_ent::*}:
+        set {_e} to loop-value
+        set {_t} to type of {_e}
+        set {_gg::*} to yaml list "smoker.%{_t}%" from "bck.server.grimhunt.config"
+        if {_gg::*} is "<none>":
+            stop
+        set yaml list "smoker.%{_t}%" from "bck.manager.grimhunt.data" to {_dx.%{_aa}%::*}
+        save yaml "bck.manager.grimhunt.data"
+        add 1 to {_aa}
     wait 10 ticks
     send "§6[§4BCK§6/§5Grimhunt§6]§r §5Grimhunt §econfig has been §aupdated §e!" to console
 #                                      grimhuntHeal functions                                                                          #
@@ -520,11 +543,12 @@ function grimhuntRandomHunterCoordinate():
         set {_y} to x-coordinate of {_a}
         set {_z} to x-coordinate of {_a}
         set {_w} to world of {_a}
-        add selector({_a}) to {_args::*}
-        add {_x} to {_args::*}
-        add {_y} to {_args::*}
-        add {_z} to {_args::*}
-        add {_w} to {_args::*}
+        set {_t} to selector({_a})
+        add "%{_t}%" to {_args::*}
+        add "%{_x}%" to {_args::*}
+        add "%{_y}%" to {_args::*}
+        add "%{_z}%" to {_args::*}
+        add "%{_w}%" to {_args::*}
         grimhuntPlayersMultiLangSend("grimhunt.randomHunterCoordinate.coordinate", {_args::*})
 #                                      grimhuntConfigGuiUpdater functions                                                                          #
 function grimhuntConfigGuiUpdater(player: player):
@@ -534,6 +558,7 @@ function grimhuntConfigGuiUpdater(player: player):
     set {_s} to lang("grimhunt.gui.updater.status", {_player})
     set {_rc} to lang("grimhunt.gui.updater.rightClick", {_player})
     set {_lc} to lang("grimhunt.gui.updater.leftClick", {_player})
+    set {_co} to lang("grimhunt.gui.updater.comingSoon", {_player})
     set {_startHeal} to golden apple named "§cStarting Heal"
     if grimhuntDataBoolean("startHeal.status") is false:
         set {_status_start_heal} to {_d}
@@ -614,6 +639,46 @@ function grimhuntConfigGuiUpdater(player: player):
         set {_status_keepTeam} to {_e}
         enchant {_keepTeam} with unbreaking 1
 
+    set {_smoker} to smoker named "§3Smoking"
+    if grimhuntDataBoolean("smoker.status") is false:
+        set {_status_smoker} to {_d}
+        disenchant {_smoker}
+    else:
+        set {_status_smoker} to {_e}
+        enchant {_smoker} with unbreaking 1
+
+    set {_comingSoon1} to impulse command block named "§oComing Soon"
+    if grimhuntDataBoolean("comingSoon1.status") is false:
+        set {_status_comingSoon1} to {_d}
+        disenchant {_comingSoon1}
+    else:
+        set {_status_comingSoon1} to {_e}
+        enchant {_comingSoon1} with unbreaking 1
+
+    set {_comingSoon2} to impulse command block named "§oComing Soon"
+    if grimhuntDataBoolean("comingSoon2.status") is false:
+        set {_status_comingSoon2} to {_d}
+        disenchant {_comingSoon2}
+    else:
+        set {_status_comingSoon2} to {_e}
+        enchant {_comingSoon} with unbreaking 1
+
+    set {_comingSoon3} to impulse command block named "§oComing Soon"
+    if grimhuntDataBoolean("comingSoon3.status") is false:
+        set {_status_comingSoon3} to {_d}
+        disenchant {_comingSoon3}
+    else:
+        set {_status_comingSoon3} to {_e}
+        enchant {_comingSoon3} with unbreaking 1
+
+    set {_comingSoon4} to impulse command block named "§oComing Soon"
+    if grimhuntDataBoolean("comingSoon4.status") is false:
+        set {_status_comingSoon4} to {_d}
+        disenchant {_comingSoon4}
+    else:
+        set {_status_comingSoon4} to {_e}
+        enchant {_comingSoon4} with unbreaking 1
+
     set line 2 of lore of {_startHeal} to "%{_s}% %{_status_start_heal}% %{_lc}%"
     set line 4 of lore of {_startHeal} to lang("grimhunt.gui.updater.lore.start_heal", {_player})
 
@@ -674,18 +739,38 @@ function grimhuntConfigGuiUpdater(player: player):
 
     set line 2 of lore of {_keepTeam} to "%{_s}% %{_status_keepTeam}% %{_lc}%"
     set line 4 of lore of {_keepTeam} to lang("grimhunt.gui.updater.lore.keepTeam", {_player})
+
+    set line 2 of lore of {_smoker} to "%{_s}% %{_status_smoker}% %{_lc}%"
+    set line 4 of lore of {_smoker} to lang("grimhunt.gui.updater.lore.smoker", {_player})
+
+    set line 2 of lore of {_comingSoon1} to "%{_s}% %{_status_comingSoon1}% %{_co}%"
+    set line 4 of lore of {_comingSoon1} to lang("grimhunt.gui.updater.lore.comingSoon1", {_player})
+
+    set line 2 of lore of {_comingSoon2} to "%{_s}% %{_status_comingSoon2}% %{_co}%"
+    set line 4 of lore of {_comingSoon2} to lang("grimhunt.gui.updater.lore.comingSoon2", {_player})
+
+    set line 2 of lore of {_comingSoon3} to "%{_s}% %{_status_comingSoon3}% %{_co}%"
+    set line 4 of lore of {_comingSoon3} to lang("grimhunt.gui.updater.lore.comingSoon3", {_player})
+
+    set line 2 of lore of {_comingSoon4} to "%{_s}% %{_status_comingSoon4}% %{_co}%"
+    set line 4 of lore of {_comingSoon4} to lang("grimhunt.gui.updater.lore.comingSoon4", {_player})
     
     set slot 22 of {_gui} to air
-    set slot 11 of {_gui} to {_startHeal}
-    set slot 12 of {_gui} to {_startFeed}
-    set slot 13 of {_gui} to {_startDay}
-    set slot 14 of {_gui} to {_startClear}
-    set slot 15 of {_gui} to {_startClearAdvancements}
-    set slot 20 of {_gui} to {_particles}
-    set slot 21 of {_gui} to {_forge}
-    set slot 22 of {_gui} to {_kits}
-    set slot 23 of {_gui} to {_randomHunterCoordinate}
-    set slot 24 of {_gui} to {_keepTeam}
+    set slot 10 of {_gui} to {_startHeal}
+    set slot 11 of {_gui} to {_startFeed}
+    set slot 12 of {_gui} to {_startDay}
+    set slot 13 of {_gui} to {_startClear}
+    set slot 14 of {_gui} to {_startClearAdvancements}
+    set slot 15 of {_gui} to {_particles}
+    set slot 16 of {_gui} to {_forge}
+    set slot 19 of {_gui} to {_kits}
+    set slot 20 of {_gui} to {_randomHunterCoordinate}
+    set slot 21 of {_gui} to {_keepTeam}
+    set slot 22 of {_gui} to {_smoker}
+    set slot 23 of {_gui} to {_comingSoon1}
+    set slot 24 of {_gui} to {_comingSoon2}
+    set slot 25 of {_gui} to {_comingSoon3}
+    set slot 28 of {_gui} to {_comingSoon4}
 #                                      Grimhunt Gui Gestions Trigger                                                                       #
 on inventory click: 
     if userData(player, "data.inv") is "false":
@@ -846,6 +931,18 @@ on inventory click:
                             grimhuntDataBoolean("keepTeam.status", "set")
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7keepTeam.status§r", "4")
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7keepTeam.status§r", "6", true)
+                            play sound "entity.villager.no" with volume 0.5 for player
+                else if "%{_t}%" is "smoker":
+                    if {_u} is "Smoking":
+                        if grimhuntDataBoolean("smoker.status") is false:
+                            grimhuntDataBoolean("smoker.status", "set", true)
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7smoker.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7smoker.status§r", "6", true)
+                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                        else:
+                            grimhuntDataBoolean("smoker.status", "set")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7smoker.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7smoker.status§r", "6", true)
                             play sound "entity.villager.no" with volume 0.5 for player      
                 loop all players:
                     if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
@@ -1162,27 +1259,19 @@ every tick:
                 set {_i} to loop-player's tool
                 set {_o} to loop-player's offhand tool
                 if {grimhunt.game.started} is not set:
-                    if {_i} is not compass:
-                        if {_o} is not compass:
-                            stop
-                        else:
-                            set {_i} to {_o}
-                    set line 1 of lore of {_i} to lang("grimhunt.game.compass.notStarted", loop-player)
-                    stop
-                if {_i} is not compass:
-                    if {_o} is not compass:
-                        stop
-                    else:
-                        set {_i} to {_o}
+                    if loop-player's tool is not compass:
+                        exit loop
+                    set line 1 of lore of loop-player's tool to lang("grimhunt.game.compass.notStarted", loop-player)
+                    exit loop
+                if loop-player's tool is not compass:
+                    exit loop
                 set {_nn} to {grimhunt.compass.%loop-player%.num}
                 set {_xx} to {bck.runners::%{_nn}%}
                 set {_xa} to "%{bck.runners::*}%"
                 #broadcast "%loop-player%: %{_xx}%"
                 if {_xx} is "<none>":
                     set {_xx} to lang("grimhunt.game.compass.notFound", loop-player)
-                else:
-                    set {_xx} to "§a%{_xx}%"
-                set line 1 of lore of {_i} to "§4Target: %{_xx}%"
+                set line 1 of lore of loop-player's tool to "§4Target: §a%{_xx}%"
                 set {_n} to {grimhunt.compass.%loop-player%.num}
                 set the loop-player's compass target to location of {bck.runners::%{_n}%}
                 if "%loop-player's world%" is not "world":
@@ -1193,7 +1282,7 @@ every tick:
                         set {_w} to "world_nether"
                     if {_xx}'s world is not loop-player's world:
                         send actionbar "§7§o%{_xa}% §d➻ §a%{_xx}'s world%" to loop-player
-                        stop
+                        exit loop
                     if {_dist} < 11:
                         send actionbar "§7§o%{_xa}% §d➻ §a%{_dist}%" to loop-player
                     else if {_dist} < 16:
@@ -1393,6 +1482,7 @@ on break:
             play sound "entity.blaze.shoot" with volume 0.05 for player
             deleteAndDrop(player, event-location, iron ingot)
             experienceDrop(event-location, 1, 4)
+            damage player's tool by 1
     else if event-block is gold ore or deepslate gold ore:
         if {_v} is true:
             cancel event
@@ -1400,6 +1490,7 @@ on break:
             play sound "entity.blaze.shoot" with volume 0.05 for player
             deleteAndDrop(player, event-location, gold ingot)
             experienceDrop(event-location, 2, 7)
+            damage player's tool by 1
     else if event-block is copper ore or deepslate copper ore:
         if {_v} is true:
             cancel event
@@ -1407,18 +1498,19 @@ on break:
             play sound "entity.blaze.shoot" with volume 0.05 for player
             deleteAndDropMore(player, event-location, copper ingot)
             experienceDrop(event-location)
-    else if event-block is stone:
-        if {_v} is true:
-            cancel event
-            delete block
-            play sound "entity.blaze.shoot" with volume 0.05 for player
-            deleteAndDropNoFortune(player, event-location, stone)
-    else if event-block is deepslate:
-        if {_v} is true:
-            cancel event
-            delete block
-            play sound "entity.blaze.shoot" with volume 0.05 for player 
-            deleteAndDropNoFortune(player, event-location, deepslate)
+            damage player's tool by 1
+    # else if event-block is stone:
+    #     if {_v} is true:
+    #         cancel event
+    #         delete block
+    #         play sound "entity.blaze.shoot" with volume 0.05 for player
+    #         deleteAndDropNoFortune(player, event-location, stone)
+    # else if event-block is deepslate:
+    #     if {_v} is true:
+    #         cancel event
+    #         delete block
+    #         play sound "entity.blaze.shoot" with volume 0.05 for player 
+    #         deleteAndDropNoFortune(player, event-location, deepslate)
 #                                      deleteAndDrop functions                                                                          #
 function deleteAndDrop(player: player, location: location, dropItem: item):
     set {_fortune} to level of fortune of {_player}'s tool
@@ -1525,13 +1617,27 @@ function experienceDrop(location: location, minxp: integer=1, maxxp: integer=3):
     if grimhuntDataBoolean("forge.oresXp") is true:
         set {_xp} to random number between {_minxp} and {_maxxp}
         spawn {_xp} of experience orb at {_location}
+    else if grimhuntDataBoolean("smoker.status") is true:
+        set {_xp} to random number between {_minxp} and {_maxxp}
+        spawn {_xp} of experience orb at {_location}
 #                                       grimhunt Function Win or Loose                                                                            #
 function grimhuntWin(team: text):
     if {_team} is "runner":
 
     else if {_team} is "hunter":
 #                                       Inventory Saver & Revive Trigger                                                                         #
+# every tick:
+#     if coreDataBoolean("pvp.status") is false:
+#         loop all players:
+#             set {_x} to loop-player
+#             if {temp.%{_x}%.pvpCounter} >= 1:
+#                 if {temp.%{_x}%.pvpCounter} < 
+#                 send formatted lang("core.rules.pvp.notAllowed", {_x}) to {_x}
+#             remove 1 from {temp.%{_x}%.pvpCounter}
 on damage:
+    if coreDataBoolean("pvp.status") is false:
+        send formatted lang("core.rules.pvp.notAllowed", attacker) to attacker
+        cancel event
     set {_c} to damage cause
     set {_d} to damage
     set {_a} to attacker
@@ -1543,6 +1649,8 @@ on damage:
             cancel event
             stop
         if {bck.runners::*} contain {_v}:
+            if {grimhunt.game.started} is not set:
+                stop
             if {_v}'s tool is totem of undying:
                 stop
             if offhand tool of {_v} is totem of undying:
@@ -1629,6 +1737,62 @@ on damage:
             clear all the potion effects of {_v}
             feed {_v}
             clear {_v}'s inventory
+function grimhuntSmoker(v: livingentity, x: livingentity):
+    set {_o} to {_v}'s location
+    set {_t} to type of {_v}
+    set {_i::*} to yaml list "smoker.%{_t}%" from "bck.manager.grimhunt.data"
+    loop {_i::*}:
+        set {_d} to "%loop-value%"
+        #broadcast "%{_d}%"
+        if {_d} contain ":":
+            set {_data::*} to {_d} split by ":"
+            set {_i} to {_data::1}
+            replace all "_" with " " in {_i} 
+            set {_i} to {_i} parsed as item
+            if {_data::2} contain "/":
+                set {_c::*} to {_data::2} split by "/"
+                set {_min} to {_c::1}
+                set {_min} to {_min} parsed as integer
+                set {_max} to {_c::2}
+                set {_max} to {_max} parsed as integer
+            else:
+                set {_min} to 1
+                set {_max} to 1
+        
+        if {_x} is set:
+            set {_f} to level of looting of {_x}'s tool
+            if {_f} is 1:
+                add 1 to {_min}
+                add rng(1, 2) to {_max}
+            else if {_f} is 2:
+                add 2 to {_min}
+                add rng(2, 4) to {_max}
+            else if {_f} is 3:
+                add 3 to {_min}
+                add rng(3, 6) to {_max}
+            else:
+                add 3 to {_min}
+                add rng(3, {_f}) to {_max}
+        set {_n} to rng({_min}, {_max})
+        drop {_n} of {_i} at {_o}
+        experienceDrop({_v}'s location, {_min}, {_max})
+    
+    #broadcast "%type of {_v}% = %{_i}% x %{_min}% / %{_max}%"
+
+on death:
+    set {_c} to damage cause
+    set {_d} to damage
+    set {_a} to attacker
+    set {_v} to victim
+    set {_max} to maximum health of {_v}
+    set {_w} to {_v}'s health
+    if "%type of {_v}%" is not "player":
+        if grimhuntDataBoolean("smoker.status") is true:
+            set {_i::*} to yaml list "smoker.%type of {_v}%" from "bck.manager.grimhunt.data"
+            if "%{_i::*}%" is not "<none>":
+                clear drops
+                grimhuntSmoker({_v}, {_a})
+                play sound "entity.blaze.shoot" with volume 0.3 for {_a}
 #                                       grimhuntPlayersMultiLangSend functions                                                                         #
 function grimhuntPlayersMultiLangSend(key: text, args: objects, type: text="text"):
     loop {bck.runners::*}:
