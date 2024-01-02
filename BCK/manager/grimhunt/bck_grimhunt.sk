@@ -387,7 +387,7 @@ function grimhuntPlayersLangSend(key: text, type: text="normal"):
 function grimhuntLoad():
     set {_data::*} to yaml list "data.grimhunt.load.options" from "bck.manager.grimhunt.config"
     if file "plugins/GrimHunt/config.yml" doesn't exist:
-        send "§6[§4BCK§6/§5Grimhunt§6]§r §eInitialization.." to console
+        superLog("§6[§4BCK§6/§5Grimhunt§6]§r §eInitialization..", "6.5")
         create script "plugins/GrimHunt/config.yml"
         write "##                                                                                                                              " at line 1 to file "plugins/GrimHunt/config.yml"
         write "##       _____         _____    ____      ______  _______          ____   ____  ____   ____  _____   ______   _________________ " at line 2 to file "plugins/GrimHunt/config.yml"
@@ -418,28 +418,61 @@ function grimhuntLoad():
             write loop-value at line {_x} to file "plugins/GrimHunt/config.yml"
             add 1 to {_x}
         wait 3 ticks
-        send "§6[§4BCK§6/§5Grimhunt§6]§r §eInitialization §nComplete§r§e !" to console
+        superLog("§6[§4BCK§6/§5Grimhunt§6]§r §eInitialization §nComplete§r§e !", "6.5")
     wait 10 ticks
     load yaml "plugins/GrimHunt/config.yml" as "bck.server.grimhunt.config"
-    send "§6[§4BCK§6/§5Grimhunt§6]§r §aLoaded file succeffully !" to console
+    superLog("§6[§4BCK§6/§5Grimhunt§6]§r §aLoaded file succeffully !", "6.5")
     wait 2 ticks
     set {_d.0} to grimhuntServerConfig("start.time")
     set {_d.01} to grimhuntServerConfig("start.sound")
+
     set {_dx.0::*} to yaml list "join.permissions" from "bck.server.grimhunt.config"
+
     set {_d.02} to grimhuntServerConfigBoolean("keepTeam.status")
+    set {_i.00} to grimhuntServerConfig("keepTeam.item")
+    set {_n.00} to grimhuntServerConfig("keepTeam.name")
+
     set {_d.03} to grimhuntServerConfig("teamChatPrefix")
+    
     set {_d.04} to grimhuntServerConfigBoolean("randomHunterCoordinate.status")
     set {_d.05} to grimhuntServerConfig("randomHunterCoordinate.chance")
+    set {_i.01} to grimhuntServerConfig("randomHunterCoordinate.item")
+    set {_n.01} to grimhuntServerConfig("randomHunterCoordinate.name")
+
     set {_d.06} to grimhuntServerConfigBoolean("startHeal.status")
+    set {_i.02} to grimhuntServerConfig("startHeal.item")
+    set {_n.02} to grimhuntServerConfig("startHeal.name")
+
     set {_d.07} to grimhuntServerConfigBoolean("startFeed.status")
+    set {_i.03} to grimhuntServerConfig("startFeed.item")
+    set {_n.03} to grimhuntServerConfig("startFeed.name")
+
     set {_d.08} to grimhuntServerConfigBoolean("startDay.status")
+    set {_i.04} to grimhuntServerConfig("startDay.item")
+    set {_n.04} to grimhuntServerConfig("startDay.name")
+
     set {_d.09} to grimhuntServerConfigBoolean("startClear.status")
+    set {_i.05} to grimhuntServerConfig("startClear.item")
+    set {_n.05} to grimhuntServerConfig("startClear.name")
+
     set {_d.10} to grimhuntServerConfigBoolean("startClearAdvancements.status")
+    set {_i.06} to grimhuntServerConfig("startClearAdvancements.item")
+    set {_n.06} to grimhuntServerConfig("startClearAdvancements.name")
+
     set {_d.11} to grimhuntServerConfigBoolean("particles.status")
+    set {_i.07} to grimhuntServerConfig("particles.item")
+    set {_n.07} to grimhuntServerConfig("particles.name")
+    
     set {_d.12} to grimhuntServerConfigBoolean("forge.status")
     set {_d.13} to grimhuntServerConfigBoolean("forge.oresXp")
+    set {_i.08} to grimhuntServerConfig("forge.item")
+    set {_n.08} to grimhuntServerConfig("forge.name")
+
     set {_d.14} to grimhuntServerConfigBoolean("kits.status")
     set {_dx.1::*} to yaml list "kits.kit" from "bck.server.grimhunt.config"
+    set {_i.09} to grimhuntServerConfig("kits.item")
+    set {_n.09} to grimhuntServerConfig("kits.name")
+
     set {_d.15} to grimhuntServerConfigBoolean("smoker.status")
     set {_ent::*} to all entities
     set {_cc} to 2
@@ -451,6 +484,9 @@ function grimhuntLoad():
             stop
         set {_dx.%{_cc}%::*} to {_gg::*}
         add 1 to {_cc}
+    set {_i.10} to grimhuntServerConfig("smoker.item")
+    set {_n.10} to grimhuntServerConfig("smoker.name")
+
     set {_r.0} to grimhuntServerConfigBoolean("rules.tnt.status")
     set {_r.01} to grimhuntServerConfigBoolean("rules.commandBlock.status")
     set {_r.02} to grimhuntServerConfigBoolean("rules.pvp.status")
@@ -460,21 +496,122 @@ function grimhuntLoad():
     if {_dx.0::*} is set:
         set yaml list "join.permissions" from "bck.manager.grimhunt.data" to {_dx.0::*}
         save yaml "bck.manager.grimhunt.data"
+
     grimhuntData("keepTeam.status", "set", "%{_d.02}%")
+    if {_i.00} is set:
+        grimhuntData("keepTeam.item", "set", {_i.00})
+    else:
+        grimhuntData("keepTeam.item", "set", grimhuntConfig("data.grimhunt.config.default.keepTeam.item"))
+    if {_n.00} is set:
+        grimhuntData("keepTeam.name", "set", {_n.00})
+    else:
+        grimhuntData("keepTeam.name", "set", grimhuntConfig("data.grimhunt.config.default.keepTeam.name"))
+
     grimhuntData("teamChatPrefix", "set", "%{_d.03}%")
+
     grimhuntData("randomHunterCoordinate.status", "set", "%{_d.04}%")
     grimhuntData("randomHunterCoordinate.chance", "set", "%{_d.05}%")
+    if {_i.01} is set:
+        grimhuntData("randomHunterCoordinate.item", "set", {_i.01})
+    else:
+        grimhuntData("randomHunterCoordinate.item", "set", grimhuntConfig("data.grimhunt.config.default.randomHunterCoordinate.item"))
+    if {_n.01} is set:
+        grimhuntData("randomHunterCoordinate.name", "set", {_n.01})
+    else:
+        grimhuntData("randomHunterCoordinate.name", "set", grimhuntConfig("data.grimhunt.config.default.randomHunterCoordinate.name"))
+
     grimhuntData("startHeal.status", "set", "%{_d.06}%")
+    if {_i.02} is set:
+        grimhuntData("startHeal.item", "set", {_i.02})
+    else:
+        grimhuntData("startHeal.item", "set", grimhuntConfig("data.grimhunt.config.default.startHeal.item"))
+    if {_n.02} is set:
+        grimhuntData("startHeal.name", "set", {_n.02})
+    else:
+        grimhuntData("startHeal.name", "set", grimhuntConfig("data.grimhunt.config.default.startHeal.name"))
+
     grimhuntData("startFeed.status", "set", "%{_d.07}%")
+    if {_i.03} is set:
+        grimhuntData("startFeed.item", "set", {_i.03})
+    else:
+        grimhuntData("startFeed.item", "set", grimhuntConfig("data.grimhunt.config.default.startFeed.item"))
+    if {_n.03} is set:
+        grimhuntData("startFeed.name", "set", {_n.03})
+    else:
+        grimhuntData("startFeed.name", "set", grimhuntConfig("data.grimhunt.config.default.startFeed.name"))
+
     grimhuntData("startDay.status", "set", "%{_d.08}%")
+    if {_i.04} is set:
+        grimhuntData("startDay.item", "set", {_i.04})
+    else:
+        grimhuntData("startDay.item", "set", grimhuntConfig("data.grimhunt.config.default.startDay.item"))
+    if {_n.04} is set:
+        grimhuntData("startDay.name", "set", {_n.04})
+    else:
+        grimhuntData("startDay.name", "set", grimhuntConfig("data.grimhunt.config.default.startDay.name"))
+
     grimhuntData("startClear.status", "set", "%{_d.09}%")
+    if {_i.05} is set:
+        grimhuntData("startClear.item", "set", {_i.05})
+    else:
+        grimhuntData("startClear.item", "set", grimhuntConfig("data.grimhunt.config.default.startClear.item"))
+    if {_n.05} is set:
+        grimhuntData("startClear.name", "set", {_n.05})
+    else:
+        grimhuntData("startClear.name", "set", grimhuntConfig("data.grimhunt.config.default.startClear.name"))
+
     grimhuntData("startClearAdvancements.status", "set", "%{_d.10}%")
+    if {_i.06} is set:
+        grimhuntData("startClearAdvancements.item", "set", {_i.06})
+    else:
+        grimhuntData("startClearAdvancements.item", "set", grimhuntConfig("data.grimhunt.config.default.startClearAdvancements.item"))
+    if {_n.06} is set:
+        grimhuntData("startClearAdvancements.name", "set", {_n.06})
+    else:
+        grimhuntData("startClearAdvancements.name", "set", grimhuntConfig("data.grimhunt.config.default.startClearAdvancements.name"))
+
     grimhuntData("particles.status", "set", "%{_d.11}%")
+    if {_i.07} is set:
+        grimhuntData("particles.item", "set", {_i.07})
+    else:
+        grimhuntData("particles.item", "set", grimhuntConfig("data.grimhunt.config.default.particles.item"))
+    if {_n.07} is set:
+        grimhuntData("particles.name", "set", {_n.07})
+    else:
+        grimhuntData("particles.name", "set", grimhuntConfig("data.grimhunt.config.default.particles.name"))
+
     grimhuntData("forge.status", "set", "%{_d.12}%")
     grimhuntData("forge.oresXp", "set", "%{_d.13}%")
+    if {_i.08} is set:
+        grimhuntData("forge.item", "set", {_i.08})
+    else:
+        grimhuntData("forge.item", "set", grimhuntConfig("data.grimhunt.config.default.forge.item"))
+    if {_n.08} is set:
+        grimhuntData("forge.name", "set", {_n.08})
+    else:
+        grimhuntData("forge.name", "set", grimhuntConfig("data.grimhunt.config.default.forge.name"))
+
     grimhuntData("kits.status", "set", "%{_d.14}%")
+    if {_i.09} is set:
+        grimhuntData("kits.item", "set", {_i.09})
+    else:
+        grimhuntData("kits.item", "set", grimhuntConfig("data.grimhunt.config.default.kits.item"))
+    if {_n.09} is set:
+        grimhuntData("kits.name", "set", {_n.09})
+    else:
+        grimhuntData("kits.name", "set", grimhuntConfig("data.grimhunt.config.default.kits.name"))
+
     grimhuntData("smoker.status", "set", "%{_d.15}%")
     grimhuntData("smoker.loots", "set", "%{_d.16}%")
+    if {_i.10} is set:
+        grimhuntData("smoker.item", "set", {_i.10})
+    else:
+        grimhuntData("smoker.item", "set", grimhuntConfig("data.grimhunt.config.default.smoker.item"))
+    if {_n.10} is set:
+        grimhuntData("smoker.name", "set", {_n.10})
+    else:
+        grimhuntData("smoker.name", "set", grimhuntConfig("data.grimhunt.config.default.smoker.name"))
+
     coreDataBoolean("tnt.status", "set", {_r.0})
     coreDataBoolean("commandBlock.status", "set", {_r.01})
     coreDataBoolean("pvp.status", "set", {_r.02})
@@ -492,7 +629,7 @@ function grimhuntLoad():
         save yaml "bck.manager.grimhunt.data"
         add 1 to {_aa}
     wait 10 ticks
-    send "§6[§4BCK§6/§5Grimhunt§6]§r §5Grimhunt §econfig has been §aupdated §e!" to console
+    superLog("§6[§4BCK§6/§5Grimhunt§6]§r §5Grimhunt §econfig has been §aupdated §e!", "6.5")
 #                                      grimhuntHeal functions                                                                          #
 function grimhuntHeal(player: player):
     if grimhuntDataBoolean("startHeal.status") is true:
@@ -559,7 +696,7 @@ function grimhuntConfigGuiUpdater(player: player):
     set {_rc} to lang("grimhunt.gui.updater.rightClick", {_player})
     set {_lc} to lang("grimhunt.gui.updater.leftClick", {_player})
     set {_co} to lang("grimhunt.gui.updater.comingSoon", {_player})
-    set {_startHeal} to golden apple named "§cStarting Heal"
+    set {_startHeal} to grimhuntDataItem("startHeal.item") named grimhuntData("startHeal.name")
     if grimhuntDataBoolean("startHeal.status") is false:
         set {_status_start_heal} to {_d}
         disenchant {_startHeal}
@@ -567,7 +704,7 @@ function grimhuntConfigGuiUpdater(player: player):
         set {_status_start_heal} to {_e}
         enchant {_startHeal} with unbreaking 1
 
-    set {_startFeed} to cooked beef named "§6Starting Feed"
+    set {_startFeed} to grimhuntDataItem("startFeed.item") named grimhuntData("startFeed.name")
     if grimhuntDataBoolean("startFeed.status") is false:
         set {_status_start_feed} to {_d}
         disenchant {_startFeed}
@@ -575,7 +712,7 @@ function grimhuntConfigGuiUpdater(player: player):
         set {_status_start_feed} to {_e}
         enchant {_startFeed} with unbreaking 1
 
-    set {_startDay} to clock named "§eStarting Day"
+    set {_startDay} to grimhuntDataItem("startDay.item") named grimhuntData("startDay.name")
     if grimhuntDataBoolean("startDay.status") is false:
         set {_status_start_day} to {_d}
         disenchant {_startDay}
@@ -583,7 +720,7 @@ function grimhuntConfigGuiUpdater(player: player):
         set {_status_start_day} to {_e}
         enchant {_startDay} with unbreaking 1
 
-    set {_startClear} to lava bucket named "§dStarting Clear"
+    set {_startClear} to grimhuntDataItem("startClear.item") named grimhuntData("startClear.name")
     if grimhuntDataBoolean("startClear.status") is false:
         set {_status_start_clear} to {_d}
         disenchant {_startClear}
@@ -591,7 +728,7 @@ function grimhuntConfigGuiUpdater(player: player):
         set {_status_start_clear} to {_e}
         enchant {_startClear} with unbreaking 1
 
-    set {_particles} to redstone named "§4Particles"
+    set {_particles} to grimhuntDataItem("particles.item") named grimhuntData("particles.name")
     if grimhuntDataBoolean("particles.status") is false:
         set {_status_particles} to {_d}
         disenchant {_particles}
@@ -599,7 +736,7 @@ function grimhuntConfigGuiUpdater(player: player):
         set {_status_particles} to {_e}
         enchant {_particles} with unbreaking 1
 
-    set {_forge} to furnace named "§6Forge"
+    set {_forge} to grimhuntDataItem("forge.item") named grimhuntData("forge.name")
     if grimhuntDataBoolean("forge.status") is false:
         set {_status_forge} to {_d}
         disenchant {_forge}
@@ -607,7 +744,7 @@ function grimhuntConfigGuiUpdater(player: player):
         set {_status_forge} to {_e}
         enchant {_forge} with unbreaking 1
 
-    set {_kits} to iron sword named "§1Kits"
+    set {_kits} to grimhuntDataItem("kits.item") named grimhuntData("kits.name")
     if grimhuntDataBoolean("kits.status") is false:
         set {_status_kits} to {_d}
         disenchant {_kits}
@@ -615,7 +752,7 @@ function grimhuntConfigGuiUpdater(player: player):
         set {_status_kits} to {_e}
         enchant {_kits} with unbreaking 1
     
-    set {_randomHunterCoordinate} to compass named "§bRandom Hunter Coordinate"
+    set {_randomHunterCoordinate} to grimhuntDataItem("randomHunterCoordinate.item") named grimhuntData("randomHunterCoordinate.name")
     if grimhuntDataBoolean("randomHunterCoordinate.status") is false:
         set {_status_randomHunterCoordinate} to {_d}
         disenchant {_randomHunterCoordinate}
@@ -623,7 +760,7 @@ function grimhuntConfigGuiUpdater(player: player):
         set {_status_randomHunterCoordinate} to {_e}
         enchant {_randomHunterCoordinate} with unbreaking 1
 
-    set {_startClearAdvancements} to empty bottle named "§aStarting Clear Advancements"
+    set {_startClearAdvancements} to grimhuntDataItem("startClearAdvancements.item") named grimhuntData("startClearAdvancements.name")
     if grimhuntDataBoolean("startClearAdvancements.status") is false:
         set {_status_startClearAdvancements} to {_d}
         disenchant {_startClearAdvancements}
@@ -631,7 +768,7 @@ function grimhuntConfigGuiUpdater(player: player):
         set {_status_startClearAdvancements} to {_e}
         enchant {_startClearAdvancements} with unbreaking 1
 
-    set {_keepTeam} to writable book named "§5Keep Team"
+    set {_keepTeam} to grimhuntDataItem("keepTeam.item") named grimhuntData("keepTeam.name")
     if grimhuntDataBoolean("keepTeam.status") is false:
         set {_status_keepTeam} to {_d}
         disenchant {_keepTeam}
@@ -639,7 +776,7 @@ function grimhuntConfigGuiUpdater(player: player):
         set {_status_keepTeam} to {_e}
         enchant {_keepTeam} with unbreaking 1
 
-    set {_smoker} to smoker named "§3Smoking"
+    set {_smoker} to grimhuntDataItem("smoker.item") named grimhuntData("smoker.name")
     if grimhuntDataBoolean("smoker.status") is false:
         set {_status_smoker} to {_d}
         disenchant {_smoker}
@@ -780,14 +917,24 @@ on inventory click:
         set {_i} to event-slot
         set {_t} to type of {_i}
         set {_n} to display name of {_i}
-        set {_u} to uncolored {_n}
+        set {_u} to {_n}
+        set {_particles} to grimhuntData("particles.item")
+        set {_heal} to grimhuntData("startHeal.item")
+        set {_feed} to grimhuntData("startFeed.item")
+        set {_day} to grimhuntData("startDay.item")
+        set {_clear} to grimhuntData("startClear.item")
+        set {_startClearAdvancements} to grimhuntData("startClearAdvancements.item")
+        set {_smoker} to grimhuntData("smoker.item")
+        set {_keepTeam} to grimhuntData("keepTeam.item")
+        set {_forge} to grimhuntData("forge.item")
+        set {_kits} to grimhuntData("kits.item")
         if click action is left mouse button:
             if {_t} is not air:
                 if "%{_t}%" contain "barrier":
                     if {_u} contain "Back":
                         close player's inventory
-                else if "%{_t}%" contain "redstone":
-                    if {_u} contain "Particles":
+                else if "%{_t}%" contain "%{_particles}%":
+                    if {_u} is grimhuntData("particles.name"):
                         if grimhuntDataBoolean("particles.status") is false:
                             grimhuntDataBoolean("particles.status", "set", true)
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7particles.status§r", "4")
@@ -802,8 +949,8 @@ on inventory click:
                             if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                                 grimhuntConfigGuiUpdater(loop-player)
                         #grimhuntConfigGuiUpdater(player)
-                else if "%{_t}%" is "golden apple":
-                    if {_u} is "Starting Heal":
+                else if "%{_t}%" contain "%{_heal}%":
+                    if "%{_u}%" is grimhuntData("startHeal.name"):
                         if grimhuntDataBoolean("startHeal.status") is false:
                             grimhuntDataBoolean("startHeal.status", "set", true)
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startHeal.status§r", "4")
@@ -817,8 +964,8 @@ on inventory click:
                         loop all players:
                             if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                                 grimhuntConfigGuiUpdater(loop-player)
-                else if "%{_t}%" contain "steak":
-                    if {_u} is "Starting Feed":
+                else if "%{_t}%" contain "%{_feed}%":
+                    if {_u} is grimhuntData("startFeed.name"):
                         if grimhuntDataBoolean("startFeed.status") is false:
                             grimhuntDataBoolean("startFeed.status", "set", true)
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startFeed.status§r", "4")
@@ -832,8 +979,8 @@ on inventory click:
                         loop all players:
                             if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                                 grimhuntConfigGuiUpdater(loop-player)
-                else if "%{_t}%" contain "clock":
-                    if {_u} is "Starting Day":
+                else if "%{_t}%" contain "%{_day}%":
+                    if {_u} is grimhuntData("startDay.name"):
                         if grimhuntDataBoolean("startDay.status") is false:
                             grimhuntDataBoolean("startDay.status", "set", true)
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startDay.status§r", "4")
@@ -847,8 +994,8 @@ on inventory click:
                         loop all players:
                             if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                                 grimhuntConfigGuiUpdater(loop-player)
-                else if "%{_t}%" is "lava bucket":
-                    if {_u} is "Starting Clear":
+                else if "%{_t}%" contain "%{_clear}%":
+                    if {_u} is grimhuntData("startClear.name"):
                         if grimhuntDataBoolean("startClear.status") is false:
                             grimhuntDataBoolean("startClear.status", "set", true)
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startClear.status§r", "4")
@@ -862,8 +1009,8 @@ on inventory click:
                         loop all players:
                             if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                                 grimhuntConfigGuiUpdater(loop-player)
-                else if "%{_t}%" is "furnace":
-                    if {_u} is "Forge":
+                else if "%{_t}%" contain "%{_forge}%":
+                    if {_u} is grimhuntData("forge.name"):
                         if grimhuntDataBoolean("forge.status") is false:
                             grimhuntDataBoolean("forge.status", "set", true)
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7forge.status§r", "4")
@@ -877,8 +1024,8 @@ on inventory click:
                         loop all players:
                             if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                                 grimhuntConfigGuiUpdater(loop-player)
-                else if "%{_t}%" is "iron sword":
-                    if {_u} is "Kits":
+                else if "%{_t}%" contain "%{_kits}%":
+                    if {_u} is grimhuntData("kits.name"):
                         if grimhuntDataBoolean("kits.status") is false:
                             grimhuntDataBoolean("kits.status", "set", true)
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7kits.status§r", "4")
@@ -892,8 +1039,8 @@ on inventory click:
                         loop all players:
                             if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                                 grimhuntConfigGuiUpdater(loop-player)
-                else if "%{_t}%" is "compass":
-                    if {_u} is "Random Hunter Coordinate":
+                else if "%{_t}%" is "%{_randomHunterCoordinate}%":
+                    if {_u} is grimhuntData("randomHunterCoordinate.name"):
                         if grimhuntDataBoolean("randomHunterCoordinate.status") is false:
                             if listCounter({bck.hunters::*}) > 1:
                                 grimhuntDataBoolean("randomHunterCoordinate.status", "set", true)
@@ -908,8 +1055,8 @@ on inventory click:
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7randomHunterCoordinate.status§r", "4")
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7randomHunterCoordinate.status§r", "6", true)
                             play sound "entity.villager.no" with volume 0.5 for player
-                else if "%{_t}%" is "empty bottle":
-                    if {_u} is "Starting Clear Advancements":
+                else if "%{_t}%" is "%{_startClearAdvancements}%":
+                    if {_u} is grimhuntData("startClearAdvancements.name"):
                         if grimhuntDataBoolean("startClearAdvancements.status") is false:
                             grimhuntDataBoolean("startClearAdvancements.status", "set", true)
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7startClearAdvancements.status§r", "4")
@@ -920,8 +1067,8 @@ on inventory click:
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7startClearAdvancements.status§r", "4")
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7startClearAdvancements.status§r", "6", true)
                             play sound "entity.villager.no" with volume 0.5 for player
-                else if "%{_t}%" is "writable book":
-                    if {_u} is "Keep Team":
+                else if "%{_t}%" is "%{_keepTeam}%":
+                    if {_u} is grimhuntData("keepTeam.name"):
                         if grimhuntDataBoolean("keepTeam.status") is false:
                             grimhuntDataBoolean("keepTeam.status", "set", true)
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7keepTeam.status§r", "4")
@@ -932,8 +1079,8 @@ on inventory click:
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7keepTeam.status§r", "4")
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7keepTeam.status§r", "6", true)
                             play sound "entity.villager.no" with volume 0.5 for player
-                else if "%{_t}%" is "smoker":
-                    if {_u} is "Smoking":
+                else if "%{_t}%" is "%{_smoker}%":
+                    if {_u} is grimhuntData("smoker.name"):
                         if grimhuntDataBoolean("smoker.status") is false:
                             grimhuntDataBoolean("smoker.status", "set", true)
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7smoker.status§r", "4")
@@ -952,8 +1099,8 @@ on inventory click:
                 if "%{_t}%" contain "barrier":
                     if {_u} contain "Back":
                         close player's inventory
-                else if "%{_t}%" is "furnace":
-                    if {_u} is "Forge":
+                else if "%{_t}%" contain "%{_forge}%":
+                    if {_u} is grimhuntData("forge.name"):
                         if grimhuntDataBoolean("forge.status") is false:
                             play sound "block.anvil.place" with volume 0.5 for player
                             stop
@@ -1362,6 +1509,27 @@ function grimhuntConfigInteger(find: text, mode: text="extract", data: integer=0
     if {_result} is not set:
         set {_result} to 0
     return {_result}
+function grimhuntConfigItem(find: text, mode: text="extract", data: item=air) :: item:
+    if {_mode} is "extract":
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.config"
+        if {_result} isn't set:
+            if {_data} isn't empty:
+                set {_result} to {_data}
+    else if {_mode} is "delete":
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.config"
+        if {_result} is set:
+            delete yaml value "%{_find}%" from "bck.manager.grimhunt.config"
+            save yaml "bck.manager.grimhunt.config"
+        else:
+            set yaml value "%{_find}%" from "bck.manager.grimhunt.config" to {_data}
+            save yaml "bck.manager.grimhunt.config"
+    else if {_mode} is "set":
+        set yaml value "%{_find}%" from "bck.manager.grimhunt.config" to {_data}
+        save yaml "bck.manager.grimhunt.config"
+    set {_result} to {_result} parsed as item
+    if "%{_result}%" is "<none>":
+        set {_result} to air
+    return {_result}
 
 function grimhuntData(find: text, mode: text="extract", data: text="") :: text:
     if {_mode} is "extract":
@@ -1423,6 +1591,27 @@ function grimhuntDataBoolean(find: text, mode: text="extract", data: boolean=fal
     if {_result} is not set:
         set {_result} to false
     return {_result}
+function grimhuntDataItem(find: text, mode: text="extract", data: item=air) :: item:
+    if {_mode} is "extract":
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.data"
+        if {_result} isn't set:
+            if {_data} isn't empty:
+                set {_result} to {_data}
+    else if {_mode} is "delete":
+        set {_result} to yaml value "%{_find}%" from "bck.manager.grimhunt.data"
+        if {_result} is set:
+            delete yaml value "%{_find}%" from "bck.manager.grimhunt.data"
+            save yaml "bck.manager.grimhunt.data"
+        else:
+            set yaml value "%{_find}%" from "bck.manager.grimhunt.data" to {_data}
+            save yaml "bck.manager.grimhunt.data"
+    else if {_mode} is "set":
+        set yaml value "%{_find}%" from "bck.manager.grimhunt.data" to {_data}
+        save yaml "bck.manager.grimhunt.data"
+    set {_result} to {_result} parsed as item
+    if "%{_result}%" is "<none>":
+        set {_result} to air
+    return {_result}
 function grimhuntServerConfig(find: text, mode: text="extract", data: text="") :: text:
     if {_mode} is "extract":
         set {_result} to yaml value "%{_find}%" from "bck.server.grimhunt.config"
@@ -1440,8 +1629,6 @@ function grimhuntServerConfig(find: text, mode: text="extract", data: text="") :
     else if {_mode} is "set":
         set yaml value "%{_find}%" from "bck.server.grimhunt.config" to {_data}
         save yaml "bck.server.grimhunt.config"
-    if "%{_result}%" is "<none>":
-        set {_result} to {_find}
     return {_result}
 function grimhuntServerConfigBoolean(find: text, mode: text="extract", data: boolean=false) :: boolean:
     if {_mode} is "extract":
@@ -1462,6 +1649,27 @@ function grimhuntServerConfigBoolean(find: text, mode: text="extract", data: boo
         save yaml "bck.server.grimhunt.config"
     if {_result} is not set:
         set {_result} to false
+    return {_result}
+function grimhuntServerConfigItem(find: text, mode: text="extract", data: item=air) :: item:
+    if {_mode} is "extract":
+        set {_result} to yaml value "%{_find}%" from "bck.server.grimhunt.config"
+        if {_result} isn't set:
+            if {_data} isn't empty:
+                set {_result} to {_data}
+    else if {_mode} is "delete":
+        set {_result} to yaml value "%{_find}%" from "bck.server.grimhunt.config"
+        if {_result} is set:
+            delete yaml value "%{_find}%" from "bck.server.grimhunt.config"
+            save yaml "bck.server.grimhunt.config"
+        else:
+            set yaml value "%{_find}%" from "bck.server.grimhunt.config" to {_data}
+            save yaml "bck.server.grimhunt.config"
+    else if {_mode} is "set":
+        set yaml value "%{_find}%" from "bck.server.grimhunt.config" to {_data}
+        save yaml "bck.server.grimhunt.config"
+    set {_result} to {_result} parsed as item
+    if "%{_result}%" is "<none>":
+        set {_result} to air
     return {_result}
 #                                      grimhunt forge trigger & Xp drop                                                                         #
 on break:

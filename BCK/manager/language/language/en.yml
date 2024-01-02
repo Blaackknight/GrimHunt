@@ -78,7 +78,7 @@ grimhunt:
                 particles: "§2Tracker §7with §5particles§r §o§n§9(Alpha)§r"
                 forge:
                     1: "§eAutomatically cooks §dall ores §7upon breaking§r"
-                    2: "§aDrop <randomColor>random §aexperience §ewhen breaking ores§r"
+                    2: "§eDrop <randomColor>random §aexperience §ewhen breaking ores§r"
                     oresXp: "§6Ores Xp"
                 kits: "§7At the §2start §7of the game, §egive §7a §1starting kit §7to the §arunners§r"
                 randomHunterCoordinate: "§7Randomly sends a §4hunter §acoordinate §7in the chat§r"

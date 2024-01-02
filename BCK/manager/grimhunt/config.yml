@@ -19,6 +19,8 @@ data:
             - "#keepTeam: Allows you to keep current teams before each restart"
             - "keepTeam:"
             - "    status: false"
+            - "    item: writable book"
+            - "    name: \"§5Keep Team\""
             - ""
             - "#teamChatPrefix: Default prefix before each message to turn it into a global chat message"
             - "teamChatPrefix: \"!\""
@@ -28,36 +30,52 @@ data:
             - "randomHunterCoordinate:"
             - "    status: false"
             - "    chance: \"5\""
+            - "    item: compass"
+            - "    name: \"§bRandom Hunter Coordinate\""
             - ""
             - "#startHeal: At the start of the game grants a heal to all players"
             - "startHeal:"
             - "    status: false"
+            - "    item: golden apple"
+            - "    name: \"§cStarting Heal\""
             - ""
             - "#startFeed: At the start of the game grants satiation to all players"
             - "startFeed:"
             - "    status: false"
+            - "    item: cooked beef"
+            - "    name: \"§6Starting Feedl\""
             - ""
             - "#startDay: At the start of the game change the world time for the day"
             - "startDay:"
             - "    status: false"
+            - "    item: clock"
+            - "    name: \"§eStarting Day\""
             - ""
             - "#startClear: At the start of the game clear all players inventories"
             - "startClear:"
             - "    status: false"
+            - "    item: lava bucket"
+            - "    name: \"§dStarting Clear\""
             - ""
             - "#startClearAdvancements: At the start of the game clear all players avancements"
             - "startClearAdvancements:"
             - "    status: false"
+            - "    item: empty bottle"
+            - "    name: \"§aStarting Clear Advancements\""
             - ""
             - "#Particles: Tracker with particles (Alpha in development..)"
             - "particles:"
             - "    status: false"
+            - "    item: redstone"
+            - "    name: \"§4Particles\""
             - ""
             - "#forge: Automatically cooks all ores upon breaking"
             - "#forge/oresXp: When breaking ores releasing experience"
             - "forge:"
             - "    status: false"
             - "    oresXp: false"
+            - "    item: blast furnace"
+            - "    name: \"§6Forge\""
             - ""
             - "#kits: At the start of the game, give a starting kit to the runners. ⚠ If <> is missing then the base number is 1"
             - "# The \"<0>\" is number of items"
@@ -73,12 +91,16 @@ data:
             - "#- steak <64>"
             - "kits:"
             - "    status: false"
+            - "    item: iron sword"
+            - "    name: \"§1Kits\""
             - "    kit:"
             - "        - cooked mutton <32>"
             - ""
-            - "#smoker: Automatically cooks the meat of passive mobs"
+            - "#smoker: Automatically cooks the meat of passive mobs and you can personalise loots"
             - "smoker:"
             - "    status: false"
+            - "    item: smoker"
+            - "    name: \"§3Smoking\""
             - "    cow:"
             - "        - leather:1/5"
             - "        - steak:1/3"
@@ -101,11 +123,15 @@ data:
             - "    cod:"
             - "        - cooked_cod:1/1"
             - "    wither:"
-            - "        - nether star:1/1"
+            - "        - nether_star:1/1"
             - "        - netherite_helmet:1/1"
             - "        - netherite_chestplate:1/1"
             - "        - netherite_leggings:1/1"
             - "        - netherite_boots:1/1"
+            - ""
+            - "#shop: "
+            - "shop:"
+            - "    status: false"
             - ""
             - "#rules: Allows you to manage certain rules of your server"
             - "rules:"
@@ -137,3 +163,34 @@ data:
                     lore: "§7At the §2start §7of the game, §egive §7a §1starting kit §7to the §arunners§r"
                     noKit: "§7§mNo kits found.."
                     kit: "§eCurrent kit:§r"
+            default:
+                keepTeam:
+                    item: writable book
+                    name: "§5Keep Team"
+                startHeal:
+                    item: golden apple
+                    name: "§cStarting Heal"
+                startFeed:
+                    item: cooked beef
+                    name: "§6Starting Feed"
+                startDay:
+                    item: clock
+                    name: "§eStarting Day"
+                startClear:
+                    item: lava bucket
+                    name: "§dStarting Clear"
+                startClearAdvancements:
+                    item: empty bottle
+                    name: "§aStarting Clear Advancements"
+                particles:
+                    item: redstone
+                    name: "§4Particles"
+                randomHunterCoordinate:
+                    item: compass
+                    name: "§bRandom Hunter Coordinate"
+                forge:
+                    item: blast furnace
+                    name: "§6Forge"
+                smoker:
+                    item: smoker
+                    name: "§3Smoking"
