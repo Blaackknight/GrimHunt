@@ -12,6 +12,7 @@ grimhunt:
         runners_list: "§b§lRunners List:"
         no_hunters: "§4No Hunters.."
         hunters_list: "§b§lHunters List:"
+        unknownPlayer: "§6[§5Grimhunt§6]§r §cUnknown Player"
         start:
             begins:
                 1: "§eThe game begins."
@@ -36,6 +37,9 @@ grimhunt:
         config:
             gui:
                 title: "§5Grimhunt §aConfiguration"
+        shop:
+            gui:
+                title: "§6[§a§lShop§r§6]§r              §bMoney: §d<arg0>"
         runner:
             noOptions: "§c/runner <add/remove>"
             isHunter: "§6[§5Grimhunt§6] §4<arg0> §cis hunter !"

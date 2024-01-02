@@ -50,7 +50,7 @@ on tab complete of "/skm":
         stop
     set tab completions for position 1 to all items
 #                                      grimhunt command                                                                          #
-command /grimhunt [<text>] [<text>]:
+command /grimhunt [<text>] [<text>] [<offlineplayer>] [<text>]:
     trigger:
         if arg-1 is not set:
             send formatted commandError("grimhunt", "false", player)
@@ -356,6 +356,20 @@ command /grimhunt [<text>] [<text>]:
                 set {_t} to lang("grimhunt.command.revive.notDead.1", player)
                 set {_tt} to lang("grimhunt.command.revive.notDead.2", player)
                 send formatted "%{_t}% %{_x}% %{_tt}%"
+        else if arg-1 is "money":
+            set {_x} to arg-2
+            if {_x} is not set:
+                send formatted commandError("grimhunt", arg-1, player)
+                stop
+            if {_x} is "add":
+                set {_f} to arg-3
+                if grimhuntPlayersList() doesn't contain {_f}:
+                    send lang("grimhunt.command.unknownPlayer", player)
+                    stop
+            else if {_x} is "remove":
+            else if {_x} is "set":
+            else:
+                send formatted commandError("grimhunt", "%arg-1% %arg-2%", player)
         else:
             send formatted commandError("grimhunt", arg-1, player)
             stop
@@ -479,13 +493,21 @@ function grimhuntLoad():
     loop {_ent::*}:
         set {_e} to loop-value
         set {_t} to type of {_e}
+        if {_t} contain "rabbit":
+            set {_t} to "rabbit"
         set {_gg::*} to yaml list "smoker.%{_t}%" from "bck.server.grimhunt.config"
+        #broadcast "smoker.%{_t}%"
         if {_gg::*} is "<none>":
-            stop
+            #broadcast "%{_t}%"
+            exit loop
         set {_dx.%{_cc}%::*} to {_gg::*}
         add 1 to {_cc}
     set {_i.10} to grimhuntServerConfig("smoker.item")
     set {_n.10} to grimhuntServerConfig("smoker.name")
+
+    set {_d.16} to grimhuntServerConfigBoolean("shop.status")
+    set {_i.11} to grimhuntServerConfig("shop.item")
+    set {_n.11} to grimhuntServerConfig("shop.name")
 
     set {_r.0} to grimhuntServerConfigBoolean("rules.tnt.status")
     set {_r.01} to grimhuntServerConfigBoolean("rules.commandBlock.status")
@@ -602,7 +624,6 @@ function grimhuntLoad():
         grimhuntData("kits.name", "set", grimhuntConfig("data.grimhunt.config.default.kits.name"))
 
     grimhuntData("smoker.status", "set", "%{_d.15}%")
-    grimhuntData("smoker.loots", "set", "%{_d.16}%")
     if {_i.10} is set:
         grimhuntData("smoker.item", "set", {_i.10})
     else:
@@ -611,6 +632,16 @@ function grimhuntLoad():
         grimhuntData("smoker.name", "set", {_n.10})
     else:
         grimhuntData("smoker.name", "set", grimhuntConfig("data.grimhunt.config.default.smoker.name"))
+
+    grimhuntData("shop.status", "set", "%{_d.16}%")
+    if {_i.11} is set:
+        grimhuntData("shop.item", "set", {_i.11})
+    else:
+        grimhuntData("shop.item", "set", grimhuntConfig("data.grimhunt.config.default.shop.item"))
+    if {_n.11} is set:
+        grimhuntData("shop.name", "set", {_n.11})
+    else:
+        grimhuntData("shop.name", "set", grimhuntConfig("data.grimhunt.config.default.shop.name"))
 
     coreDataBoolean("tnt.status", "set", {_r.0})
     coreDataBoolean("commandBlock.status", "set", {_r.01})
@@ -622,8 +653,11 @@ function grimhuntLoad():
     loop {_ent::*}:
         set {_e} to loop-value
         set {_t} to type of {_e}
+        if {_t} contain "rabbit":
+            set {_t} to "rabbit"
         set {_gg::*} to yaml list "smoker.%{_t}%" from "bck.server.grimhunt.config"
         if {_gg::*} is "<none>":
+            #broadcast "%{_t}%"
             stop
         set yaml list "smoker.%{_t}%" from "bck.manager.grimhunt.data" to {_dx.%{_aa}%::*}
         save yaml "bck.manager.grimhunt.data"
@@ -784,13 +818,13 @@ function grimhuntConfigGuiUpdater(player: player):
         set {_status_smoker} to {_e}
         enchant {_smoker} with unbreaking 1
 
-    set {_comingSoon1} to impulse command block named "§oComing Soon"
-    if grimhuntDataBoolean("comingSoon1.status") is false:
-        set {_status_comingSoon1} to {_d}
-        disenchant {_comingSoon1}
+    set {_shop} to grimhuntDataItem("shop.item") named grimhuntData("shop.name")
+    if grimhuntDataBoolean("shop.status") is false:
+        set {_status_shop} to {_d}
+        disenchant {_shop}
     else:
-        set {_status_comingSoon1} to {_e}
-        enchant {_comingSoon1} with unbreaking 1
+        set {_status_shop} to {_e}
+        enchant {_shop} with unbreaking 1
 
     set {_comingSoon2} to impulse command block named "§oComing Soon"
     if grimhuntDataBoolean("comingSoon2.status") is false:
@@ -880,8 +914,8 @@ function grimhuntConfigGuiUpdater(player: player):
     set line 2 of lore of {_smoker} to "%{_s}% %{_status_smoker}% %{_lc}%"
     set line 4 of lore of {_smoker} to lang("grimhunt.gui.updater.lore.smoker", {_player})
 
-    set line 2 of lore of {_comingSoon1} to "%{_s}% %{_status_comingSoon1}% %{_co}%"
-    set line 4 of lore of {_comingSoon1} to lang("grimhunt.gui.updater.lore.comingSoon1", {_player})
+    set line 2 of lore of {_shop} to "%{_s}% %{_status_shop}% %{_lc}%"
+    set line 4 of lore of {_shop} to lang("grimhunt.gui.updater.lore.shop", {_player})
 
     set line 2 of lore of {_comingSoon2} to "%{_s}% %{_status_comingSoon2}% %{_co}%"
     set line 4 of lore of {_comingSoon2} to lang("grimhunt.gui.updater.lore.comingSoon2", {_player})
@@ -904,7 +938,7 @@ function grimhuntConfigGuiUpdater(player: player):
     set slot 20 of {_gui} to {_randomHunterCoordinate}
     set slot 21 of {_gui} to {_keepTeam}
     set slot 22 of {_gui} to {_smoker}
-    set slot 23 of {_gui} to {_comingSoon1}
+    set slot 23 of {_gui} to {_shop}
     set slot 24 of {_gui} to {_comingSoon2}
     set slot 25 of {_gui} to {_comingSoon3}
     set slot 28 of {_gui} to {_comingSoon4}
@@ -928,6 +962,7 @@ on inventory click:
         set {_keepTeam} to grimhuntData("keepTeam.item")
         set {_forge} to grimhuntData("forge.item")
         set {_kits} to grimhuntData("kits.item")
+        set {_shop} to grimhuntData("shop.item")
         if click action is left mouse button:
             if {_t} is not air:
                 if "%{_t}%" contain "barrier":
@@ -1090,7 +1125,19 @@ on inventory click:
                             grimhuntDataBoolean("smoker.status", "set")
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7smoker.status§r", "4")
                             superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7smoker.status§r", "6", true)
-                            play sound "entity.villager.no" with volume 0.5 for player      
+                            play sound "entity.villager.no" with volume 0.5 for player
+                else if "%{_t}%" is "%{_shop}%":
+                    if {_u} is grimhuntData("shop.name"):
+                        if grimhuntDataBoolean("shop.status") is false:
+                            grimhuntDataBoolean("shop.status", "set", true)
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7shop.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7shop.status§r", "6", true)
+                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                        else:
+                            grimhuntDataBoolean("shop.status", "set")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7shop.status§r", "4")
+                            superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7shop.status§r", "6", true)
+                            play sound "entity.villager.no" with volume 0.5 for player          
                 loop all players:
                     if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
                         grimhuntConfigGuiUpdater(loop-player)
@@ -1225,6 +1272,7 @@ on tab complete of "/grimhunt":
     add "config" to {_data::*}
     add "info" to {_data::*}
     add "revive" to {_data::*}
+    add "money" to {_data::*}
     if hasPermission(player, "server.owner") is true:
         add "admin.start" to {_data::*}
         add "admin.stop" to {_data::*}
@@ -1232,6 +1280,20 @@ on tab complete of "/grimhunt":
     set tab completions for position 1 to {_data::*}
     if tab arg-1 is "revive":
         set tab completions for position 2 to grimhuntPlayersList()
+    else if tab arg-1 is "money":
+        add "add" to {_d::*} 
+        add "remove" to {_d::*} 
+        add "set" to {_d::*} 
+        set tab completions for position 2 to {_d::*}
+    if tab arg-1 is "money":
+        if {_d::*} contains tab arg-2 :
+            set tab completions for position 3 to grimhuntPlayersList()
+            if grimhuntPlayersList() contains tab arg-3:
+                set {_c} to 1
+                loop 1000 times:
+                    add loop-number to {_nums::*}
+                    add 1 to {_c}
+                set tab completions for position 4 to {_nums::*}
 #                                      tab complete runner                                                                          #
 on tab complete of "/runner":
     if hasPermission(player, "server.command.runner") is false:
@@ -1994,9 +2056,13 @@ on death:
     set {_v} to victim
     set {_max} to maximum health of {_v}
     set {_w} to {_v}'s health
-    if "%type of {_v}%" is not "player":
+    set {_t} to type of {_v}
+    if "%{_t}%" is not "player":
         if grimhuntDataBoolean("smoker.status") is true:
-            set {_i::*} to yaml list "smoker.%type of {_v}%" from "bck.manager.grimhunt.data"
+            set {_t} to "%{_t}%"
+            replace all " " with "_" in {_t}
+            broadcast "smoker.%{_t}%"
+            set {_i::*} to yaml list "smoker.%{_t}%" from "bck.manager.grimhunt.data"
             if "%{_i::*}%" is not "<none>":
                 clear drops
                 grimhuntSmoker({_v}, {_a})
@@ -2075,3 +2141,36 @@ function grimhuntPlayersList() :: objects:
     loop {bck.hunters::*}:
         add loop-value to {_r::*}
     return {_r::*}
+#                                       shop command                                                                         #
+command /shop:
+    trigger:
+        set {_money} to {grimhunt.%player's uuid%.money}
+        if "%{_money}%" is "<none>":
+            set {_money} to 0
+        set {_money} to grimhuntShopAbbrevNumber({_money})
+        add "%{_money}%" to {_args::*}
+        set {_n} to superLang("grimhunt.command.shop.gui.title", {_player}, {_args::*})
+        #broadcast "%{_money}% = %{_n}%"
+        set {_gui} to genericGui({_n}, 5, true)
+        set slot 22 of {_gui} to redstone block named "§4Wait.."
+        userData(player, "data.inv", "set", "manager.grimhunt.shop.main")
+        open {_gui} to player
+        grimhuntShopGuiUpdater(player)
+#                                       grimhuntShopGuiUpdater functions                                                                         #
+function grimhuntShopGuiUpdater(player: player):
+    set {_gui} to {_player}'s current inventory
+    set {_money} to {grimhunt.%{_player}'s uuid%.money}
+    if {_money} is not set:
+        set {_money} to 0
+    add "%{_money}%" to {_args::*}
+    #set name of {_gui} to superLang("grimhunt.command.shop.gui.title", {_player}, {_args::*})
+    set slot 22 of {_gui} to air
+function grimhuntShopAbbrevNumber(v: integer) :: text:
+    if {_v} >= 1000:
+        if {_v} < 1000000:
+            set {_v} to "%{_v} / 1000%k"
+        else:
+            set {_v} to "%{_v} / 1000000%m"
+    else:
+        set {_v} to "%{_v}%"
+    return {_v}
