@@ -96,6 +96,7 @@ grimhunt:
                 startClearAdvancements: "§7At the §2start §7of the game §dclear all players §aadvancements§r"
                 keepTeam: "§aKeep §7current teams before §eeach restart"
                 smoker: "§eAutomatically cooks §7the meat of passive mobs§r"
+                shop: ""
             noKitFound: §7§mNo kits found..
             currentKit: "§eCurrent kit:§r"
     death:

@@ -26,6 +26,7 @@ on load:
     addServerPermission("bypass.op")
     addServerPermission("bypass.deop")
     addServerPermission("bypass.kick")
+    addServerPermission("bypass.ban")
 
     addDefaultPermission("server.send_message")
     addDefaultPermission("block.place")
@@ -235,6 +236,11 @@ on command "/deop":
 on command "/kick":
     if player is set:
         if hasPermission(player, "bypass.kick", true) is false:
+            cancel event
+            send lang("core.cannotDoThis", player)
+on command "/ban":
+    if player is set:
+        if hasPermission(player, "bypass.ban", true) is false:
             cancel event
             send lang("core.cannotDoThis", player)
 on damage:

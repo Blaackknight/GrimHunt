@@ -69,31 +69,72 @@ smoker:
     status: false
     item: smoker
     name: "&3Smoking"
+    pig:
+    - cooked_pork:1/3
     chicken:
     - feather:1/3
     - cooked_chicken:1/2
-    cow:
-    - leather:1/5
-    - steak:1/3
-    pig:
-    - cooked_pork:1/3
     sheep:
     - white_wool_block:1/2
     - cooked_mutton:1/3
-    salmon:
-    - cooked_salmon:1/1
+    hoglin:
+    - cooked_pork:1/4
 
 shop:
     status: false
     item: emerald
     name: "&aShop"
+    mob_passive_money: 2
+    mob_agressive_money: 5
+    mob_iron_golem_money: 20
+    mob_turtle_money: 30
+    mob_wither_money: 10000
+    mob_warden_money: 20000
+    mob_silver_fish_money: 50
+    mob_wandering_trader_money: 1000
+    mob_stray_money: 100
+    mob_allay_money: 300
+    mob_endermite_money: 150
+    mob_piglin_brute_money: 50
+    mob_zombie_horse_money: 2000
+    mob_skeleton_horse_money: 2000
+    mob_vex_money: 75
+    mob_evoker_money: 50
+    ores_copper_ore_money: 200
+    ores_coal_ore_money: 3
+    ores_iron_ore_money: 5
+    ores_gold_ore_money: 9
+    ores_redstone_ore_money: 20
+    ores_lapis_lazuli_ore_money: 25
+    ores_diamond_ore_money: 40
+    ores_ancient_debris_money: 250
+    ores_nether_gold_ore_money: 2
+    block_spawner_money: 200
     choices:
         dirt:
             size: 1
             cost: 1
         stone:
             size: 1
-            cost: 2
+            cost: 5
+        oak_log:
+            size: 1
+            cost: 5
+        iron_ingot:
+            size: 1
+            cost: 20
+        gold_ingot:
+            size: 1
+            cost: 25
         steak:
             size: 32
             cost: 100
+        diamond:
+            size: 1
+            cost: 100
+        totem_of_undying:
+            size: 1
+            cost: 5000
+        compass:
+            size: 1
+            cost: 1000

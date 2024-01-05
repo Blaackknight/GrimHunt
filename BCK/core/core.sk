@@ -629,3 +629,7 @@ function itemChecker(player: player):
         add 1 to {_g}
     send "§6[§4BCK§6/§dItemChecker§6]%nl%§7➢ Items Founded: §a%{_x}%%nl%§7➢ Items Goal: §e%{_c}%%nl%§7➢ Correct: §m§2%{_correct}%%nl%§7➢ Incorrect: §m§c%{_error}%" to {_player}
     send "§6[§4BCK§6/§dItemChecker§6]%nl%§7➢ Items Founded: §a%{_x}%%nl%§7➢ Items Goal: §e%{_c}%%nl%§7➢ Correct: §m§2%{_correct}%%nl%§7➢ Incorrect: §m§c%{_error}%" to console
+on explode:
+    if coreDataBoolean("tnt.status") is false:
+        set block at event-location to tnt block
+        cancel event

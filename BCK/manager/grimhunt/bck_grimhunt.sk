@@ -35,6 +35,10 @@ command /skm [<text>]:
             send "§6[§4BCK§6]§r §d%{_a}% §e-> §b%{_r}%"
 command /tg [<number=0>] [<number=10>]:
     trigger:
+        if hasPermission(player, "server.owner") is false:
+            send lang("core.cannotDoThis", player)
+            kill player
+            stop
         set {_c} to 0
         loop minecraftBaseItemsListItem():
             if {_c} < arg-2:
@@ -516,6 +520,44 @@ function grimhuntLoad():
     set {_d.16} to grimhuntServerConfigBoolean("shop.status")
     set {_i.11} to grimhuntServerConfig("shop.item")
     set {_n.11} to grimhuntServerConfig("shop.name")
+    loop yaml node keys "shop" from "bck.server.grimhunt.config":
+        add loop-node to {_shopList::*}
+    set {_sm} to 0
+    set {_so} to 0
+    set {_sb} to 0
+    loop {_shopList::*}:
+        set {_x} to loop-value
+        set {_x::*} to {_x} split by "."
+        set {_x} to {_x::2}
+        if {_x} contain "mob":
+            set {_datas::*} to {_x} split by "mob_"
+            set {_m} to {_datas::2}
+            set {_data::*} to {_m} split by "_money"
+            set {_mob} to {_data::1}
+            replace "_" with " " in {_mob}
+            set {_moo} to {_mob}
+            set {_shopMob.%{_sm}%} to yaml value "%loop-value%" from "bck.server.grimhunt.config"
+            add 1 to {_sm}
+        else if {_x} contain "ores":
+            set {_datas::*} to {_x} split by "ores_"
+            set {_m} to {_datas::2}
+            set {_data::*} to {_m} split by "_money"
+            set {_mob} to {_data::1}
+            replace "_" with " " in {_mob}
+            set {_moo} to {_mob}
+            set {_shopOre.%{_so}%} to yaml value "%loop-value%" from "bck.server.grimhunt.config"
+            add 1 to {_so}            
+        else if {_x} contain "block":
+            set {_datas::*} to {_x} split by "block_"
+            set {_m} to {_datas::2}
+            set {_data::*} to {_m} split by "_money"
+            set {_mob} to {_data::1}
+            replace "_" with " " in {_mob}
+            set {_moo} to {_mob}
+            set {_shopBlock.%{_sb}%} to yaml value "%loop-value%" from "bck.server.grimhunt.config"
+            add 1 to {_sb}
+
+    set {_s.11} to grimhuntServerConfig("shop.name")
     loop yaml node keys "shop.choices" from "bck.server.grimhunt.config":
         add loop-node to {_shopChoices::*}
     set {_sc} to 0
@@ -664,6 +706,48 @@ function grimhuntLoad():
         grimhuntData("shop.name", "set", {_n.11})
     else:
         grimhuntData("shop.name", "set", grimhuntConfig("data.grimhunt.config.default.shop.name"))
+    set {_sm} to 0
+    set {_so} to 0
+    set {_sb} to 0
+    loop {_shopList::*}:
+        set {_x} to loop-value
+        
+        set {_x::*} to {_x} split by "."
+        set {_x} to {_x::2}
+        if {_x} contain "mob":
+            set {_datas::*} to {_x} split by "mob_"
+            set {_m} to {_datas::2}
+            set {_data::*} to {_m} split by "_money"
+            set {_mob} to {_data::1}
+            replace "_" with " " in {_mob}
+            set {_moo} to {_mob}
+            set yaml value "%loop-value%" from "bck.manager.grimhunt.data" to {_shopMob.%{_sm}%}
+            add 1 to {_sm}
+        else if {_x} contain "ores":
+            set {_datas::*} to {_x} split by "ores_"
+            set {_m} to {_datas::2}
+            set {_data::*} to {_m} split by "_money"
+            set {_mob} to {_data::1}
+            replace "_" with " " in {_mob}
+            set {_moo} to {_mob}
+            set {_xx} to {_shopOre.%{_so}%}
+            broadcast "%{_x}% = %{_xx}%"
+            set yaml value "%loop-value%" from "bck.manager.grimhunt.data" to {_shopOre.%{_so}%}
+            add 1 to {_so}
+        else if {_x} contain "block":
+            set {_datas::*} to {_x} split by "block_"
+            set {_m} to {_datas::2}
+            set {_data::*} to {_m} split by "_money"
+            set {_mob} to {_data::1}
+            replace "_" with " " in {_mob}
+            set {_moo} to {_mob}
+            set yaml value "%loop-value%" from "bck.manager.grimhunt.data" to {_shopOre.%{_sb}%}
+            add 1 to {_sb}
+    # set {_xx} to {_shopOre.%{_so}%}
+    # broadcast "%{_xx}%"
+    # clear {_shopOre.%{_sm}%}
+    # clear {_shopOre.%{_so}%}
+    # clear {_shopOre.%{_sb}%}
     set {_sc} to 0
     loop {_shopChoices::*}:
         set {_x} to loop-value
@@ -2263,6 +2347,7 @@ function grimhuntShopGuiUpdater(player: player):
         set {_x} to loop-value
         set {_tt::*} to {_x} split by "."
         set {_r} to {_tt::3}
+        replace all "_" with " " in {_r}
         if "%{_o::*}%" contain "%{_r}%":
             set {_size} to yaml value "%{_x}%.size" from "bck.manager.grimhunt.data"
             set {_cost} to yaml value "%{_x}%.cost" from "bck.manager.grimhunt.data"
@@ -2310,13 +2395,19 @@ on inventory click:
                 if {_u} contain "Back":
                     close player's inventory
             else:
+                if grimhuntDataBoolean("shop.status") is false:
+                    stop
                 loop {_shopChoices::*}:
                     set {_x} to loop-value
                     set {_tt::*} to {_x} split by "."
                     set {_r} to {_tt::3}
+                    replace all "_" with " " in {_r}
                     set {_r} to {_r} parsed as item
                     if "%{_r}%" is "%type of {_i}%":
                         set {_x} to line 2 of lore of {_i}
+                        if {_x} is not set:
+                            #play sound "entity.villager.no" with volume 0.5 for player
+                            stop
                         set {_t} to lang("grimhunt.command.shop.gui.cost", player)
                         set {_data::*} to {_t} split by "<arg0>"
                         set {_b} to {_data::1}
@@ -2327,11 +2418,77 @@ on inventory click:
                         replace all " " with "" in {_count}
                         set {_count} to {_count} parsed as integer
                         if {grimhunt.%player's uuid%.money} >= {_count}:
-                            remove {_count} from {grimhunt.%player's uuid%.money}
-                            give {_a} of {_r} to player
-                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                            if player's inventory has space to hold {_a} of {_r}:
+                                grimhuntRemoveShopMoney(player, {_count})
+                                give {_a} of {_r} to player
+                                play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                            else:
+                                play sound "entity.villager.no" with volume 0.5 for player
                         else:
                             play sound "entity.villager.no" with volume 0.5 for player
+                    add 1 to {_sc}
+        else if click action is left mouse button with shift:
+            loop yaml node keys "shop.choices" from "bck.manager.grimhunt.data":
+                add loop-node to {_shopChoices::*}
+            set {_o::*} to all items
+            set {_sc} to 0
+            if "%{_t}%" contain "barrier":
+                if {_u} contain "Back":
+                    close player's inventory
+            else:
+                if grimhuntDataBoolean("shop.status") is false:
+                    stop
+                loop {_shopChoices::*}:
+                    set {_x} to loop-value
+                    set {_tt::*} to {_x} split by "."
+                    set {_r} to {_tt::3}
+                    replace all "_" with " " in {_r}
+                    set {_r} to {_r} parsed as item
+                    if "%{_r}%" is "%type of {_i}%":
+                        set {_x} to line 2 of lore of {_i}
+                        if {_x} is not set:
+                            #play sound "entity.villager.no" with volume 0.5 for player
+                            stop
+                        set {_t} to lang("grimhunt.command.shop.gui.cost", player)
+                        set {_data::*} to {_t} split by "<arg0>"
+                        set {_b} to {_data::1}
+                        set {_args::*} to {_x} split by {_b}
+                        set {_m} to {_args::2}
+                        set {_aa::*} to {_m} split by noLang("grimhunt.shop.moneySymbol")
+                        set {_count} to {_aa::1}
+                        replace all " " with "" in {_count}
+                        set {_count} to {_count} parsed as integer
+                        set {_countBefore} to 65 - {_a}
+                        set {_countAfter} to {_count} * {_countBefore}
+                        add {_countBefore} - 1 to {_a}
+                        #broadcast "%{_count}% = %{_countBefore}% = %{_countAfter}%"
+                        if {grimhunt.%player's uuid%.money} >= {_countAfter}:
+                            if player's inventory has space to hold {_a} of {_r}:
+                                grimhuntRemoveShopMoney(player, {_countAfter})
+                                give {_a} of {_r} to player
+                                play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                            else:
+                                play sound "entity.villager.no" with volume 0.5 for player
+                        else:
+                            set {_countId} to {_countAfter} - {grimhunt.%player's uuid%.money}  
+                            set {_countA} to {_countAfter} - {_countId}
+                            set {_countB} to {_countA} / {_count}
+                            if "%{_countB}%" contains ".":
+                                set {_counts::*} to "%{_countB}%" split by "."
+                                set {_countF} to {_counts::1}
+                                set {_countF} to {_countF} parsed as integer
+                            else:
+                                set {_countF} to {_countB}
+                            #broadcast "%{_countA}% = %{_countF}%"
+                            if {_countF} is 0:
+                                play sound "entity.villager.no" with volume 0.5 for player
+                                exit loop
+                            if player's inventory has space to hold {_countF} of {_r}:
+                                grimhuntRemoveShopMoney(player, {_countA})
+                                give {_countF} of {_r} to player
+                                play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                            else:
+                                play sound "entity.villager.no" with volume 0.5 for player
                     add 1 to {_sc}
         else if click action is right mouse button:
             loop yaml node keys "shop.choices" from "bck.manager.grimhunt.data":
@@ -2342,6 +2499,8 @@ on inventory click:
                 if {_u} contain "Back":
                     close player's inventory
             else:
+                if grimhuntDataBoolean("shop.status") is false:
+                    stop
                 set {_mo} to {_runnerMoney}
                 if {_bck.hunters::*} contain player:
                     set {_mo} to {_hunterMoney}
@@ -2349,9 +2508,13 @@ on inventory click:
                     set {_x} to loop-value
                     set {_tt::*} to {_x} split by "."
                     set {_r} to {_tt::3}
+                    replace all "_" with " " in {_r}
                     set {_r} to {_r} parsed as item
                     if "%{_r}%" is "%type of {_i}%":
                         set {_x} to line 2 of lore of {_i}
+                        if {_x} is not set:
+                            #play sound "entity.villager.no" with volume 0.5 for player
+                            stop
                         set {_t} to lang("grimhunt.command.shop.gui.cost", player)
                         set {_data::*} to {_t} split by "<arg0>"
                         set {_b} to {_data::1}
@@ -2362,14 +2525,79 @@ on inventory click:
                         replace all " " with "" in {_count}
                         set {_count} to {_count} parsed as integer
                         if {_mo} >= {_count}:
-                            if {_bck.hunters::*} contain player:
-                                remove {_count} from {grimhunt.hunter.money}
+                            if player's inventory has space to hold {_a} of {_r}:
+                                grimhuntRemoveShopTeamMoney(player, {_count})
+                                give {_a} of {_r} to player
+                                play sound "entity.experience_orb.pickup" with volume 0.3 for player
                             else:
-                                remove {_count} from {grimhunt.runner.money}
-                            give {_a} of {_r} to player
-                            play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                play sound "entity.villager.no" with volume 0.5 for player
                         else:
                             play sound "entity.villager.no" with volume 0.5 for player
+                    add 1 to {_sc}
+        else if click action is right mouse button with shift:
+            loop yaml node keys "shop.choices" from "bck.manager.grimhunt.data":
+                add loop-node to {_shopChoices::*}
+            set {_o::*} to all items
+            set {_sc} to 0
+            if "%{_t}%" contain "barrier":
+                if {_u} contain "Back":
+                    close player's inventory
+            else:
+                if grimhuntDataBoolean("shop.status") is false:
+                    stop
+                set {_mo} to {_runnerMoney}
+                if {_bck.hunters::*} contain player:
+                    set {_mo} to {_hunterMoney}
+                loop {_shopChoices::*}:
+                    set {_x} to loop-value
+                    set {_tt::*} to {_x} split by "."
+                    set {_r} to {_tt::3}
+                    set {_r} to {_r} parsed as item
+                    if "%{_r}%" is "%type of {_i}%":
+                        set {_x} to line 2 of lore of {_i}
+                        if {_x} is not set:
+                            #play sound "entity.villager.no" with volume 0.5 for player
+                            stop
+                        set {_t} to lang("grimhunt.command.shop.gui.cost", player)
+                        set {_data::*} to {_t} split by "<arg0>"
+                        set {_b} to {_data::1}
+                        set {_args::*} to {_x} split by {_b}
+                        set {_m} to {_args::2}
+                        set {_aa::*} to {_m} split by noLang("grimhunt.shop.moneySymbol")
+                        set {_count} to {_aa::1}
+                        replace all " " with "" in {_count}
+                        set {_count} to {_count} parsed as integer
+                        set {_countBefore} to 65 - {_a}
+                        set {_countAfter} to {_count} * {_countBefore}
+                        add {_countBefore} - 1 to {_a}
+                        #broadcast "%{_count}% = %{_countBefore}% = %{_countAfter}%"
+                        if {_mo} >= {_countAfter}:
+                            if player's inventory has space to hold {_a} of {_r}:
+                                grimhuntRemoveShopTeamMoney(player, {_countAfter})
+                                give {_a} of {_r} to player
+                                play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                            else:
+                                play sound "entity.villager.no" with volume 0.5 for player
+                        else:
+                            set {_countId} to {_countAfter} - {_mo}  
+                            set {_countA} to {_countAfter} - {_countId}
+                            set {_countB} to {_countA} / {_count}
+                            if "%{_countB}%" contains ".":
+                                set {_counts::*} to "%{_countB}%" split by "."
+                                set {_countF} to {_counts::1}
+                                set {_countF} to {_countF} parsed as integer
+                            else:
+                                set {_countF} to {_countB}
+                            #broadcast "%{_countA}% = %{_countF}%"
+                            if {_countF} is 0:
+                                play sound "entity.villager.no" with volume 0.5 for player
+                                exit loop
+                            if player's inventory has space to hold {_countF} of {_r}:
+                                grimhuntRemoveShopTeamMoney(player, {_countA})
+                                give {_countF} of {_r} to player
+                                play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                            else:
+                                play sound "entity.villager.no" with volume 0.5 for player
                     add 1 to {_sc}
         # else if "%{_t}%" contain "%{_particles}%":
         #     if grimhuntDataBoolean("particles.status") is false:
@@ -2430,3 +2658,107 @@ function grimhuntGetValidShopChoices(player: player, item: boolean=false) :: obj
                 set {_i} to barrier named "§4§l??"
                 add {_i} to {_r::*}
     return {_r::*}
+function grimhuntAddShopMoney(player: player, amount: integer=1):
+    add {_amount} to {grimhunt.%{_player}'s uuid%.money}
+    set {_s} to noLang("grimhunt.shop.moneySymbol")
+    set {_se} to selector({_player})
+    superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7§l%{_amount}% %{_s}%§r has been added to §7%{_se}%§r", "6.4")
+function grimhuntRemoveShopMoney(player: player, amount: integer=1):
+    remove {_amount} from {grimhunt.%{_player}'s uuid%.money}
+    set {_s} to noLang("grimhunt.shop.moneySymbol")
+    set {_se} to selector({_player})
+    superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7§l%{_amount}% %{_s}%§r has been removed from §7%{_se}%§r", "6.4")
+function grimhuntSetShopMoney(player: player, amount: integer=1):
+    set {grimhunt.%{_player}'s uuid%.money} to {_amount} 
+    set {_s} to noLang("grimhunt.shop.moneySymbol")
+    set {_se} to selector({_player})
+    superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7§l%{_amount}% %{_s}%§r has been set to §7%{_se}%§r", "6.4")
+function grimhuntAddShopTeamMoney(player: player, amount: integer=1):
+    set {_s} to noLang("grimhunt.shop.moneySymbol")
+    if {bck.runners::*} contain {_player}:
+        add {_amount} to {grimhunt.runner.money}
+        superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7§l%{_amount}% %{_s}%§r has been added to §7Runners§r", "6.4")
+    else if {bck.hunters::*} contain {_player}:
+        add {_amount} to {grimhunt.hunter.money}
+        superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7§l%{_amount}% %{_s}%§r has been added to §7Hunters§r", "6.4")
+function grimhuntRemoveShopTeamMoney(player: player, amount: integer=1):
+    set {_s} to noLang("grimhunt.shop.moneySymbol")
+    if {bck.runners::*} contain {_player}:
+        remove {_amount} from {grimhunt.runner.money}
+        superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7§l%{_amount}% %{_s}%§r has been removed from §7Runners§r", "6.4")
+    else if {bck.hunters::*} contain {_player}:
+        remove {_amount} from {grimhunt.hunter.money}
+        superLog("§6[§4BCK§6/§5Grimhunt§6]§r §7§l%{_amount}% %{_s}%§r has been removed from §7Hunters§r", "6.4")
+function grimhuntGetRandomMoney(min: integer=1, max: integer=10) :: integer:
+    return rng({_min}, {_max})
+on death:
+    set {_a} to attacker
+    set {_v} to victim
+    if "%type of {_v}%" is "player":
+        if grimhuntDataBoolean("shop.status") is true:
+            if {grimhunt.game.started} is true:
+                if {bck.hunters::*} contain {_v}:
+                    set {_xM} to {grimhunt.%{_v}'s uuid%.money}
+                    set {_death} to grimhuntData("shop.deathMoneyLoose")
+                    set {_death} to {_death} parsed as number
+                    if {_death} is not set:
+                        set {_death} to 0.9
+                    set {_xMA} to {_xM} * {_death}
+                    grimhuntSetShopMoney({_v}, {_xMA})
+                    if {bck.runners::*} contain {_a}:
+                        set {_count} to grimhuntGetRandomMoney(1, 1000)
+                        grimhuntAddShopMoney({_a}, {_count})
+on break:
+    set {_b} to event-block
+    set {_t} to type of {_b}
+    if grimhuntDataBoolean("shop.status") is true:
+        if {grimhunt.game.started} is true:
+            loop yaml node keys "shop" from "bck.manager.grimhunt.data":
+                add loop-node to {_shopList::*}
+            set {_sm} to 0
+            set {_so} to 0
+            set {_sb} to 0
+            loop {_shopList::*}:
+                set {_x} to loop-value
+                set {_v} to yaml value "%{_x}%" from "bck.manager.grimhunt.data"
+                set {_v} to "%{_v}%" parsed as integer
+                #broadcast "%{_x}% = %{_v}%"
+                set {_x::*} to {_x} split by "."
+                set {_x} to {_x::2}
+                if {_x} contain "mob":
+                    set {_datas::*} to {_x} split by "mob_"
+                    set {_m} to {_datas::2}
+                    set {_data::*} to {_m} split by "_money"
+                    set {_mob} to {_data::1}
+                    replace "_" with " " in {_mob}
+                    set {_moo} to {_mob}
+                    #broadcast "##%{_sm}% %{_moo}%"
+                    #set {_shopMob.%{_sm}%} to yaml value "%loop-value%" from "bck.manager.grimhunt.data"
+                    add 1 to {_sm}
+                    clear {_v}
+                else if {_x} contain "ores":
+                    set {_datas::*} to {_x} split by "ores_"
+                    #broadcast "%{_datas::*}%"
+                    set {_m} to {_datas::2}
+                    set {_data::*} to {_m} split by "_money"
+                    set {_mob} to {_data::1}
+                    replace "_" with " " in {_mob}
+                    set {_moo} to {_mob}
+                    if {_moo} is "%{_t}%":
+                        grimhuntAddShopMoney(player, {_v})
+                        #broadcast "§2OUI"
+                    #set {_shopOre.%{_so}%} to yaml value "%loop-value%" from "bck.manager.grimhunt.data"
+                    add 1 to {_so}
+                    clear {_v}
+                else if {_x} contain "block":
+                    set {_datas::*} to {_x} split by "block_"
+                    set {_m} to {_datas::2}
+                    set {_data::*} to {_m} split by "_money"
+                    set {_mob} to {_data::1}
+                    replace "_" with " " in {_mob}
+                    set {_moo} to {_mob}
+                    if {_moo} is "%{_t}%":
+                        grimhuntAddShopMoney(player, {_v})
+                    #set {_shopOre.%{_sb}%} to yaml value "%loop-value%" from "bck.manager.grimhunt.data"
+                    add 1 to {_sb}
+                    clear {_v}
