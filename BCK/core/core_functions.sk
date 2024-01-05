@@ -3,6 +3,7 @@ function bckCoreLoad():
     load yaml "plugins/Skript/scripts/BCK/core/data.yml" as "bck.core.data"
     load yaml "plugins/Skript/scripts/BCK/core/base.yml" as "bck.core.base"
     load yaml "plugins/Skript/scripts/BCK/core/bdd.yml" as "bck.core.bdd"
+    load yaml "plugins/Skript/scripts/BCK/core/temp.yml" as "bck.core.temp"
 function bckRegisterSkripts():
     loop files in dir "plugins/Skript/scripts/BCK/":
         set {_l} to loop-value
@@ -688,19 +689,43 @@ function removePermission(player: player, perm: text, callback: boolean=false):
                 logCustom("Permission §7%{_perm}%§r has been removed from §7%selector({_player})%§r", 5)
 function hasPermission(player: player, perm: text="op", b: boolean=false) :: boolean:
     set {_v} to false
+    # if {server.permission.%{_player}%.list::*} contain {_perm}:
+    #     if {_b} is true:
+    #         set {_v} to true
+    #     else:
+    #         if {server.permission.%{_player}%.list::*} contain "op":
+    #             set {_v} to true
+    #         else if {server.permission.%{_player}%.list::*} contain "server.owner":
+    #             set {_v} to true
+    #         else:
+    #             set {_v} to true
+    # else if {server.permission.%{_player}%.list::*} contain "op":
+    #     if {_b} is false:
+    #         set {_v} to true
+    #         else:
+    #             broadcast "1"
+    # else if {server.permission.%{_player}%.list::*} contain "server.owner":
+    #     if {_b} is false:
+    #         set {_v} to true
+    #     else:
+    #         broadcast "2"
+    
     loop {server.permission.%{_player}%.list::*}:
         if loop-value is {_perm}:
             set {_v} to true
         else if loop-value is "op":
             if {_b} is true:
+                set {_v} to true
+                broadcast "1"
                 stop
             if {_perm} is not "server.owner":
                 set {_v} to true
         else if loop-value is "server.owner":
             if {_b} is true:
-                stop
+                exit loop
             set {_v} to true
     return {_v}
+    
 function addDefaultPermission(perm: text):
     if {server.default.perms::*} doesn't contain "%{_perm}%":
         add {_perm} to {server.default.perms::*}
@@ -992,3 +1017,35 @@ function serverPropertiesBoolean(properties: text) :: boolean:
             set {_r} to {_va}
         add 1 to {_i}
     return {_r}
+function addTempBlock(player: player, block: block):
+    set {_data::*} to yaml list "%{_player}%" from "bck.core.temp"
+    add "%{_block}%" to {_data::*}
+    set yaml list "%{_player}%" from "bck.core.temp" to {_data::*}
+    save yaml "bck.core.temp"
+function removeTempBlock(player: player, block: block):
+    set {_data::*} to yaml list "%{_player}%" from "bck.core.temp"
+    if "%{_data::*}%" is not "<none>":
+        loop {_data::*}:
+            set {_x} to loop-value
+            if {_x} is not "%{_block}%":
+                add {_x} to {_temp::*}
+        set yaml list "%{_player}%" from "bck.core.temp" to {_temp::*}
+        save yaml "bck.core.temp"
+function getTempCoordinate(player: player, block: block) :: location:
+    set {_data::*} to yaml list "%{_player}%" from "bck.core.temp"
+    if "%{_data::*}%" is not "<none>":
+        loop {_data::*}:
+            set {_x} to loop-value
+            if {_x} is "%{_block}%":
+                set {_temp::*} to {_x} split by " at "
+        if "%{_temp::*}%" is not "<none>":
+            set {_in::*} to {_temp::2} split by " in world "
+            set {_co} to {_in::1}
+            set {_w} to {_in::2}
+            set {_c::*} to {_in::1} split by ", "
+            set {_x} to {_c::1}
+            set {_y} to {_c::2}
+            set {_z} to {_c::3}
+
+            #replace all "'" by "" in {_w}
+            #broadcast "§1%{_x}% §2%{_y}% §3%{_z}% §4%{_w}%"

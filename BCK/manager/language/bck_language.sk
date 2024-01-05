@@ -190,6 +190,17 @@ function lang(key: text, player: player, addon: text="language", replace: boolea
         replace all "<randomColor>" with randomColor() in {_r}
         replace all "<addon>" with {_addon} in {_r}
     return {_r}
+function noLang(key: text, addon: text="language", replace: boolean=true) :: text:
+    set {_lang} to languageConfig("data.defaultLanguage")
+    load yaml "plugins/Skript/scripts/BCK/manager/%{_addon}%/language/%{_lang}%.yml" as "bck.manager.%{_addon}%.%{_lang}%"
+    set {_r} to yaml value {_key} from "bck.manager.%{_addon}%.%{_lang}%"
+    if "%{_r}%" is "<none>":
+        set {_r} to {_key}
+    if {_replace} is true:
+        replace all "<lang>" with {_lang} in {_r}
+        replace all "<randomColor>" with randomColor() in {_r}
+        replace all "<addon>" with {_addon} in {_r}
+    return {_r}
 function serverLang(key: text, addon: text="language", replace: boolean=false) :: text:
     set {_lang} to languageData("data.server.language")
     if "%{_lang}%" is "<none>":

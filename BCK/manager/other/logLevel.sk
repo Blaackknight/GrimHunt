@@ -1,8 +1,5 @@
 command /loglevel [<integer=0>] [<player>]:
     trigger:
-        if hasPermission(player, "server.command.loglevel") is false:
-            send "§c§lHey! §7Tu n'a pas la permission :|"
-            stop
         set {_player} to player
         if arg-2 is set:
             set {_player} to arg-2

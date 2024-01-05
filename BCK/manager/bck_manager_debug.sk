@@ -12,7 +12,8 @@ on load:
     addServerPermission("item.pickup")
     addServerPermission("player.move")
     addServerPermission("player.jump")
-    addDefaultPermission("player.craft")
+    addServerPermission("player.craft")
+    addServerPermission("player.attack")
     addServerPermission("server.command")
     addServerPermission("server.owner")
     addServerPermission("server.command.grimhunt")
@@ -24,6 +25,7 @@ on load:
     addServerPermission("bypass.loglevel")
     addServerPermission("bypass.op")
     addServerPermission("bypass.deop")
+    addServerPermission("bypass.kick")
 
     addDefaultPermission("server.send_message")
     addDefaultPermission("block.place")
@@ -33,6 +35,7 @@ on load:
     addDefaultPermission("player.move")
     addDefaultPermission("player.jump")
     addDefaultPermission("player.craft")
+    addDefaultPermission("player.attack")
     addDefaultPermission("server.command")
     addDefaultPermission("server.command.msg")
     addDefaultPermission("server.command.tell")
@@ -59,7 +62,7 @@ on break:
         set {_player} to selector(player)
     if hasPermission(player, "block.break") is false:
         cancel event
-        send "§c§lHey! §7Tu n'a pas la permission :|"
+        send lang("core.noPermission", player)
     else:
         logCustom("%{_player}% has just breaking the §7%event-block%", 5)
 on place:
@@ -69,7 +72,7 @@ on place:
         set {_player} to selector(player)
     if hasPermission(player, "block.place") is false:
         cancel event
-        send "§c§lHey! §7Tu n'a pas la permission :|"
+        send lang("core.noPermission", player)
     else:
         if "%type of event-block%" is "bite":
             cancel event
@@ -78,7 +81,7 @@ on place:
 on drop:
     if hasPermission(player, "item.drop") is false:
         cancel event
-        send "§c§lHey! §7Tu n'a pas la permission :|"
+        send lang("core.noPermission", player)
 on pickup:
     if hasPermission(player, "item.pickup") is false:
         cancel event
@@ -97,7 +100,7 @@ on command:
     if {_v} is true:
         if hasPermission(player, "server.command.%command%") is false:
             cancel event
-            send "§c§lHey! §7Tu n'a pas la permission :|"
+            send lang("core.noPermission", player)
             #broadcast {_player}
         
     if {_player} is "Server":
@@ -223,9 +226,32 @@ on command "/op":
     if player is set:
         if hasPermission(player, "bypass.op", true) is false:
             cancel event
-            send "§c§lHey! §7Tu ne peut pas faire cela :|"
+            send lang("core.cannotDoThis", player)
 on command "/deop":
     if player is set:
         if hasPermission(player, "bypass.deop", true) is false:
             cancel event
-            send "§c§lHey! §7Tu ne peut pas faire cela :|"
+            send lang("core.cannotDoThis", player)
+on command "/kick":
+    if player is set:
+        if hasPermission(player, "bypass.kick", true) is false:
+            cancel event
+            send lang("core.cannotDoThis", player)
+on damage:
+    set {_a} to attacker
+    if "%{_a}%" is "player":
+        if hasPermission({_a}, "player.attack") is false:
+            cancel event
+            send lang("core.noPermission", {_a}) to {_a}
+on place:
+    set {_o} to event-location
+    set {_a} to player
+    set {_b} to event-block
+    addTempBlock(player, {_b})
+    getTempCoordinate(player, {_b})
+on break:
+    set {_o} to event-location
+    set {_a} to player
+    set {_b} to event-block
+    getTempCoordinate(player, {_b})
+    removeTempBlock(player, {_b})

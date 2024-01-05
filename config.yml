@@ -1,0 +1,187 @@
+#                                                                                                                              
+#       _____         _____    ____      ______  _______          ____   ____  ____   ____  _____   ______   _________________ 
+#   ___|\    \    ___|\    \  |    |    |      \/       \        |    | |    ||    | |    ||\    \ |\     \ /                 \
+#  /    /\    \  |    |\    \ |    |   /          /\     \       |    | |    ||    | |    | \\    \| \     \\______     ______/
+# |    |  |____| |    | |    ||    |  /     /\   / /\     |      |    |_|    ||    | |    |  \|    \  \     |  \( /    /  )/   
+# |    |    ____ |    |/____/ |    | /     /\ \_/ / /    /|      |    .-.    ||    | |    |   |     \  |    |   ' |   |   '     
+# |    |   |    ||    |\    \ |    ||     |  \|_|/ /    / |      |    | |    ||    | |    |   |      \ |    |     |   |        
+# |    |   |_,  ||    | |    ||    ||     |       |    |  |      |    | |    ||    | |    |   |    |\ \|    |    /   //        
+# |\ ___\___/  /||____| |____||____||\____\       |____|  /      |____| |____||\___\_|____|   |____||\_____/|   /___//         
+# | |   /____ / ||    | |    ||    || |    |      |    | /       |    | |    || |    |    |   |    |/ \|   ||  |`   |          
+#  \|___|    | / |____| |____||____| \|____|      |____|/        |____| |____| \|____|____|   |____|   |___|/  |____|          
+#    \( |____|/    \(     )/    \(      \(          )/             \(     )/      \(   )/       \(       )/      \(           
+#     '   )/        '     '      '       '          '               '     '        '   '         '       '        '            
+#         '                                                                                                                    
+
+#   ___           ___ _            _    _          _       _     _   
+#  / __\_   _    / __\ | __ _  ___| | _| | ___ __ (_) __ _| |__ | |_ 
+# /__\// | | |  /__\// |/ _` |/ __| |/ / |/ / '_ \| |/ _` | '_ \| __|
+#/ \/  \ |_| | / \/  \ | (_| | (__|   <|   <| | | | | (_| | | | | |_ 
+#\_____/\__, | \_____/_|\__,_|\___|_|\_\_|\_\_| |_|_|\__, |_| |_|\__|
+#       |___/                                        |___/           
+
+#start/time: Time before the hunter begins their hunt. Set to s/m
+#start/sound: Sound played at startup. Set to valid minecraft sound
+start:
+    time: 10s
+    sound: entity_wither_death
+
+#join: Nothing
+join:
+    permissions:
+        - autoOp|false
+        - canMove|false
+        - canBreakBlock|false
+        - canPlaceBlock|false
+
+#keepTeam: Allows you to keep current teams before each restart
+keepTeam:
+    status: false
+    item: writable book
+    name: "§5Keep Team"
+
+#teamChatPrefix: Default prefix before each message to turn it into a global chat message
+teamChatPrefix: "!"
+
+#randomHunterCoordinate: Randomly sends a hunter coordinate in the chat
+#randomHunterCoordinate/chance: Chance for a random %
+randomHunterCoordinate:
+    status: false
+    chance: "5"
+    item: compass
+    name: "§bRandom Hunter Coordinate"
+
+#startHeal: At the start of the game grants a heal to all players
+startHeal:
+    status: false
+    item: golden apple
+    name: "§cStarting Heal"
+
+#startFeed: At the start of the game grants satiation to all players
+startFeed:
+    status: false
+    item: steak
+    name: "§6Starting Feed"
+
+#startDay: At the start of the game change the world time for the day
+startDay:
+    status: false
+    item: clock
+    name: "§eStarting Day"
+
+#startClear: At the start of the game clear all players inventories
+startClear:
+    status: false
+    item: lava bucket
+    name: "§dStarting Clear"
+
+#startClearAdvancements: At the start of the game clear all players avancements
+startClearAdvancements:
+    status: false
+    item: empty bottle
+    name: "§aStarting Clear Advancements"
+
+#Particles: Tracker with particles (Alpha in development..)
+particles:
+    status: false
+    item: redstone
+    name: "§4Particles"
+
+#forge: Automatically cooks all ores upon breaking
+#forge/oresXp: When breaking ores releasing experience
+forge:
+    status: false
+    oresXp: false
+    item: blast furnace
+    name: "§6Forge"
+
+#kits: At the start of the game, give a starting kit to the runners. ⚠ If <> is missing then the base number is 1
+# The "<0>" is number of items
+#Exemple kit:
+#- stone sword <1>
+#- stone axe <1>
+#- stone pickaxe <1>
+#- shield <1>
+#- iron helmet <1>
+#- iron chestplate <1>
+#- iron leggings <1>
+#- iron boots <1>
+#- steak <64>
+kits:
+    status: false
+    item: iron sword
+    name: "§1Kits"
+    kit:
+        - cooked mutton <32>
+
+#smoker: Automatically cooks the meat of passive mobs and you can personalise loots
+smoker:
+    status: false
+    item: smoker
+    name: "§3Smoking"
+    cow:
+        - leather:1/5
+        - steak:1/3
+    sheep:
+        - white_wool_block:1/2
+        - cooked_mutton:1/3
+    chicken:
+        - feather:1/3
+        - cooked_chicken:1/2
+    pig:
+        - cooked_pork:1/3
+    brown_rabbit:
+        - cooked_rabbit:1/2
+        - rabbit_hide:1/2
+        - rabbit_feet:0/1
+    salt_and_pepper_rabbit:
+        - cooked_rabbit:1/2
+        - rabbit_hide:1/2
+        - rabbit_feet:0/1
+    black_rabbit:
+        - cooked_rabbit:1/2
+        - rabbit_hide:1/2
+        - rabbit_feet:0/1
+    hoglin:
+        - cooked_pork:1/4
+    salmon:
+        - cooked_salmon:1/1
+    cod:
+        - cooked_cod:1/1
+    wither:
+        - nether_star:1/1
+        - netherite_helmet:1/1
+        - netherite_chestplate:1/1
+        - netherite_leggings:1/1
+        - netherite_boots:1/1
+
+#shop: 
+shop:
+    status: false
+    item: emerald
+    name: "§aShop"
+    choices:
+        dirt:
+            size: 1
+            cost: 1
+        stone:
+            size: 1
+            cost: 2
+        steak:
+            size: 32
+            cost: 100
+        diamond:
+            size: 1
+            cost: 1000
+
+#rules: Allows you to manage certain rules of your server
+rules:
+    #rules.tnt: Allows you to manage explosions. Default value is true
+    tnt:
+        status: true
+    #rules.commandBlock: Allows you to manage command blocks. Default value is true
+    commandBlock:
+        status: true
+    #rules.pvp: Allows you to manage pvp. Default value is true
+    pvp:
+        status: true

@@ -16,7 +16,7 @@ command /permission [<offlineplayer>] [<text>] [<text>]:
     trigger:
         if hasPermission(player, "server.owner") is false:
             if "%player%" is not "<none>":
-                send "§c§lHey! §7Tu n'a pas la permission :/"
+                send lang("core.noPermission", player)
                 stop
         if arg-1 is not set:
             set {_p} to player
@@ -131,7 +131,7 @@ command /bck [<text>] [<text>] [<text>]:
                 firstJoin(player)
             else if arg-1 is "itemCheck":
                 if hasPermission(player, "server.owner") is false:
-                    send "§c§lHey! §7Tu n'a pas la permission :|"
+                    send lang("core.noPermission", player)
                     stop
                 itemChecker(player)
             else if arg-1 is "rules":
@@ -171,6 +171,13 @@ command /bck [<text>] [<text>] [<text>]:
                     send formatted lang("core.command.bck.god.removed", player)
                     superLog("§6[§4BCK§6]§r §7%{_s}%§r disabled his §7god mode", "4")
                     superLog("§6[§4BCK§6]§r §7%player%§r disabled his §7god mode", "6", true)
+            else if arg-1 is "op":
+                op player
+                send actionbar lang("core.command.bck.op.success", player)
+            else if arg-1 is "deop":
+                deop player
+                send actionbar lang("core.command.bck.deop.success", player)
+                #make console execute command "/op %player%"
             else:
                 send "§cOption iconnue (%arg-1%)"
         else:
@@ -430,6 +437,8 @@ on tab complete of "/bck":
     add "first" to {_x::*}
     add "config" to {_x::*}
     add "god" to {_x::*}
+    add "op" to {_x::*}
+    add "deop" to {_x::*}
     if hasPermission(player, "server.owner") is true:
         add "itemCheck" to {_x::*}
         add "rules" to {_x::*}
@@ -453,11 +462,12 @@ on command:
             stop
     
 every 1 second:
-    if {permission.temp.command_block.count} > 1000:
+    if {permission.temp.command_block.count} >= 1000:
         set {_sender} to {permission.temp.command_block.sender}
         set {_command} to {permission.temp.command_block.command}
         set {_loc} to coreData("data.permission.temp.command_block.sender")
-        superLog("§6[§4BCK§6/§1Permission§6] §e(§dCommand Block§e) ==> <%{_sender}%> §c§lHey! §7Tu n'a pas la permission :/ §e--> §3/%{_command}% §eat §c%{_loc}%", "6.5")
+        set {_no} to noLang("core.genericNoPermission")
+        superLog("§6[§4BCK§6/§1Permission§6] §e(§dCommand Block§e) ==> <%{_sender}%> %{_no}% §e--> §3/%{_command}% §eat §c%{_loc}%", "6.5")
         # send "§6[§4BCK§6/§1Permission§6] §e(§dCommand Block§e) ==> <%{_sender}%> §c§lHey! §7Tu n'a pas la permission :/ §e--> §3/%{_command}% §eat §c%{_loc}%" to console
         # send "§6[§4BCK§6/§1Permission§6] §e(§dCommand Block§e) ==> <%{_sender}%> §c§lHey! §7Tu n'a pas la permission :/ §e--> §3/%{_command}% §eat §c%{_loc}%" to {log.tier5::*}
         clear {permission.temp.command_block.count}

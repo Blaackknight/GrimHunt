@@ -25,6 +25,7 @@ grimhunt:
             starting: "§bStarting !!"
         stop:
             notStarted: "§6[§5Grimhunt§6] §eGame not started.."
+            stopped: "§6[§5Grimhunt§6] §eGame §cstopped"
         revive:
             notDead:
                 1: "§6[§5Grimhunt§6]§r"
@@ -39,7 +40,13 @@ grimhunt:
                 title: "§5Grimhunt §aConfiguration"
         shop:
             gui:
-                title: "§6[§a§lShop§r§6]§r              §bMoney: §d<arg0>"
+                title: "§6[§<arg0>§lShop§r§6]§r      §bMoney: §d<arg1> §6| §3Team: §d<arg2>"
+                cost: "§eCost:§r §d<arg0> <arg1>"
+                youBuy: "§7§l§oYou§r §7§o(Left Click to Buy)"
+                teamBuy: "§7§l§oTeam§r §7§o(Right Click to Buy)"
+                nextPage:
+                    item: arrow
+                    name: "§7§lNext Page"
         runner:
             noOptions: "§c/runner <add/remove>"
             isHunter: "§6[§5Grimhunt§6] §4<arg0> §cis hunter !"
@@ -124,7 +131,12 @@ grimhunt:
         compass:
             notFound: "§c§nNot Found§r"
             notStarted: "§e§nNot Started§r"
+    shop:
+        moneySymbol: "☠"
 core:
+    noPermission: "§c§lHey! §7You don't have permission :|"
+    cannotDoThis: "§c§lHey! §7You cannot do this :<"
+    genericNoPermission: "§c§lHey! §7You don't have permission :/"
     functions:
         commandError:
             1: "§cUnknown or incomplete command, see below for error"
@@ -146,6 +158,10 @@ core:
             god:
                 activated: "§6[§4BCK§6]§r §eGod mode §aactivated §e!"
                 removed: "§6[§4BCK§6]§r §eGod mode §cdisabled §e!"
+            op:
+                success: "§6[§4BCK§6]§r §eYou are §4op §anow§e !"
+            deop:
+                success: "§6[§4BCK§6]§r §eYou are not longer §4op §anow§e !"
     rules:
         pvp:
             notAllowed: "§6[§4BCK§6]§r §l§8Hey §c! Pvp is not allowed."

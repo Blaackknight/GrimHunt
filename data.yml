@@ -1,0 +1,99 @@
+start:
+    time: 10s
+    sound: entity_wither_death
+
+join:
+    permissions:
+    - autoOp|false
+    - canMove|false
+    - canBreakBlock|false
+    - canPlaceBlock|false
+
+keepTeam:
+    status: false
+    item: writable book
+    name: "&5Keep Team"
+
+teamChatPrefix: '!'
+
+randomHunterCoordinate:
+    status: false
+    chance: 5
+    item: compass
+    name: "&bRandom Hunter Coordinate"
+
+startHeal:
+    status: false
+    item: golden apple
+    name: "&cStarting Heal"
+
+startFeed:
+    status: false
+    item: steak
+    name: "&6Starting Feed"
+
+startDay:
+    status: false
+    item: clock
+    name: "&eStarting Day"
+
+startClear:
+    status: false
+    item: lava bucket
+    name: "&dStarting Clear"
+
+startClearAdvancements:
+    status: false
+    item: empty bottle
+    name: "&aStarting Clear Advancements"
+
+particles:
+    status: false
+    item: redstone
+    name: "&4Particles"
+
+forge:
+    status: false
+    oresXp: false
+    item: blast furnace
+    name: "&6Forge"
+
+kits:
+    status: false
+    item: iron sword
+    name: "&1Kits"
+    kit:
+    - cooked mutton <32>
+
+smoker:
+    status: false
+    item: smoker
+    name: "&3Smoking"
+    chicken:
+    - feather:1/3
+    - cooked_chicken:1/2
+    cow:
+    - leather:1/5
+    - steak:1/3
+    pig:
+    - cooked_pork:1/3
+    sheep:
+    - white_wool_block:1/2
+    - cooked_mutton:1/3
+    salmon:
+    - cooked_salmon:1/1
+
+shop:
+    status: false
+    item: emerald
+    name: "&aShop"
+    choices:
+        dirt:
+            size: 1
+            cost: 1
+        stone:
+            size: 1
+            cost: 2
+        steak:
+            size: 32
+            cost: 100
