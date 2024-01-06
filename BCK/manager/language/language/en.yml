@@ -44,6 +44,7 @@ grimhunt:
                 cost: "§eCost:§r §d<arg0> <arg1>"
                 youBuy: "§7§l§oYou§r §7§o(Left Click to Buy)"
                 teamBuy: "§7§l§oTeam§r §7§o(Right Click to Buy)"
+                teamRestriction: "§6[§dOnly§6] for §r<arg0><arg1>§r"
                 nextPage:
                     item: arrow
                     name: "§7§lNext Page"
@@ -94,9 +95,9 @@ grimhunt:
                 kits: "§7At the §2start §7of the game, §egive §7a §1starting kit §7to the §arunners§r"
                 randomHunterCoordinate: "§7Randomly sends a §4hunter §acoordinate §7in the chat§r"
                 startClearAdvancements: "§7At the §2start §7of the game §dclear all players §aadvancements§r"
-                keepTeam: "§aKeep §7current teams before §eeach restart"
+                keepTeam: "§aKeep §7current teams before §eeach restart§r"
                 smoker: "§eAutomatically cooks §7the meat of passive mobs§r"
-                shop: ""
+                shop: "§7Allows you to §abuy §7useful things§r"
             noKitFound: §7§mNo kits found..
             currentKit: "§eCurrent kit:§r"
     death:
@@ -134,6 +135,7 @@ grimhunt:
             notStarted: "§e§nNot Started§r"
     shop:
         moneySymbol: "☠"
+        moneyGained: "§6[§5Grimhunt§6]§r §7You just won §d<arg0> <arg1>"
 core:
     noPermission: "§c§lHey! §7You don't have permission :|"
     cannotDoThis: "§c§lHey! §7You cannot do this :<"

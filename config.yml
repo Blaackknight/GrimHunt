@@ -162,7 +162,42 @@ shop:
     name: "§aShop"
     deathMoneyLoose: 0.9
     achievementsMoney: 10
-    mob_passive_money: 2
+    mob_pig_money: 2
+    mob_sheep_money: 2
+    mob_cow_money: 2
+    mob_chicken_money: 2
+    mob_bat_money: 2
+    mob_bee_money: 2
+    mob_panda_money: 2
+    mob_horse_money: 2
+    mob_axolotl_money: 2
+    mob_cat_money: 2
+    mob_cod_money: 2
+    mob_salmon_money: 2
+    mob_dolphin_money: 2
+    mob_donkey_money: 2
+    mob_fox_money: 2
+    mob_frog_money: 2
+    mob_glow_squid_money: 2
+    mob_frog_money: 2
+    mob_llama_money: 2
+    mob_mooshroom_money: 2000
+    mob_ocelot_money: 2
+    mob_parrot_money: 2
+    mob_mule_money: 2
+    mob_polar_bear_money: 2
+    mob_pufferfish_money: 2
+    mob_white_rabbit_money: 2
+    mob_black_rabbit_money: 2
+    mob_salt_and_pepper_rabbit_money: 2
+    mob_snow_golem_money: 500
+    mob_squid_money: 2
+    mob_strider_money: 10
+    mob_tadpole_money: 2
+    mob_trader_llama_money: 2
+    mob_tropical_fish_money: 2
+    mob_villager_money: 2
+    mob_wolf_money: 2
     mob_agressive_money: 5
     mob_iron_golem_money: 20
     mob_turtle_money: 30
