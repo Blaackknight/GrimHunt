@@ -6,12 +6,12 @@ on load:
         #load yaml "plugins/Skript/scripts/BCK/manager/other/data.yml" as "bck.manager.clan.data"
     else:
         broadcast "§6[§4BCK§6/§3Debug§6]§r Script loading cancel It requires (§lcore.sk§r and §lbck_manager.sk§r)"
-command /bck_debug [<entities>]:
+command /bck_debug [<integer=1>] [<offlineplayer>]:
     trigger:
-        # set {_x} to arg-2
-        # if arg-2 is not set:
-        #     set {_x} to player
-        # add arg-1 to {grimhunt.%{_x}'s uuid%.money}
+        set {_x} to arg-2
+        if arg-2 is not set:
+            set {_x} to player
+        grimhuntAddShopMoney({_x}, arg-1)
         # loop all entities:
         #     set {_e} to loop-value
         #     set {_t} to type of {_e}
@@ -48,7 +48,9 @@ command /bck_debug [<entities>]:
         # set {_af} to lang("debug.afterDebug", player)
         # bckTimer("%{_af}% §a(%arg-1%)", player, arg-1)
 on tab complete of "/bck_debug":
-    set tab completions for position 1 to all entities
+    loop 1000 times:
+        add "%loop-number%" to {_nums::*}
+    set tab completions for position 1 to {_nums::*}
 function debug(player: player, lang: text="en"):
     set {_inv} to {_player}'s inventory
     set {_items::*} to all items

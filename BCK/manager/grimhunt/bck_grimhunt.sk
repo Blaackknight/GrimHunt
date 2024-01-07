@@ -755,7 +755,7 @@ function grimhuntLoad():
             replace "_" with " " in {_mob}
             set {_moo} to {_mob}
             set {_xx} to {_shopOre.%{_so}%}
-            broadcast "%{_x}% = %{_xx}%"
+            #broadcast "%{_x}% = %{_xx}%"
             set yaml value "%loop-value%" from "bck.manager.grimhunt.data" to {_shopOre.%{_so}%}
             add 1 to {_so}
         else if {_x} contain "blocks":
@@ -2331,7 +2331,6 @@ command /shop:
             add "0" to {_args::*}
         
         set {_n} to superLang("grimhunt.command.shop.gui.title", {_player}, {_args::*})
-        #broadcast "%{_money}% = %{_n}%"
         set {_gui} to genericGui({_n}, 5, true)
         set slot 22 of {_gui} to redstone block named "§4Wait.."
         userData(player, "data.inv", "set", "manager.grimhunt.shop.main")
@@ -2470,6 +2469,7 @@ on inventory click:
                     stop
                 loop {_shopChoices::*}:
                     set {_x} to loop-value
+                    set {_xx} to {_x}
                     set {_tt::*} to {_x} split by "."
                     set {_r} to {_tt::3}
                     replace all "_" with " " in {_r}
@@ -2477,8 +2477,8 @@ on inventory click:
                     if "%{_r}%" is "%type of {_i}%":
                         set {_x} to line 2 of lore of {_i}
                         if {_x} is not set:
-                            #play sound "entity.villager.no" with volume 0.5 for player
                             stop
+                        set {_special} to grimhuntDataBoolean("%{_xx}%.special")
                         set {_t} to lang("grimhunt.command.shop.gui.cost", player)
                         set {_data::*} to {_t} split by "<arg0>"
                         set {_b} to {_data::1}
@@ -2489,12 +2489,29 @@ on inventory click:
                         replace all " " with "" in {_count}
                         set {_count} to {_count} parsed as integer
                         if {grimhunt.%player's uuid%.money} >= {_count}:
-                            if player's inventory has space to hold {_a} of {_r}:
-                                grimhuntRemoveShopMoney(player, {_count})
-                                give {_a} of {_r} to player
-                                play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                            if {_special} is false:
+                                if player's inventory has space to hold {_a} of {_r}:
+                                    grimhuntRemoveShopMoney(player, {_count})
+                                    give {_a} of {_r} to player
+                                    play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                else:
+                                    #broadcast "1"
+                                    play sound "entity.villager.no" with volume 0.5 for player
                             else:
-                                play sound "entity.villager.no" with volume 0.5 for player
+                                set {_specialName} to grimhuntData("%{_xx}%.name")
+                                if "%{_i}%" is "compass named %{_specialName}%":
+                                    if listCounter({bck.hunters::*}) >= 2:
+                                        #grimhuntRemoveShopMoney(player, {_count})
+                                        set {_n} to lang("grimhunt.command.shop.gui.hunterSelection.title", {_player})
+                                        set {_gui} to genericGui({_n}, 5, true)
+                                        set slot 22 of {_gui} to redstone block named "§4Wait.."
+                                        userData(player, "data.inv", "set", "manager.grimhunt.shop.hunterSelection.main")
+                                        open {_gui} to player
+                                        grimhuntShopHunterSelectionGuiUpdater(player)
+                                        #play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                    else:
+                                        #broadcast "2"
+                                        play sound "entity.villager.no" with volume 0.5 for player
                         else:
                             play sound "entity.villager.no" with volume 0.5 for player
                     add 1 to {_sc}
@@ -2511,6 +2528,7 @@ on inventory click:
                     stop
                 loop {_shopChoices::*}:
                     set {_x} to loop-value
+                    set {_xx} to {_x}
                     set {_tt::*} to {_x} split by "."
                     set {_r} to {_tt::3}
                     replace all "_" with " " in {_r}
@@ -2520,6 +2538,8 @@ on inventory click:
                         if {_x} is not set:
                             #play sound "entity.villager.no" with volume 0.5 for player
                             stop
+                        set {_special} to grimhuntDataBoolean("%{_xx}%.special")
+                        #broadcast "%{_xx}% / %{_special}%"
                         set {_t} to lang("grimhunt.command.shop.gui.cost", player)
                         set {_data::*} to {_t} split by "<arg0>"
                         set {_b} to {_data::1}
@@ -2532,14 +2552,27 @@ on inventory click:
                         set {_countBefore} to 65 - {_a}
                         set {_countAfter} to {_count} * {_countBefore}
                         add {_countBefore} - 1 to {_a}
-                        #broadcast "%{_count}% = %{_countBefore}% = %{_countAfter}%"
                         if {grimhunt.%player's uuid%.money} >= {_countAfter}:
-                            if player's inventory has space to hold {_a} of {_r}:
-                                grimhuntRemoveShopMoney(player, {_countAfter})
-                                give {_a} of {_r} to player
-                                play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                            if {_special} is false:
+                                if player's inventory has space to hold {_a} of {_r}:
+                                    grimhuntRemoveShopMoney(player, {_countAfter})
+                                    give {_a} of {_r} to player
+                                    play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                else:
+                                    play sound "entity.villager.no" with volume 0.5 for player
                             else:
-                                play sound "entity.villager.no" with volume 0.5 for player
+                                set {_specialName} to grimhuntData("%{_xx}%.name")
+                                if "%{_i}%" is "compass named %{_specialName}%":
+                                    if listCounter({bck.hunters::*}) >= 2:
+                                        set {_n} to lang("grimhunt.command.shop.gui.hunterSelection.title", {_player})
+                                        set {_gui} to genericGui({_n}, 5, true)
+                                        set slot 22 of {_gui} to redstone block named "§4Wait.."
+                                        userData(player, "data.inv", "set", "manager.grimhunt.shop.hunterSelection.main")
+                                        open {_gui} to player
+                                        grimhuntShopHunterSelectionGuiUpdater(player)
+                                        #play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                    else:
+                                        play sound "entity.villager.no" with volume 0.5 for player
                         else:
                             set {_countId} to {_countAfter} - {grimhunt.%player's uuid%.money}  
                             set {_countA} to {_countAfter} - {_countId}
@@ -2554,12 +2587,26 @@ on inventory click:
                             if {_countF} is 0:
                                 play sound "entity.villager.no" with volume 0.5 for player
                                 exit loop
-                            if player's inventory has space to hold {_countF} of {_r}:
-                                grimhuntRemoveShopMoney(player, {_countA})
-                                give {_countF} of {_r} to player
-                                play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                            if {_special} is false:
+                                if player's inventory has space to hold {_countF} of {_r}:
+                                    grimhuntRemoveShopMoney(player, {_countA})
+                                    give {_countF} of {_r} to player
+                                    play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                else:
+                                    play sound "entity.villager.no" with volume 0.5 for player
                             else:
-                                play sound "entity.villager.no" with volume 0.5 for player
+                                set {_specialName} to grimhuntData("%{_xx}%.name")
+                                if "%{_i}%" is "compass named %{_specialName}%":
+                                    if listCounter({bck.hunters::*}) >= 2:
+                                        set {_n} to lang("grimhunt.command.shop.gui.hunterSelection.title", {_player})
+                                        set {_gui} to genericGui({_n}, 5, true)
+                                        set slot 22 of {_gui} to redstone block named "§4Wait.."
+                                        userData(player, "data.inv", "set", "manager.grimhunt.shop.hunterSelection.main")
+                                        open {_gui} to player
+                                        grimhuntShopHunterSelectionGuiUpdater(player)
+                                        #play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                    else:
+                                        play sound "entity.villager.no" with volume 0.5 for player
                     add 1 to {_sc}
         else if click action is right mouse button:
             loop yaml node keys "shop.choices" from "bck.manager.grimhunt.data":
@@ -2577,6 +2624,7 @@ on inventory click:
                     set {_mo} to {_hunterMoney}
                 loop {_shopChoices::*}:
                     set {_x} to loop-value
+                    set {_xx} to {_x}
                     set {_tt::*} to {_x} split by "."
                     set {_r} to {_tt::3}
                     replace all "_" with " " in {_r}
@@ -2586,6 +2634,7 @@ on inventory click:
                         if {_x} is not set:
                             #play sound "entity.villager.no" with volume 0.5 for player
                             stop
+                        set {_special} to grimhuntDataBoolean("%{_xx}%.special")
                         set {_t} to lang("grimhunt.command.shop.gui.cost", player)
                         set {_data::*} to {_t} split by "<arg0>"
                         set {_b} to {_data::1}
@@ -2596,12 +2645,26 @@ on inventory click:
                         replace all " " with "" in {_count}
                         set {_count} to {_count} parsed as integer
                         if {_mo} >= {_count}:
-                            if player's inventory has space to hold {_a} of {_r}:
-                                grimhuntRemoveShopTeamMoney(player, {_count})
-                                give {_a} of {_r} to player
-                                play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                            if {_special} is false:
+                                if player's inventory has space to hold {_a} of {_r}:
+                                    grimhuntRemoveShopTeamMoney(player, {_count})
+                                    give {_a} of {_r} to player
+                                    play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                else:
+                                    play sound "entity.villager.no" with volume 0.5 for player
                             else:
-                                play sound "entity.villager.no" with volume 0.5 for player
+                                set {_specialName} to grimhuntData("%{_xx}%.name")
+                                if "%{_i}%" is "compass named %{_specialName}%":
+                                    if listCounter({bck.hunters::*}) >= 2:
+                                        set {_n} to lang("grimhunt.command.shop.gui.hunterSelection.title", {_player})
+                                        set {_gui} to genericGui({_n}, 5, true)
+                                        set slot 22 of {_gui} to redstone block named "§4Wait.."
+                                        userData(player, "data.inv", "set", "manager.grimhunt.shop.hunterSelection.main")
+                                        open {_gui} to player
+                                        grimhuntShopHunterSelectionGuiUpdater(player)
+                                        #play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                    else:
+                                        play sound "entity.villager.no" with volume 0.5 for player
                         else:
                             play sound "entity.villager.no" with volume 0.5 for player
                     add 1 to {_sc}
@@ -2621,6 +2684,7 @@ on inventory click:
                     set {_mo} to {_hunterMoney}
                 loop {_shopChoices::*}:
                     set {_x} to loop-value
+                    set {_xx} to {_x}
                     set {_tt::*} to {_x} split by "."
                     set {_r} to {_tt::3}
                     set {_r} to {_r} parsed as item
@@ -2629,6 +2693,7 @@ on inventory click:
                         if {_x} is not set:
                             #play sound "entity.villager.no" with volume 0.5 for player
                             stop
+                        set {_special} to grimhuntDataBoolean("%{_xx}%.special")
                         set {_t} to lang("grimhunt.command.shop.gui.cost", player)
                         set {_data::*} to {_t} split by "<arg0>"
                         set {_b} to {_data::1}
@@ -2643,12 +2708,26 @@ on inventory click:
                         add {_countBefore} - 1 to {_a}
                         #broadcast "%{_count}% = %{_countBefore}% = %{_countAfter}%"
                         if {_mo} >= {_countAfter}:
-                            if player's inventory has space to hold {_a} of {_r}:
-                                grimhuntRemoveShopTeamMoney(player, {_countAfter})
-                                give {_a} of {_r} to player
-                                play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                            if {_special} is false:
+                                if player's inventory has space to hold {_a} of {_r}:
+                                    grimhuntRemoveShopTeamMoney(player, {_countAfter})
+                                    give {_a} of {_r} to player
+                                    play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                else:
+                                    play sound "entity.villager.no" with volume 0.5 for player
                             else:
-                                play sound "entity.villager.no" with volume 0.5 for player
+                                set {_specialName} to grimhuntData("%{_xx}%.name")
+                                if "%{_i}%" is "compass named %{_specialName}%":
+                                    if listCounter({bck.hunters::*}) >= 2:
+                                        set {_n} to lang("grimhunt.command.shop.gui.hunterSelection.title", {_player})
+                                        set {_gui} to genericGui({_n}, 5, true)
+                                        set slot 22 of {_gui} to redstone block named "§4Wait.."
+                                        userData(player, "data.inv", "set", "manager.grimhunt.shop.hunterSelection.main")
+                                        open {_gui} to player
+                                        grimhuntShopHunterSelectionGuiUpdater(player)
+                                        #play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                    else:
+                                        play sound "entity.villager.no" with volume 0.5 for player
                         else:
                             set {_countId} to {_countAfter} - {_mo}  
                             set {_countA} to {_countAfter} - {_countId}
@@ -2663,37 +2742,105 @@ on inventory click:
                             if {_countF} is 0:
                                 play sound "entity.villager.no" with volume 0.5 for player
                                 exit loop
-                            if player's inventory has space to hold {_countF} of {_r}:
-                                grimhuntRemoveShopTeamMoney(player, {_countA})
-                                give {_countF} of {_r} to player
-                                play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                            if {_special} is false:
+                                if player's inventory has space to hold {_countF} of {_r}:
+                                    grimhuntRemoveShopTeamMoney(player, {_countA})
+                                    give {_countF} of {_r} to player
+                                    play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                else:
+                                    play sound "entity.villager.no" with volume 0.5 for player
                             else:
-                                play sound "entity.villager.no" with volume 0.5 for player
+                                set {_specialName} to grimhuntData("%{_xx}%.name")
+                                if "%{_i}%" is "compass named %{_specialName}%":
+                                    if listCounter({bck.hunters::*}) >= 2:
+                                        set {_n} to lang("grimhunt.command.shop.gui.hunterSelection.title", {_player})
+                                        set {_gui} to genericGui({_n}, 5, true)
+                                        set slot 22 of {_gui} to redstone block named "§4Wait.."
+                                        userData(player, "data.inv", "set", "manager.grimhunt.shop.hunterSelection.main")
+                                        open {_gui} to player
+                                        grimhuntShopHunterSelectionGuiUpdater(player)
+                                        #play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                    else:
+                                        play sound "entity.villager.no" with volume 0.5 for player
                     add 1 to {_sc}
-        # else if "%{_t}%" contain "%{_particles}%":
-        #     if grimhuntDataBoolean("particles.status") is false:
-        #         grimhuntDataBoolean("particles.status", "set", true)
-        #         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §aactivated §7particles.status§r", "4")
-        #         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §aactivated §7particles.status§r", "6", true)
-        #         play sound "entity.experience_orb.pickup" with volume 0.3 for player
-        #     else:
-        #         grimhuntDataBoolean("particles.status", "set")
-        #         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%selector(player)%§r has been §4desactivated §7particles.status§r", "4")
-        #         superLog("§6[§4BCK§6/§5Grimhunt§6/§dConfig§6]§r §7%player%§r has been §4desactivated §7particles.status§r", "6", true)
-        #         play sound "entity.villager.no" with volume 0.5 for player
-        #     loop all players:
-        #         if userData(loop-player, "data.inv") is "manager.grimhunt.config.main":
-        #             grimhuntConfigGuiUpdater(loop-player)
         loop all players:
             if userData(loop-player, "data.inv") is "manager.grimhunt.shop.main":
                 grimhuntShopGuiUpdater(loop-player)
-
+function grimhuntShopHunterSelectionGuiUpdater(player: player):
+    set {_gui} to {_player}'s current inventory
+    set slot 22 of {_gui} to air
+    set {_sc} to 10
+    set {_gc} to 0
+    loop 24 times:
+        if {_gc} is 10 or 19 or 28:
+            add 7 to {_gc}
+        else if {_gc} is 40:
+            add 1 to {_gc}
+        set slot {_gc} of {_gui} to black stained glass pane named "§l"
+        add 1 to {_gc}
+    if listCounter({_shopChoices::*}) > 21:
+        set {_ti} to yaml value "grimhunt.command.shop.gui.nextPage.item" from "bck.manager.grimhunt.data"
+        set {_ti} to {_ti} parsed as item
+        set slot 44 of {_gui} to {_ti} named lang("grimhunt.command.shop.gui.nextPage.name", {_player})
+    loop all players:
+        set {_x} to loop-value 
+        set {_i} to {_x}'s skull named "§4%{_x}%"
+        set line 2 of lore of {_i} to lang("grimhunt.command.shop.gui.hunterSelection.clickToSelect", {_player})
+        set slot {_sc} of {_gui} to {_i}
+        add 1 to {_sc} 
+    userData({_player}, "data.inv", "set", "manager.grimhunt.shop.hunterSelection.main")
+on inventory click:
+    if userData(player, "data.inv") is "false":
+        stop
+    if userData(player, "data.inv") is "manager.grimhunt.shop.hunterSelection.main":
+        cancel event
+        set {_gui} to player's current inventory
+        set {_i} to event-slot
+        set {_t} to type of {_i}
+        set {_n} to display name of {_i}
+        set {_u} to {_n}
+        set {_a} to item amount of event-slot
+        if "%{_t}%" contain "barrier":
+            if {_u} contain "Back":
+                grimhuntShopGuiUpdater(player)
+        else:
+            set {_x} to uncolored {_n} parsed as player
+            if {_x} is set:
+                set {_c} to grimhuntData("shop.choices.compass.cost")
+                set {_c} to "%{_c}%" parsed as integer
+                grimhuntRemoveShopMoney(player, {_c})
+                play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                removePermission({_x}, "player.move")
+                close player's inventory
+                play sound "block.portal.trigger" with volume 0.1 for {_x}
+                add "%player%" to {_args::*}
+                loop 4 times:
+                    send actionbar superLang("grimhunt.command.shop.gui.hunterSelection.teleportInProgress.%loop-number%", {_x}, {_args::*}) to {_x}
+                    wait 1 second
+                teleport {_x} to player
+                send actionbar superLang("grimhunt.command.shop.gui.hunterSelection.teleportInProgress.finished", {_x}, {_args::*}) to {_x}
+                addPermission({_x}, "player.move")
+    else if userData(player, "data.inv") is "manager.grimhunt.shop.runnerSelection.main":
+        cancel event
+        set {_gui} to player's current inventory
+        set {_i} to event-slot
+        set {_t} to type of {_i}
+        set {_n} to display name of {_i}
+        set {_u} to {_n}
+        set {_a} to item amount of event-slot
+        if "%{_t}%" contain "barrier":
+            if {_u} contain "Back":
+                grimhuntShopGuiUpdater(player)
+        else:
+            
 function grimhuntShopAbbrevNumber(v: integer) :: text:
     if {_v} >= 1000:
-        if {_v} < 1000000:
-            set {_v} to "%{_v} / 1000%k"
-        else:
+        if {_v} < 1000000000:
             set {_v} to "%{_v} / 1000000%m"
+            if {_v} < 1000000:
+                set {_v} to "%{_v} / 1000%k"
+        else:
+            set {_v} to "%{_v} / 1000000000%M"
     else:
         set {_v} to "%{_v}%"
     return {_v}

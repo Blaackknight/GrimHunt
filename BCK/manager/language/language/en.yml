@@ -45,6 +45,16 @@ grimhunt:
                 youBuy: "§7§l§oYou§r §7§o(Left Click to Buy)"
                 teamBuy: "§7§l§oTeam§r §7§o(Right Click to Buy)"
                 teamRestriction: "§6[§dOnly§6] for §r<arg0><arg1>§r"
+                hunterSelection:
+                    title: "       §6[§4§lHunter Selection§r§6]§r"
+                    clickToSelect: "§7Click to teleport this player"
+                    teleportInProgress:
+                        1: "§6[§5Grimhunt§6]§r §eTeleporting. to §4<arg0>§r"
+                        2: "§6[§5Grimhunt§6]§r §eTeleporting.. to §4<arg0>§r"
+                        3: "§6[§5Grimhunt§6]§r §eTeleporting... to §4<arg0>§r"
+                        4: "§6[§5Grimhunt§6]§r §eTeleporting. to §4<arg0>§r"
+                        5: "§6[§5Grimhunt§6]§r §eTeleporting.. to §4<arg0>§r"
+                        finished: "§6[§5Grimhunt§6]§r §aTeleported §eto §4<arg0>§r"
                 nextPage:
                     item: arrow
                     name: "§7§lNext Page"
