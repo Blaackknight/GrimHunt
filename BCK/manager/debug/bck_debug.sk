@@ -8,6 +8,10 @@ on load:
         broadcast "§6[§4BCK§6/§3Debug§6]§r Script loading cancel It requires (§lcore.sk§r and §lbck_manager.sk§r)"
 command /bck_debug [<integer=1>] [<offlineplayer>]:
     trigger:
+        if arg-1 is -1:
+            loop all entities:
+                broadcast "%type of loop-value%"
+            stop
         set {_x} to arg-2
         if arg-2 is not set:
             set {_x} to player

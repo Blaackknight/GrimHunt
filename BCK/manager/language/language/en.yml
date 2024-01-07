@@ -40,7 +40,7 @@ grimhunt:
                 title: "§5Grimhunt §aConfiguration"
         shop:
             gui:
-                title: "§6[§<arg0>§lShop§r§6]§r      §bMoney: §d<arg1> §6| §3Team: §d<arg2>"
+                title: "§6[§<arg0>§lShop§r§6]§r §3§lYou:§r §d<arg1> §6| §1§lTeam:§r §d<arg2>"
                 cost: "§eCost:§r §d<arg0> <arg1>"
                 youBuy: "§7§l§oYou§r §7§o(Left Click to Buy)"
                 teamBuy: "§7§l§oTeam§r §7§o(Right Click to Buy)"
@@ -55,6 +55,9 @@ grimhunt:
                         4: "§6[§5Grimhunt§6]§r §eTeleporting. to §4<arg0>§r"
                         5: "§6[§5Grimhunt§6]§r §eTeleporting.. to §4<arg0>§r"
                         finished: "§6[§5Grimhunt§6]§r §aTeleported §eto §4<arg0>§r"
+                runnerSelection:
+                    title: "       §6[§a§lRunner Selection§r§6]§r"
+                    clickToRevive: "§7Click to revive this player"
                 nextPage:
                     item: arrow
                     name: "§7§lNext Page"
