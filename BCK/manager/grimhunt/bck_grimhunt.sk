@@ -1623,11 +1623,11 @@ every tick:
                 set {_i} to loop-player's tool
                 set {_o} to loop-player's offhand tool
                 if {grimhunt.game.started} is not set:
-                    if loop-player's tool is not compass:
+                    if {_i} is not compass:
+                        if {_o} is compass:
+                            set line 1 of lore of loop-player's offhand tool to lang("grimhunt.game.compass.notStarted", loop-player)
                         exit loop
                     set line 1 of lore of loop-player's tool to lang("grimhunt.game.compass.notStarted", loop-player)
-                    exit loop
-                if loop-player's tool is not compass:
                     exit loop
                 set {_nn} to {grimhunt.compass.%loop-player%.num}
                 set {_xx} to {bck.runners::%{_nn}%}
@@ -1635,7 +1635,11 @@ every tick:
                 #broadcast "%loop-player%: %{_xx}%"
                 if {_xx} is "<none>":
                     set {_xx} to lang("grimhunt.game.compass.notFound", loop-player)
-                set line 1 of lore of loop-player's tool to "§4Target: §a%{_xx}%"
+                if {_i} is not compass:
+                    if {_o} is compass:
+                        set line 1 of lore of loop-player's offhand tool to "§4Target: §a%{_xx}%"
+                else:
+                    set line 1 of lore of loop-player's tool to "§4Target: §a%{_xx}%"
                 set {_n} to {grimhunt.compass.%loop-player%.num}
                 set the loop-player's compass target to location of {bck.runners::%{_n}%}
                 if "%loop-player's world%" is not "world":
@@ -2495,23 +2499,29 @@ on inventory click:
                             else:
                                 set {_specialName} to grimhuntData("%{_xx}%.name")
                                 if "%{_i}%" is "compass named %{_specialName}%":
-                                    if listCounter({bck.hunters::*}) >= 2:
-                                        set {_n} to lang("grimhunt.command.shop.gui.hunterSelection.title", {_player})
-                                        set {_gui} to genericGui({_n}, 5, true)
-                                        set slot 22 of {_gui} to redstone block named "§4Wait.."
-                                        userData(player, "data.inv", "set", "manager.grimhunt.shop.hunterSelection.main")
-                                        open {_gui} to player
-                                        grimhuntShopHunterSelectionGuiUpdater(player)
+                                    if {bck.hunters::*} contain player:
+                                        if listCounter({bck.hunters::*}) >= 2:
+                                            set {_n} to lang("grimhunt.command.shop.gui.hunterSelection.title", {_player})
+                                            set {_gui} to genericGui({_n}, 5, true)
+                                            set slot 22 of {_gui} to redstone block named "§4Wait.."
+                                            userData(player, "data.inv", "set", "manager.grimhunt.shop.hunterSelection.main")
+                                            open {_gui} to player
+                                            grimhuntShopHunterSelectionGuiUpdater(player)
+                                        else:
+                                            play sound "entity.villager.no" with volume 0.5 for player
                                     else:
                                         play sound "entity.villager.no" with volume 0.5 for player
                                 else if "%{_i}%" is "totem of undying named %{_specialName}%":
-                                    if listCounter({bck.runners::*}) >= 2:
-                                        set {_n} to lang("grimhunt.command.shop.gui.runnerSelection.title", {_player})
-                                        set {_gui} to genericGui({_n}, 5, true)
-                                        set slot 22 of {_gui} to redstone block named "§4Wait.."
-                                        userData(player, "data.inv", "set", "manager.grimhunt.shop.runnerSelection.main")
-                                        open {_gui} to player
-                                        grimhuntShopRunnerSelectionGuiUpdater(player)
+                                    if {bck.runners::*} contain player:
+                                        if listCounter({bck.runners::*}) >= 2:
+                                            set {_n} to lang("grimhunt.command.shop.gui.runnerSelection.title", {_player})
+                                            set {_gui} to genericGui({_n}, 5, true)
+                                            set slot 22 of {_gui} to redstone block named "§4Wait.."
+                                            userData(player, "data.inv", "set", "manager.grimhunt.shop.runnerSelection.main")
+                                            open {_gui} to player
+                                            grimhuntShopRunnerSelectionGuiUpdater(player)
+                                        else:
+                                            play sound "entity.villager.no" with volume 0.5 for player
                                     else:
                                         play sound "entity.villager.no" with volume 0.5 for player
                         else:
@@ -2565,24 +2575,29 @@ on inventory click:
                             else:
                                 set {_specialName} to grimhuntData("%{_xx}%.name")
                                 if "%{_i}%" is "compass named %{_specialName}%":
-                                    if listCounter({bck.hunters::*}) >= 2:
-                                        set {_n} to lang("grimhunt.command.shop.gui.hunterSelection.title", {_player})
-                                        set {_gui} to genericGui({_n}, 5, true)
-                                        set slot 22 of {_gui} to redstone block named "§4Wait.."
-                                        userData(player, "data.inv", "set", "manager.grimhunt.shop.hunterSelection.main")
-                                        open {_gui} to player
-                                        grimhuntShopHunterSelectionGuiUpdater(player)
-                                        #play sound "entity.experience_orb.pickup" with volume 0.3 for player
+                                    if {bck.hunters::*} contain player:
+                                        if listCounter({bck.hunters::*}) >= 2:
+                                            set {_n} to lang("grimhunt.command.shop.gui.hunterSelection.title", {_player})
+                                            set {_gui} to genericGui({_n}, 5, true)
+                                            set slot 22 of {_gui} to redstone block named "§4Wait.."
+                                            userData(player, "data.inv", "set", "manager.grimhunt.shop.hunterSelection.main")
+                                            open {_gui} to player
+                                            grimhuntShopHunterSelectionGuiUpdater(player)
+                                        else:
+                                            play sound "entity.villager.no" with volume 0.5 for player
                                     else:
                                         play sound "entity.villager.no" with volume 0.5 for player
                                 else if "%{_i}%" is "totem of undying named %{_specialName}%":
-                                    if listCounter({bck.runners::*}) >= 2:
-                                        set {_n} to lang("grimhunt.command.shop.gui.runnerSelection.title", {_player})
-                                        set {_gui} to genericGui({_n}, 5, true)
-                                        set slot 22 of {_gui} to redstone block named "§4Wait.."
-                                        userData(player, "data.inv", "set", "manager.grimhunt.shop.runnerSelection.main")
-                                        open {_gui} to player
-                                        grimhuntShopRunnerSelectionGuiUpdater(player)
+                                    if {bck.runners::*} contain player:
+                                        if listCounter({bck.runners::*}) >= 2:
+                                            set {_n} to lang("grimhunt.command.shop.gui.runnerSelection.title", {_player})
+                                            set {_gui} to genericGui({_n}, 5, true)
+                                            set slot 22 of {_gui} to redstone block named "§4Wait.."
+                                            userData(player, "data.inv", "set", "manager.grimhunt.shop.runnerSelection.main")
+                                            open {_gui} to player
+                                            grimhuntShopRunnerSelectionGuiUpdater(player)
+                                        else:
+                                            play sound "entity.villager.no" with volume 0.5 for player
                                     else:
                                         play sound "entity.villager.no" with volume 0.5 for player
                         else:
@@ -2946,12 +2961,10 @@ on inventory click:
                 userData({_x}, "data.grimhunt.temp.dead", "set", "false")
 function grimhuntShopAbbrevNumber(v: integer) :: text:
     if {_v} >= 1000:
-        if {_v} < 1000000000:
-            set {_v} to "%{_v} / 1000000%m"
-            if {_v} < 1000000:
-                set {_v} to "%{_v} / 1000%k"
+        if {_v} < 1000000:
+            set {_v} to "%{_v} / 1000%k"
         else:
-            set {_v} to "%{_v} / 1000000000%M"
+            set {_v} to "%{_v} / 1000000%m"
     else:
         set {_v} to "%{_v}%"
     return {_v}
